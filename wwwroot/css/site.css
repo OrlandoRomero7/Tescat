@@ -1,26 +1,77 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+/*:root refers always to '<html>'*/
+:root {
+    --brand: #1181CD;
+    --brand-hover: #245D82;
+    --brand-text: #06151F;
+}
+
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Roboto', Helvetica, Arial, sans-serif;
+}
+
+body {
+    background-color: #F9F9F9;
 }
 
 h1:focus {
     outline: none;
 }
 
-a, .btn-link {
-    color: #0071c1;
+
+a {
+    color: var(--brand);
+    text-decoration: underline;
 }
 
+    a:hover {
+        color: var(--brand-hover);
+        text-decoration: none;
+    }
+
+
+
 .btn-primary {
+    background-color: var(--brand);
+    border-color: var(--brand);
+}
+
+    .btn-primary:hover {
+        background-color: var(--brand-hover);
+        border-color: var(--brand-hover);
+    }
+
+
+.btn-outline-primary {
+    border-color: var(--brand);
+    color: var(--brand);
+}
+
+    .btn-outline-primary:hover {
+        background-color: var(--brand);
+        border-color: var(--brand);
+    }
+
+
+
+
+
+/********/
+
+/*a, .btn-link {
+    color: #0071c1;
+}*/
+
+/*.btn-primary {
     color: #fff;
     background-color: #1b6ec2;
     border-color: #1861ac;
-}
+}*/
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+/*.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
+}*/
 
 .content {
     padding-top: 1.1rem;
