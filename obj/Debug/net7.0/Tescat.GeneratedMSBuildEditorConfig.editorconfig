@@ -9,41 +9,49 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Tescat
 build_property.RootNamespace = Tescat
-build_property.ProjectDir = C:\Users\Orlando\Desktop\Proyectos\Tescat\
+build_property.ProjectDir = C:\Users\medin\Projects\Tescat\
 build_property.RazorLangVersion = 7.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\Orlando\Desktop\Proyectos\Tescat
+build_property.MSBuildProjectDirectory = C:\Users\medin\Projects\Tescat
 build_property._RazorSourceGeneratorDebug = 
 
-[C:/Users/Orlando/Desktop/Proyectos/Tescat/App.razor]
+[C:/Users/medin/Projects/Tescat/App.razor]
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Orlando/Desktop/Proyectos/Tescat/Pages/Index.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
+[C:/Users/medin/Projects/Tescat/Pages/Home/HomeCard.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9tZVxIb21lQ2FyZC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Orlando/Desktop/Proyectos/Tescat/Shared/SurveyPrompt.razor]
+[C:/Users/medin/Projects/Tescat/Pages/Home/HomePage.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9tZVxIb21lUGFnZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/medin/Projects/Tescat/Shared/SurveyPrompt.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFN1cnZleVByb21wdC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Orlando/Desktop/Proyectos/Tescat/_Imports.razor]
+[C:/Users/medin/Projects/Tescat/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Orlando/Desktop/Proyectos/Tescat/Shared/MainLayout.razor]
+[C:/Users/medin/Projects/Tescat/Shared/MainHeader.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5IZWFkZXIucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-99g5eb78wf
+
+[C:/Users/medin/Projects/Tescat/Shared/MainLayout.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5MYXlvdXQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-hpjfm17hcy
 
-[C:/Users/Orlando/Desktop/Proyectos/Tescat/Shared/NavMenu.razor]
+[C:/Users/medin/Projects/Tescat/Shared/NavMenu.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE5hdk1lbnUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-1v9w43v326
 
-[C:/Users/Orlando/Desktop/Proyectos/Tescat/Pages/Error.cshtml]
+[C:/Users/medin/Projects/Tescat/Pages/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXJyb3IuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Orlando/Desktop/Proyectos/Tescat/Pages/_Host.cshtml]
+[C:/Users/medin/Projects/Tescat/Pages/_Host.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX0hvc3QuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 

@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Orlando\\Desktop\\Proyectos\\Tescat\\Tescat.csproj": {}
+    "C:\\Users\\medin\\Projects\\Tescat\\Tescat.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Orlando\\Desktop\\Proyectos\\Tescat\\Tescat.csproj": {
+    "C:\\Users\\medin\\Projects\\Tescat\\Tescat.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Orlando\\Desktop\\Proyectos\\Tescat\\Tescat.csproj",
+        "projectUniqueName": "C:\\Users\\medin\\Projects\\Tescat\\Tescat.csproj",
         "projectName": "Tescat",
-        "projectPath": "C:\\Users\\Orlando\\Desktop\\Proyectos\\Tescat\\Tescat.csproj",
-        "packagesPath": "C:\\Users\\Orlando\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Orlando\\Desktop\\Proyectos\\Tescat\\obj\\",
+        "projectPath": "C:\\Users\\medin\\Projects\\Tescat\\Tescat.csproj",
+        "packagesPath": "C:\\Users\\medin\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\medin\\Projects\\Tescat\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Orlando\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\medin\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,7 +22,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\sdk\\7.0.302\\Sdks\\Microsoft.NET.Sdk.Web\\library-packs": {},
+          "C:\\Program Files\\dotnet\\sdk\\7.0.304\\Sdks\\Microsoft.NET.Sdk.Web\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -59,7 +59,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.302\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.304\\RuntimeIdentifierGraph.json"
         }
       }
     }
