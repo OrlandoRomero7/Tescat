@@ -24,6 +24,18 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Orlando/Desktop/Proyectos/Tescat/Pages/Users/UserCard.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVXNlcnNcVXNlckNhcmQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Orlando/Desktop/Proyectos/Tescat/Pages/Users/UserHomePage.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVXNlcnNcVXNlckhvbWVQYWdlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Orlando/Desktop/Proyectos/Tescat/Pages/Users/UserSearch.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVXNlcnNcVXNlclNlYXJjaC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Orlando/Desktop/Proyectos/Tescat/Shared/SurveyPrompt.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFN1cnZleVByb21wdC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
