@@ -3,17 +3,34 @@
 <PageTitle>Tescat</PageTitle>
 
 <div class="page">
-
-
-
-    <div class="sidebar">
-        <NavMenu />
+   @* <div style="position:absolute">button</div>*@
+    <div class="sidebar" @onmouseover="ActiveSideBarStylesApplied" @onmouseout="ActiveSideBarStylesReset">
         
+
+        <NavMenu ActiveSideBarStyles="@ActiveSideBarStyles" />
+
     </div>
-    <MainHeader />
+
+ @*   <MainHeader />*@
 
     <main class="container mt-5 mb-5">
-        
+
         @Body
+
     </main>
+
 </div>
+
+@code {
+    public string? ActiveSideBarStyles;
+
+    public void ActiveSideBarStylesApplied()
+    {
+        ActiveSideBarStyles = "sidebar-active";
+    }
+
+    public void ActiveSideBarStylesReset()
+    {
+        ActiveSideBarStyles = "";
+    }
+}

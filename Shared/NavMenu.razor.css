@@ -1,5 +1,7 @@
+
+
 .navbar-toggler {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: var(--brand-text);
 }
 
 
@@ -20,7 +22,11 @@
         color: var(--brand-text);
     }
 
-    .oi {
+    .navbar-brand:focus {
+        color: var(--brand-text);
+    }
+
+.oi {
     width: 2rem;
     font-size: 1.1rem;
     vertical-align: text-top;
@@ -37,7 +43,9 @@
     font-size: 1.15rem;
 }
 
-
+span.nav-link-tab {
+    font-size: .90rem;
+}
 
 
 .nav-item:first-of-type {
@@ -68,6 +76,11 @@
     }
 
 @media (min-width: 641px) {
+
+    .container-fluid {
+        justify-content: center;
+    }
+
     .navbar-toggler {
         display: none;
     }
@@ -82,4 +95,6 @@
         height: calc(100vh - 3.5rem);
         overflow-y: auto;
     }
+
+
 }
