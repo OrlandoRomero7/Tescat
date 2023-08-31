@@ -1,9 +1,11 @@
 ﻿﻿
 @page "/userDetails"
 @page "/userDetails/{id:int}"
+@using Tescat.Services.UserCredentials;
 @using Tescat.Services.Users;
 @using Tescat.Models;
 @inject IUserService UserService
+@inject IUserCredentialService UserCredentialService
 
 <!-- Card de Informacion Basica -->
 <div class="container mt-5">
@@ -16,9 +18,9 @@
                         <label for="input1" class="form-label">Nombre Completo</label>
                         <InputText class="form-control" @bind-Value="user.Name"></InputText>
                     </div>
-                    
+
                     <div class="col-md-6">
-                        <label for="input2" class="form-label" >Departamento</label>
+                        <label for="input2" class="form-label">Departamento</label>
                         <InputSelect class="form-select" @bind-Value="user.Dept">
                             @foreach (var departament in departaments)
                             {
@@ -34,7 +36,7 @@
                         <input class="form-check-input" type="radio" name="radioGroup" id="radio2" value="option2" required>
                         <label class="form-check-label" for="radio2">Femenino</label>
                     </div>
-                    
+
                 </div>
                 <div class="row g-3">
                     <div class="col-md-3">
@@ -86,7 +88,7 @@
                         </select>
                     </div>
                 </div>
-                
+
                 <button class="btn btn-primary" type="submit">Enviar</button>
             </EditForm>
         </div>
@@ -113,7 +115,7 @@
                     <div class="col-md-6">
                         <label for="input1" class="form-label">Correo(s)</label>
                         <InputSelect class="form-select" @bind-Value="email">
-                            
+
                         </InputSelect>
                     </div>
                 </div>
@@ -126,29 +128,92 @@
 <div class="container mt-5">
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title">Cuentas de Usuario</h5> 
+            <h5 class="card-title">Cuentas de Usuario</h5>
             <EditForm Model="@user">
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="input1" class="form-label">Usuario Portal</label>
-                        <InputText class="form-control" @bind-Value="userPortal"></InputText>
-                    </div>
+                @if (userCredential.PortalUser != null)
+                {
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Usuario Portal</label>
+                            <InputText class="form-control" @bind-Value="userCredential.PortalUser"></InputText>
+                        </div>
 
-                    <div class="col-md-6">
-                        <label for="input2" class="form-label">Contraseña</label>
-                        <InputText class="form-control" @bind-Value="cel"></InputText>
+                        <div class="col-md-6">
+                            <label class="form-label">Contraseña</label>
+                            <InputText class="form-control" @bind-Value="userCredential.PortalPass"></InputText>
+                        </div>
                     </div>
-                </div>
+                }
+                @if (userCredential.CasaUser != null)
+                {
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Usuario Casa</label>
+                            <InputText class="form-control" @bind-Value="userCredential.CasaUser"></InputText>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Contraseña</label>
+                            <InputText class="form-control" @bind-Value="userCredential.CasaPass"></InputText>
+                        </div>
+                    </div>
+                }
+                @if (userCredential.MozartUser != null)
+                {
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Usuario Casa</label>
+                            <InputText class="form-control" @bind-Value="userCredential.MozartUser"></InputText>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Contraseña</label>
+                            <InputText class="form-control" @bind-Value="userCredential.MozartPass"></InputText>
+                        </div>
+                    </div>
+                }
+                @if (userCredential.DarwinUser != null)
+                {
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Usuario Casa</label>
+                            <InputText class="form-control" @bind-Value="userCredential.DarwinUser"></InputText>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Contraseña</label>
+                            <InputText class="form-control" @bind-Value="userCredential.DarwinPass"></InputText>
+                        </div>
+                    </div>
+                }
+                @if (userCredential.VpnUser != null)
+                {
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Usuario Casa</label>
+                            <InputText class="form-control" @bind-Value="userCredential.VpnUser"></InputText>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Contraseña</label>
+                            <InputText class="form-control" @bind-Value="userCredential.VpnPass"></InputText>
+                        </div>
+                    </div>
+                }
+
             </EditForm>
         </div>
     </div>
 </div>
+
+
 
 @code {
     [Parameter]
     public int id { get; set; }
 
     private User user = new User();
+    private UserCredential userCredential = new UserCredential();
 
     public string? cel;
     public string? email;
@@ -160,13 +225,15 @@
         if (id != 0)
         {
             user = await UserService.GetUserId(id);
+            userCredential = await UserCredentialService.GetUserCredentials(id);
+
 
         }
-        
+
     }
     private List<string> departaments = new List<string>
     {
-        "Trafico", "Impo. Temporal", "Impo. Definitiva", "Exportacion", "Sistemas", "Supervisor Administrativo", 
+        "Trafico", "Impo. Temporal", "Impo. Definitiva", "Exportacion", "Sistemas", "Supervisor Administrativo",
         "Cobranza", "Facturacion/Exportacion", "Liberaciones", "Proveedores", "Contabilidad", "Captura", "Liberaciones/ Impo. Temporal", "Administracion", "Cuentas de Gastos"
     };
 

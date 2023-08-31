@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore;
 using Tescat.Models;
+using Tescat.Services.UserCredentials;
 using Tescat.Services.Users;
 //using Tescat.Data;
 
@@ -16,6 +17,7 @@ builder.Services.AddServerSideBlazor();
 
 //Se añade como inyeccion de dependencias los servicios
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserCredentialService, UserCredentialService>();
 
 var app = builder.Build();
 
