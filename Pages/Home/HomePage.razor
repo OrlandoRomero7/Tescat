@@ -1,5 +1,25 @@
 ﻿@page "/"
-
 <PageTitle>Inicio - Tescat Software</PageTitle>
 
-<h1 class="mt-5">Hola</h1>
+<h1 style="padding-left: 1px; margin:3rem 0 2.75rem .25rem; ">Estado De Equipos</h1>
+
+
+<div style="display:flex;  flex-wrap: wrap;">
+
+    <HomeCard Title="Almacenamiento" CardIcon="bi bi-hdd">
+        Estado del Almacenamiento
+    </HomeCard>
+
+    <HomeCard Title="RAM" CardIcon="bi bi-memory">
+        Estado de la ram
+    </HomeCard>
+
+    <HomeCard Title="Bandejas de Entrada" CardMaterialIcon="stacked_inbox">
+        Estado de los archivos de correo
+    </HomeCard>
+
+    <HomeCard Title="SSD's TBW" CardMaterialIcon="save_as">
+        Alto numero de escrituras en discos
+    </HomeCard>
+
+</div>

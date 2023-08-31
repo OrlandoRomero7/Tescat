@@ -1,7 +1,35 @@
-﻿<h3>HomeCard</h3>
+﻿<div class="card shadow home-card">
+    <div class="card-body">
+        <div class="row">
+            <div class="home-card-icon">
+                <div class="@CardIcon material-symbols-outlined">
+                    @CardMaterialIcon
+                </div>
+            </div>
+            <div class="card-layout">
+                <div>
+                    <h5 class="card-title">@Title</h5>
+                </div>
+                <div class="card-content">
+                    @ChildContent
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-@code {
 
+@code
+{
+    [Parameter, EditorRequired]
+    public string Title { get; set; } = default!;
 
+    [Parameter, EditorRequired]
+    public RenderFragment ChildContent { get; set; } = default!;
 
+    [Parameter]
+    public string CardIcon { get; set; } = default!;
+
+    [Parameter]
+    public string CardMaterialIcon { get; set; } = default!;
 }

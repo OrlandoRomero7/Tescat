@@ -6,14 +6,15 @@
 
 main {
     flex: 1;
+    margin-left: 0;
+    margin-right: 0;
 }
 
+
+
+
 .active-sidebar-toggle {
-    position: absolute;
-    left: 116px;
-    top: 28px;
-    transform: translateX(0px);
-    transition: transform 0.3s ease;
+    display: none;
 }
 
 
@@ -79,6 +80,15 @@ main {
             width: 250px;
         }
 
+    .active-sidebar-toggle {
+        display: block;
+        position: absolute;
+        left: 116px;
+        top: 28px;
+        transform: translateX(0px);
+        transition: transform 0.3s ease;
+        cursor: pointer;
+    }
 
 
     .top-row {
@@ -90,5 +100,11 @@ main {
     .top-row, article {
         padding-left: 2rem !important;
         padding-right: 1.5rem !important;
+    }
+
+    @media (min-width: 1640px) {
+        main.container {
+            max-width: 100%;
+        }
     }
 }
