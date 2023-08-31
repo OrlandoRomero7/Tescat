@@ -5,6 +5,7 @@
     --brand: #1181CD;
     --brand-hover: #245D82;
     --brand-text: #06151F;
+    --brand-white: #F9F9F9
 }
 
 html, body {
@@ -12,7 +13,7 @@ html, body {
 }
 
 body {
-    background-color: #F9F9F9;
+    background-color: var(--brand-white);
 }
 
 h1:focus {

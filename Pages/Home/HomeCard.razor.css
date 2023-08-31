@@ -1,0 +1,40 @@
+﻿.card {
+    background-color: var(--brand-white);
+}
+
+.home-card {
+    color:var(--brand-text);
+    width: 45%;
+    border-radius: 0.75rem;
+    margin-bottom: 2.5rem;
+    margin-right: 1.75rem;
+}
+
+.card-layout {
+    padding-top: 1rem;
+ /*   padding-bottom: 1rem;*/
+}
+
+h5.card-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.card-content {
+    height: 7rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.home-card-icon {
+    text-align: center;
+    width: 4rem;
+    height: 4rem;
+    padding-top: 1.125rem;
+    margin-top: -2rem;
+    margin-left: 1rem;
+    color: var(--brand-white);
+    background: linear-gradient(195deg, rgb(66, 170, 240), rgb(17, 129, 205));
+    border-radius: 0.75rem;
+    /*    border: 1px solid red;*/
+}
