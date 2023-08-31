@@ -3,15 +3,19 @@
 <PageTitle>Tescat</PageTitle>
 
 <div class="page">
-   @* <div style="position:absolute">button</div>*@
-    <div class="sidebar" @onmouseover="ActiveSideBarStylesApplied" @onmouseout="ActiveSideBarStylesReset">
-        
+
+    <span class="@ActiveSideBarStyles active-sidebar-toggle material-symbols-outlined" @onclick="ToggleActiveSideBarStyles">
+        @SideBarIcon
+    </span>
+
+    <div class="@ActiveSideBarStyles sidebar" @onmouseover="ApplyActiveSideBarStyles " @onmouseout="ApplyActiveSideBarStyles ">
+
 
         <NavMenu ActiveSideBarStyles="@ActiveSideBarStyles" />
 
     </div>
 
- @*   <MainHeader />*@
+    @*   <MainHeader />*@
 
     <main class="container mt-5 mb-5">
 
@@ -22,15 +26,22 @@
 </div>
 
 @code {
-    public string? ActiveSideBarStyles;
+    public string ActiveSideBarStyles { get; private set; } = "sidebar-active";
+    public bool ActiveToggle { get; private set; } = true;
+    public string SideBarIcon { get; private set; } = "menu_open";
 
-    public void ActiveSideBarStylesApplied()
+    public void ToggleActiveSideBarStyles()
     {
-        ActiveSideBarStyles = "sidebar-active";
+        ActiveToggle = !ActiveToggle;
+        ActiveSideBarStyles = ActiveToggle ? "sidebar-active" : "";
+        SideBarIcon = ActiveToggle ? "menu_open" : "menu";
     }
 
-    public void ActiveSideBarStylesReset()
+    public void ApplyActiveSideBarStyles()
     {
-        ActiveSideBarStyles = "";
+        if (!ActiveToggle)
+        {
+            ActiveSideBarStyles = string.IsNullOrEmpty(ActiveSideBarStyles) ? "sidebar-active" : "";
+        }
     }
 }
