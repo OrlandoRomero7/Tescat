@@ -3,6 +3,7 @@
 @using Tescat.Services.Users;
 
 @inject IUserService UserService
+@inject NavigationManager NavigationManager
 
 <div class="container">
     <div class="row">
@@ -29,7 +30,9 @@
                         <h6>@user.Dept</h6>
 
                     </div>
+                    <button type="button" class="btn btn-info" @onclick="() => UserDetails(user.IdUser)">Ver</button>
                 </div>
+                
             </div>
         }
         
@@ -52,5 +55,9 @@
     protected override async Task OnInitializedAsync()
     {
         users = await UserService.GetAllUsers();
+    }
+    protected void UserDetails(int id)
+    {
+        NavigationManager.NavigateTo("/UserDetails/" + id);
     }
 }

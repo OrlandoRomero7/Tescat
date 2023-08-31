@@ -19,6 +19,9 @@ h1:focus {
     outline: none;
 }
 
+span {
+    color: var(--brand-text);
+}
 
 a {
     color: var(--brand);

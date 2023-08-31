@@ -21,9 +21,17 @@ namespace Tescat.Services.Users
 
         }
 
-        public Task<User> GetUserId(int userID)
+        public async Task<User> GetUserId(int userID)
         {
-            throw new NotImplementedException();
+            var user = await _context.Users.FindAsync(userID);
+            if (user == null)
+            {
+                return new User();
+            }
+            else
+            {
+                return user;
+            }
         }
 
         public Task<User> InsertUser(User user)

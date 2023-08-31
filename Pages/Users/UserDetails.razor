@@ -1,0 +1,173 @@
+﻿﻿
+@page "/userDetails"
+@page "/userDetails/{id:int}"
+@using Tescat.Services.Users;
+@using Tescat.Models;
+@inject IUserService UserService
+
+<!-- Card de Informacion Basica -->
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Informacion Basica</h5>
+            <EditForm Model="@user">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="input1" class="form-label">Nombre Completo</label>
+                        <InputText class="form-control" @bind-Value="user.Name"></InputText>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label for="input2" class="form-label" >Departamento</label>
+                        <InputSelect class="form-select" @bind-Value="user.Dept">
+                            @foreach (var departament in departaments)
+                            {
+                                <option value="@departament">@departament</option>
+                            }
+                        </InputSelect>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <input class="form-check-input" type="radio" name="radioGroup" id="radio1" value="option1" required>
+                        <label class="form-check-label" for="radio1">Masculino</label>
+                        <input class="form-check-input" type="radio" name="radioGroup" id="radio2" value="option2" required>
+                        <label class="form-check-label" for="radio2">Femenino</label>
+                    </div>
+                    
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label for="input1" class="form-label">Fecha de Ingreso</label>
+                        <select class="form-select" aria-label="Default select example">
+                            <option selected>Selecciona una opcion</option>
+                            <option value="1">One</option>
+                            <option value="2">Two</option>
+                            <option value="3">Three</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="input2" class="form-label">-</label>
+                        <select class="form-select" aria-label="Default select example">
+                            <option selected>Selecciona una opcion</option>
+                            <option value="1">One</option>
+                            <option value="2">Two</option>
+                            <option value="3">Three</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="input3" class="form-label">-</label>
+                        <select class="form-select" aria-label="Default select example">
+                            <option selected>Selecciona una opcion</option>
+                            <option value="1">One</option>
+                            <option value="2">Two</option>
+                            <option value="3">Three</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="input4" class="form-label">Oficina</label>
+                        <select class="form-select" aria-label="Default select example">
+                            <option selected>Selecciona una opcion</option>
+                            <option value="1">One</option>
+                            <option value="2">Two</option>
+                            <option value="3">Three</option>
+                        </select>
+                    </div>
+
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label for="input1" class="form-label">Puesto</label>
+                        <select class="form-select" aria-label="Default select example">
+                            <option selected>Selecciona una opcion</option>
+                            <option value="1">One</option>
+                            <option value="2">Two</option>
+                            <option value="3">Three</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary" type="submit">Enviar</button>
+            </EditForm>
+        </div>
+    </div>
+</div>
+<!-- Card de Informacion de Contacto -->
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Informacion de Contacto</h5>
+            <EditForm Model="@user">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="input1" class="form-label">Extension</label>
+                        <InputText class="form-control" @bind-Value="user.Tel"></InputText>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="input2" class="form-label">Numero de celular</label>
+                        <InputText class="form-control" @bind-Value="cel"></InputText>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="input1" class="form-label">Correo(s)</label>
+                        <InputSelect class="form-select" @bind-Value="email">
+                            
+                        </InputSelect>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+<!-- Card Cuentas de Usuario -->
+
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Cuentas de Usuario</h5> 
+            <EditForm Model="@user">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="input1" class="form-label">Usuario Portal</label>
+                        <InputText class="form-control" @bind-Value="userPortal"></InputText>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="input2" class="form-label">Contraseña</label>
+                        <InputText class="form-control" @bind-Value="cel"></InputText>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    private User user = new User();
+
+    public string? cel;
+    public string? email;
+    public string? userPortal;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        if (id != 0)
+        {
+            user = await UserService.GetUserId(id);
+
+        }
+        
+    }
+    private List<string> departaments = new List<string>
+    {
+        "Trafico", "Impo. Temporal", "Impo. Definitiva", "Exportacion", "Sistemas", "Supervisor Administrativo", 
+        "Cobranza", "Facturacion/Exportacion", "Liberaciones", "Proveedores", "Contabilidad", "Captura", "Liberaciones/ Impo. Temporal", "Administracion", "Cuentas de Gastos"
+    };
+
+}
