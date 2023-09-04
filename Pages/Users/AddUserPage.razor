@@ -1,0 +1,47 @@
+﻿
+@page "/addUser"
+@using Models
+@using Services.Users
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+
+<h3>AddUser</h3>
+
+
+<div class="col-lg-4" style="margin: 0 auto;">
+    <div class="card border-rounded" style="width: 300px; border-radius: 15px;">
+        <div class="card-body">
+            <center class="m-t-30">
+                <div class="profile-img">
+                    <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="img-circle" width="150">
+                </div>
+            </center>
+        </div>
+        <div>
+            <hr>
+        </div>
+        <div class="card-body" style="text-align:center" >
+            <EditForm Model="@newUser" OnValidSubmit="CrearUser">
+                <h3>Ingrese numero de Usuario</h3>
+                <InputNumber @bind-Value="newUser.IdUser"></InputNumber>
+                <button type="submit">Guardar</button>
+            </EditForm>
+            
+        </div>
+    </div>
+
+</div>
+
+@code {
+    //public int newUserId;
+    private User newUser = new User();
+    //private int id;
+
+    private async Task CrearUser()
+    {
+        await UserService.InsertUser(newUser);
+        //var newUser = await UserService.InsertUser(newUser);
+        NavigationManager.NavigateTo("/userDetails/" + newUser.IdUser);
+    }
+
+}

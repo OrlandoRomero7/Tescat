@@ -4,15 +4,13 @@
 @using Tescat.Services.UserCredentials;
 @using Tescat.Services.Users;
 @using Tescat.Models;
+@using Tescat.Pages.Users.UserForms
 @inject IUserService UserService
 @inject IUserCredentialService UserCredentialService
 
 <!-- Card de Informacion Basica -->
-<div class="container mt-5">
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Informacion Basica</h5>
-            <EditForm Model="@user">
+<FormSection Title="Informacíón Basica">
+    <EditForm Model="@user">
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label for="input1" class="form-label">Nombre Completo</label>
@@ -21,12 +19,8 @@
 
                     <div class="col-md-6">
                         <label for="input2" class="form-label">Departamento</label>
-                        <InputSelect class="form-select" @bind-Value="user.Dept">
-                            @foreach (var departament in departaments)
-                            {
-                                <option value="@departament">@departament</option>
-                            }
-                        </InputSelect>
+                        <InputSelect class="form-select" @bind-Value="departament"></InputSelect>
+                       
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -80,26 +74,22 @@
                 <div class="row g-3">
                     <div class="col-md-3">
                         <label for="input1" class="form-label">Puesto</label>
-                        <select class="form-select" aria-label="Default select example">
-                            <option selected>Selecciona una opcion</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
-                        </select>
+                        <InputSelect class="form-select" @bind-Value="user.Dept">
+                            @foreach (var departament in departaments)
+                            {
+                                <option value="@departament">@departament</option>
+                            }
+                        </InputSelect>
                     </div>
                 </div>
 
                 <button class="btn btn-primary" type="submit">Enviar</button>
             </EditForm>
-        </div>
-    </div>
-</div>
+</FormSection>
+            
 <!-- Card de Informacion de Contacto -->
-<div class="container mt-5">
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Informacion de Contacto</h5>
-            <EditForm Model="@user">
+<FormSection Title="Información de Contacto">
+    <EditForm Model="@user">
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label for="input1" class="form-label">Extension</label>
@@ -120,16 +110,12 @@
                     </div>
                 </div>
             </EditForm>
-        </div>
-    </div>
-</div>
-<!-- Card Cuentas de Usuario -->
+</FormSection>
+            
 
-<div class="container mt-5">
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Cuentas de Usuario</h5>
-            <EditForm Model="@user">
+<!-- Card Cuentas de Usuario -->
+<FormSection Title="Cuentas de Usuario">
+    <EditForm Model="@user">
                 @if (userCredential.PortalUser != null)
                 {
                     <div class="row mb-3">
@@ -202,9 +188,9 @@
                 }
 
             </EditForm>
-        </div>
-    </div>
-</div>
+</FormSection>
+            
+
 
 
 
@@ -218,6 +204,8 @@
     public string? cel;
     public string? email;
     public string? userPortal;
+    public string? departament;
+
 
     protected override async Task OnInitializedAsync()
     {

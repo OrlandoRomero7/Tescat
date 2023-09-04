@@ -34,9 +34,18 @@ namespace Tescat.Services.Users
             }
         }
 
-        public Task<User> InsertUser(User user)
+        public async Task<User> InsertUser(User user)
         {
-            throw new NotImplementedException();
+            if(user != null)
+            {
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+                return user;
+            }
+            else
+            {
+                return new User();
+            }
         }
 
         public Task<User> UpdateUser(int userID, User updateUser)
