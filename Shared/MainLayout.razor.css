@@ -82,7 +82,7 @@ main {
 
     .active-sidebar-toggle {
         display: block;
-        position: absolute;
+        position: fixed;
         left: 116px;
         top: 28px;
         transform: translateX(0px);
