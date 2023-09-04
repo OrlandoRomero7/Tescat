@@ -1,26 +1,62 @@
 ﻿@page "/Users"
-@using Tescat.Models;
-@using Tescat.Services;
-@using Tescat.Services.Users;
-
-@inject IUserService UserService
+@*@inject IUserService UserService*@
+@inject TescatDbContext Context
 @inject NavigationManager NavigationManager
 
 
 
 <UserSearch></UserSearch>
 <button type="button" class="btn btn-primary" @onclick="CreateNewUser">Agregar Usuario</button>
-<UserCard users="@users"></UserCard>
+<div class="container">
+    <div class="row">
+
+
+
+
+        @if (Users == null)
+        {
+
+            <p>Loading users...</p>
+
+        }
+        else
+        {
+            @foreach (var user in Users)
+            {
+                <UserCard User="user"></UserCard>
+            }
+
+        }
+    </div>
+</div>
+
 
 @code
 {
-    private List<User> users = new List<User>();
+    //private List<User> users = new List<User>();
+    private User[]? Users { get; set; }
 
-    protected override async Task OnInitializedAsync()
+
+    protected override async
+       Task OnInitializedAsync()
+    {
+        try
+        {
+            Users = await Context.Users.ToArrayAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Hubo un problema al cargar la informacion de los usuarios{ex.Message}");
+        }
+    }
+    /*
+    protected override async
+        Task OnInitializedAsync()
     {
         users = await UserService.GetAllUsers();
     }
-    
+    */
+
     protected void CreateNewUser()
     {
         NavigationManager.NavigateTo("/addUser");
