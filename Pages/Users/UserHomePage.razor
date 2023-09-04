@@ -1,14 +1,26 @@
 ﻿@page "/Users"
+@using Tescat.Models;
+@using Tescat.Services;
+@using Tescat.Services.Users;
+
+@inject IUserService UserService
 @inject NavigationManager NavigationManager
 
 
 
 <UserSearch></UserSearch>
 <button type="button" class="btn btn-primary" @onclick="CreateNewUser">Agregar Usuario</button>
-<UserCard></UserCard>
+<UserCard users="@users"></UserCard>
 
 @code
 {
+    private List<User> users = new List<User>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = await UserService.GetAllUsers();
+    }
+    
     protected void CreateNewUser()
     {
         NavigationManager.NavigateTo("/addUser");

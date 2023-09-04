@@ -5,48 +5,42 @@
 @inject IUserService UserService
 @inject NavigationManager NavigationManager
 
-@if (users == null)
-{
 
-    <p>Loading users...</p>
 
-}
-else
-{
-    <div class="container">
-        <div class="row">
-            @foreach (var user in users)
-            {
-                <div class="col-lg-4">
-                    <div class="card border-rounded" style="width: 250px; border-radius: 15px;">
-                        <div class="card-body">
-                            <center class="m-t-30">
-                                <div class="profile-img">
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="img-circle" width="150">
-                                </div>
-                                <h4 class="card-title m-t-10">@user.Name</h4>
-                                <h6 class="card-subtitle">@user.Position</h6>
-                            </center>
-                        </div>
-                        <div>
-                            <hr>
-                        </div>
-                        <div class="card-body">
-                            <small class="text-muted">Ext</small>
-                            <h6>@user.Tel</h6>
-                            <small class="text-muted p-t-30 db">Departamento</small>
-                            <h6>@user.Dept</h6>
-
-                        </div>
-                        <button type="button" class="btn btn-info" @onclick="() => UserDetails(user.IdUser)">Ver</button>
+<div class="container">
+    <div class="row">
+        @foreach (var user in users)
+        {
+            <div class="col-lg-4">
+                <div class="card border-rounded" style="width: 250px; border-radius: 15px;">
+                    <div class="card-body">
+                        <center class="m-t-30">
+                            <div class="profile-img">
+                                <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="img-circle" width="150">
+                            </div>
+                            <h4 class="card-title m-t-10">@user.Name</h4>
+                            <h6 class="card-subtitle">@user.Position</h6>
+                        </center>
                     </div>
+                    <div>
+                        <hr>
+                    </div>
+                    <div class="card-body">
+                        <small class="text-muted">Ext</small>
+                        <h6>@user.Tel</h6>
+                        <small class="text-muted p-t-30 db">Departamento</small>
+                        <h6>@user.Dept</h6>
 
+                    </div>
+                    <button type="button" class="btn btn-info" @onclick="() => UserDetails(user.IdUser)">Ver</button>
                 </div>
-            }
 
-        </div>
+            </div>
+        }
+
     </div>
-}
+</div>
+
 
 
 <style>
@@ -60,14 +54,13 @@ else
 
 
 @code {
-    private List<User> users = new List<User>();
-    public string? Message { get; set; }
-    protected override async Task OnInitializedAsync()
-    {
-        users = await UserService.GetAllUsers();
-    }
+    [Parameter, EditorRequired]
+    public List<User>? users { get; set; }
+
     protected void UserDetails(int id)
     {
         NavigationManager.NavigateTo("/UserDetails/" + id);
     }
+
+
 }
