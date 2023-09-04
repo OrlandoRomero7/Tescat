@@ -1,11 +1,16 @@
 ﻿@page "/Users"
-
+@inject NavigationManager NavigationManager
 
 
 
 <UserSearch></UserSearch>
-<button type="button" class="btn btn-primary">Agregar Usuario</button>
+<button type="button" class="btn btn-primary" @onclick="CreateNewUser">Agregar Usuario</button>
 <UserCard></UserCard>
 
-
-
+@code
+{
+    protected void CreateNewUser()
+    {
+        NavigationManager.NavigateTo("/addUser");
+    }
+}
