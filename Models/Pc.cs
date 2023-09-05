@@ -21,6 +21,8 @@ public partial class Pc
 
     public DateTime? LastMaint { get; set; }
 
+    public int? LastUser { get; set; }
+
     public virtual Cpu? Cpu { get; set; }
 
     public virtual Gpu? Gpu { get; set; }
@@ -38,4 +40,5 @@ public partial class Pc
     public virtual PowerSupply? PowerSupply { get; set; }
 
     public virtual ICollection<Storage> Storages { get; set; } = new List<Storage>();
+    
 }
