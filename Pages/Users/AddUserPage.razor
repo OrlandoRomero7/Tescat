@@ -1,7 +1,6 @@
 ﻿
 @page "/addUser"
-@using Models
-@using Services.Users
+
 @inject IUserService UserService
 @inject NavigationManager NavigationManager
 
@@ -23,10 +22,10 @@
         <div class="card-body" style="text-align:center" >
             <EditForm Model="@newUser" OnValidSubmit="CrearUser">
                 <h3>Ingrese numero de Usuario</h3>
-                <InputNumber @bind-Value="newUser.IdUser"></InputNumber>
-                <button type="submit">Guardar</button>
+                <InputNumber @bind-Value="newUser"></InputNumber>
+                <button class="btn btn-primary" type="submit">Guardar</button>
+
             </EditForm>
-            
         </div>
     </div>
 
@@ -34,14 +33,15 @@
 
 @code {
     //public int newUserId;
-    private User newUser = new User();
+    //private User newUser = new User();
     //private int id;
+    public int newUser;
 
-    private async Task CrearUser()
+    private void CrearUser()
     {
-        await UserService.InsertUser(newUser);
+        //await UserService.InsertUser(newUser);
         //var newUser = await UserService.InsertUser(newUser);
-        NavigationManager.NavigateTo("/userDetails/" + newUser.IdUser);
+        NavigationManager.NavigateTo("/userDetails/" + newUser);
     }
 
 }
