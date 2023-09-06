@@ -9,8 +9,16 @@
 @inject IUserCredentialService UserCredentialService
 
 
+@if(user.IdUser == 0)
+{
+    <button type="button" class="btn btn-primary" @onclick="CreateUser">Crear</button>
+}
+else
+{
+    <button type="button" class="btn btn-primary" @onclick="UpdateUser">Actulizar</button>
+}
 
-<button type="button" class="btn btn-primary" @onclick="Save">Guardar</button>
+
 @if (user.Name != null)
 {
     <button type="button" class="btn btn-danger">Borrar</button>
@@ -83,7 +91,7 @@
         <div class="row g-3">
             <div class="col-md-3">
                 <label for="input1" class="form-label">Puesto</label>
-                <InputSelect class="form-select" @bind-Value="user.Dept">
+                <InputSelect class="form-select" @bind-Value="user.Area">
                     @foreach (var departament in departaments)
                     {
                         <option value="@departament">@departament</option>
@@ -110,7 +118,6 @@
             </div>
         }
 
-        <button class="btn btn-primary" type="submit">Enviar</button>
     </EditForm>
 </FormSection>
 
@@ -228,6 +235,7 @@
     public User user = new User();
     private UserCredential userCredential = new UserCredential();
 
+    // Solo los hice temporalmente para los @bind-Value
     public string? cel;
     public string? email;
     public string? userPortal;
@@ -251,7 +259,7 @@
         "Cobranza", "Facturacion/Exportacion", "Liberaciones", "Proveedores", "Contabilidad", "Captura", "Liberaciones/ Impo. Temporal", "Administracion", "Cuentas de Gastos"
     };
 
-    private async Task Save()
+    private async Task CreateUser()
     {
         try
         {
@@ -259,14 +267,31 @@
             {
                 user.IdUser = id;
                 await UserService.InsertUser(user);
-                Console.WriteLine("Se guardo correctamente");
+                Console.WriteLine("Se creo correctamente");
             }
         }
         catch (ArgumentException e)
         {
-            Console.WriteLine($"Fallo el guardado: {e.Message}");
+            Console.WriteLine($"Fallo la creacion del usuario {e.Message}");
         }
 
+    }
+    private async Task UpdateUser()
+    {
+        try
+        {
+            if (user.IdUser != 0)
+            {
+                user.IdUser = id;
+                await UserService.InsertUser(user);
+                Console.WriteLine("Se actualizo correctamente");
+            }
+        }
+        catch (ArgumentException e)
+        {
+            Console.WriteLine($"Fallo actulizar el usuario {e.Message}");
+        }
+        
     }
 
 

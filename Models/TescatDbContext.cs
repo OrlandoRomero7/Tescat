@@ -279,6 +279,8 @@ namespace Tescat.Models
                     .HasMaxLength(50)
                     .IsUnicode(false)
                     .HasColumnName("USED_RAM_SLOTS");
+                entity.Property(e => e.LastUser)
+                    .HasColumnName("LAST_USER");
 
                 entity.HasOne(d => d.IdUserNavigation).WithMany(p => p.Pcs)
                     .HasForeignKey(d => d.IdUser)
@@ -441,10 +443,10 @@ namespace Tescat.Models
                 entity.Property(e => e.IdUser)
                     .ValueGeneratedNever()
                     .HasColumnName("ID_USER");
-                entity.Property(e => e.Dept)
+                entity.Property(e => e.Area)
                     .HasMaxLength(50)
                     .IsUnicode(false)
-                    .HasColumnName("DEPT");
+                    .HasColumnName("AREA");
                 entity.Property(e => e.EntryDate)
                     .HasColumnType("datetime")
                     .HasColumnName("ENTRY_DATE");
@@ -464,6 +466,22 @@ namespace Tescat.Models
                     .IsUnicode(false)
                     .HasColumnName("TEL");
                 entity.Property(e => e.WebPrivileges).HasColumnName("WEB_PRIVILEGES");
+                entity.Property(e => e.Dept)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("DEPT");
+                entity.Property(e => e.Office)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("OFFICE");
+                entity.Property(e => e.LastWorkingDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("LAST_WORKING_DATE");
+                entity.Property(e => e.TelKey).HasColumnName("TEL_KEY");
+                entity.Property(e => e.Cel)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("CEL");
             });
 
             modelBuilder.Entity<UserCredential>(entity =>

@@ -18,7 +18,6 @@ namespace Tescat.Services.Users
         public Task<List<User>> GetAllUsers()
         {
             return _context.Users.ToListAsync();
-
         }
 
         public async Task<User> GetUserId(int userID)

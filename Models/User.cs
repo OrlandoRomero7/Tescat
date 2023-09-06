@@ -1,4 +1,6 @@
 ﻿
+using System.Transactions;
+
 namespace Tescat.Models
 {
     public class User
@@ -7,12 +9,9 @@ namespace Tescat.Models
 
         public string? Name { get; set; } 
 
-
-        public string? Dept { get; set; } 
-
+        public string? Area { get; set; } 
 
         public string? Position { get; set; } 
-
 
         public DateTime? EntryDate { get; set; }
 
@@ -27,5 +26,11 @@ namespace Tescat.Models
         public virtual ICollection<Pc> Pcs { get; set; } = new List<Pc>();
 
         public virtual UserCredential? UserCredential { get; set; }
+
+        public string? Dept { get; set; }
+        public string? Office { get; set; }
+        public DateTime? LastWorkingDate { get; set; }
+        public int? TelKey { get; set; }
+        public string? Cel { get; set; }
     }
 }
