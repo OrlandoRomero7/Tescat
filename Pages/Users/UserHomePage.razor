@@ -1,7 +1,9 @@
 ﻿@page "/Users"
 @*@inject IUserService UserService*@
+@inject OtherServices OtherServices
 @inject TescatDbContext Context
 @inject NavigationManager NavigationManager
+
 
 
 
@@ -9,9 +11,6 @@
 <button type="button" class="btn btn-primary" @onclick="CreateNewUser">Agregar Usuario</button>
 <div class="container">
     <div class="row">
-
-
-
 
         @if (Users == null)
         {
@@ -43,6 +42,7 @@
         try
         {
             Users = await Context.Users.ToArrayAsync();
+            //Areas = Users.Select(u => u.Area).Distinct().ToArray();
         }
         catch (Exception ex)
         {

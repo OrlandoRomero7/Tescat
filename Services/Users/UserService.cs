@@ -47,9 +47,11 @@ namespace Tescat.Services.Users
             }
         }
 
-        public Task<User> UpdateUser(int userID, User updateUser)
+        public async Task<bool> UpdateUser(User updateUser)
         {
-            throw new NotImplementedException();
+            _context.Entry(updateUser).State = EntityState.Modified;
+            return await _context.SaveChangesAsync() >0;
+           
         }
     }
 }

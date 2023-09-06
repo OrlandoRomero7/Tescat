@@ -7,15 +7,16 @@
 @using Tescat.Pages.Users.UserForms
 @inject IUserService UserService
 @inject IUserCredentialService UserCredentialService
+@inject OtherServices OtherServices
 
 
-@if(user.IdUser == 0)
+@if (user.IdUser == 0)
 {
     <button type="button" class="btn btn-primary" @onclick="CreateUser">Crear</button>
 }
 else
 {
-    <button type="button" class="btn btn-primary" @onclick="UpdateUser">Actulizar</button>
+    <button type="button" class="btn btn-primary" @onclick="Update">Actulizar</button>
 }
 
 
@@ -26,12 +27,15 @@ else
 
 
 <!-- Card de Informacion Basica -->
-<FormSection Title="Informacíón Basica">
-    <EditForm Model="@user">
+<BasicInformation user="user" id="id" tempName="@tempName" areas="areas"></BasicInformation>
+@*<FormSection Title="Informacíón Basica">
+    <EditForm Model="@user" OnValidSubmit="Update">
         <div class="row mb-3">
             <div class="col-md-6">
                 <label for="input1" class="form-label">Nombre Completo</label>
-                <InputText class="form-control" @bind-Value="user.Name"></InputText>
+                <InputText class="form-control" @bind-Value="@tempName" />
+
+
             </div>
 
             <div class="col-md-6">
@@ -91,10 +95,16 @@ else
         <div class="row g-3">
             <div class="col-md-3">
                 <label for="input1" class="form-label">Puesto</label>
+
                 <InputSelect class="form-select" @bind-Value="user.Area">
-                    @foreach (var departament in departaments)
+
+                    @if (areas != null && areas.Length > 0)
                     {
-                        <option value="@departament">@departament</option>
+                        @foreach (var area in areas)
+                        {
+                            <option value="@area">@area</option>
+                        }
+
                     }
                 </InputSelect>
             </div>
@@ -117,9 +127,11 @@ else
                 </div>
             </div>
         }
+        <button type="submit" class="btn btn-primary">Actulizar</button>
 
     </EditForm>
-</FormSection>
+</FormSection>*@
+
 
 <!-- Card de Informacion de Contacto -->
 <FormSection Title="Información de Contacto">
@@ -127,7 +139,7 @@ else
         <div class="row mb-3">
             <div class="col-md-6">
                 <label for="input1" class="form-label">Extension</label>
-                <InputText class="form-control" @bind-Value="user.Tel"></InputText>
+                <InputNumber class="form-control" @bind-Value="user.Tel"></InputNumber>
             </div>
 
             <div class="col-md-6">
@@ -235,6 +247,10 @@ else
     public User user = new User();
     private UserCredential userCredential = new UserCredential();
 
+    public string? tempName { get; set; }
+    public string[]? areas;
+
+
     // Solo los hice temporalmente para los @bind-Value
     public string? cel;
     public string? email;
@@ -245,20 +261,25 @@ else
     protected override async Task OnInitializedAsync()
     {
         //revisar este if
-
+        
         if (id != 0)
         {
             user = await UserService.GetUserId(id);
+            tempName = user.Name;
+            areas = await OtherServices.prueba();
             userCredential = await UserCredentialService.GetUserCredentials(id);
         }
 
     }
+    //Para cambiar esta lista a que sea todos los tipos de Areas que existen en la bd se ocupa consultar en el componenetes todos los Users y traerse las areas
+    /*
     private List<string> departaments = new List<string>
     {
         "Trafico", "Impo. Temporal", "Impo. Definitiva", "Exportacion", "Sistemas", "Supervisor Administrativo",
         "Cobranza", "Facturacion/Exportacion", "Liberaciones", "Proveedores", "Contabilidad", "Captura", "Liberaciones/ Impo. Temporal", "Administracion", "Cuentas de Gastos"
     };
-
+    */
+    
     private async Task CreateUser()
     {
         try
@@ -276,14 +297,14 @@ else
         }
 
     }
-    private async Task UpdateUser()
+    private async Task Update()
     {
         try
         {
             if (user.IdUser != 0)
             {
-                user.IdUser = id;
-                await UserService.InsertUser(user);
+                user.Name = tempName;
+                await UserService.UpdateUser(user);
                 Console.WriteLine("Se actualizo correctamente");
             }
         }
@@ -291,8 +312,7 @@ else
         {
             Console.WriteLine($"Fallo actulizar el usuario {e.Message}");
         }
-        
-    }
 
+    }
 
 }
