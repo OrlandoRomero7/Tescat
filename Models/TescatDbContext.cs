@@ -461,10 +461,7 @@ namespace Tescat.Models
                     .HasMaxLength(50)
                     .IsUnicode(false)
                     .HasColumnName("POSITION");
-                entity.Property(e => e.Tel)
-                    .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("TEL");
+                entity.Property(e => e.Tel).HasColumnName("TEL");
                 entity.Property(e => e.WebPrivileges).HasColumnName("WEB_PRIVILEGES");
                 entity.Property(e => e.Dept)
                     .HasMaxLength(50)

@@ -15,7 +15,7 @@ namespace Tescat.Models
 
         public DateTime? EntryDate { get; set; }
 
-        public string? Tel { get; set; }
+        public int? Tel { get; set; }
 
         public bool? WebPrivileges { get; set; }
 
