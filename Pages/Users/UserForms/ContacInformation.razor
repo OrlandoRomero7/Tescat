@@ -1,5 +1,33 @@
-﻿<h3>ContacInformation</h3>
+﻿
+<FormSection Title="Información de Contacto">
+    <EditForm Model="@user">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="input1" class="form-label">Extension</label>
+                <InputNumber class="form-control" @bind-Value="user.Tel"></InputNumber>
+            </div>
+
+            <div class="col-md-6">
+                <label for="input2" class="form-label">Numero de celular</label>
+                <InputText class="form-control" @bind-Value="user.Cel"></InputText>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="input1" class="form-label">Correo(s)</label>
+                <InputSelect class="form-select" @bind-Value="email">
+
+                </InputSelect>
+            </div>
+        </div>
+    </EditForm>
+</FormSection>
 
 @code {
+    [Parameter]
+    public User user { get; set; } = default!;
+    // Solo los hice temporalmente para los @bind-Value
+    public string? cel;
+    public string? email;
 
 }

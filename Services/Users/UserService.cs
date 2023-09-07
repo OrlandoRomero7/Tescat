@@ -5,53 +5,54 @@ namespace Tescat.Services.Users
 {
     public class UserService : IUserService
     {
-        private readonly TescatDbContext _context;
-        public UserService(TescatDbContext context)
+        private readonly IDbContextFactory<TescatDbContext> _contextFactory;
+        public UserService(IDbContextFactory<TescatDbContext> contextFactory)
         {
-            _context = context;
+            _contextFactory = contextFactory;
         }
-        public Task<User> DeleteUser(int userID)
+        public async Task<User> DeleteUser(int userID)
         {
-            throw new NotImplementedException();
+            using var context = _contextFactory.CreateDbContext();
+            var user = await context.Users.FindAsync(userID);
+            if (user == null) return null;
+
+            context.Users.Remove(user);
+            await context.SaveChangesAsync();
+            return user;
         }
 
         public Task<List<User>> GetAllUsers()
         {
-            return _context.Users.ToListAsync();
+            using var context = _contextFactory.CreateDbContext();
+            return context.Users.ToListAsync();
         }
 
         public async Task<User> GetUserId(int userID)
         {
-            var user = await _context.Users.FindAsync(userID);
-            if (user == null)
-            {
-                return new User();
-            }
-            else
-            {
-                return user;
-            }
+            if(userID==0) throw new ArgumentNullException(nameof(userID));
+
+            using var context = _contextFactory.CreateDbContext();
+            return await context.Users.FindAsync(userID);
         }
 
         public async Task<User> InsertUser(User user)
         {
-            if(user != null)
-            {
-                _context.Users.Add(user);
-                await _context.SaveChangesAsync();
-                return user;
-            }
-            else
-            {
-                return new User();
-            }
+            if (user == null) throw new ArgumentNullException(nameof(user));
+
+            using var context = _contextFactory.CreateDbContext();
+            context.Users.Add(user);
+            await context.SaveChangesAsync();
+            return user;
         }
 
         public async Task<bool> UpdateUser(User updateUser)
         {
-            _context.Entry(updateUser).State = EntityState.Modified;
-            return await _context.SaveChangesAsync() >0;
-           
+            if (updateUser == null) throw new ArgumentNullException(nameof(updateUser));
+
+            using var context = _contextFactory.CreateDbContext();
+            context.Entry(updateUser).State = EntityState.Modified;
+            return await context.SaveChangesAsync() > 0;
+
         }
     }
 }

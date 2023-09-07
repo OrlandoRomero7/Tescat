@@ -32,10 +32,12 @@ namespace Tescat.Models
 
         public virtual DbSet<Storage> Storages { get; set; }
 
-        //public virtual DbSet<User> Users { get; set; }
         public DbSet<User> Users => Set<User>();
 
         public virtual DbSet<UserCredential> UserCredentials { get; set; }
+
+        //public virtual DbSet<User> Users { get; set; }
+
         /*
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
