@@ -1,5 +1,89 @@
-﻿<h3>UserAccount</h3>
+﻿@if (user.UserCredential != null)
+{
+    <!-- Card Cuentas de Usuario -->
+    <FormSection Title="Cuentas de Usuario">
+        <EditForm Model="@user.UserCredential">
+            @if (user.UserCredential.PortalUser != null)
+            {
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Usuario Portal</label>
+                        <InputText class="form-control" @bind-Value="user.UserCredential.PortalUser"></InputText>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Contraseña</label>
+                        <InputText class="form-control" @bind-Value="user.UserCredential.PortalPass"></InputText>
+                    </div>
+                </div>
+            }
+            @if (user.UserCredential.CasaUser != null)
+            {
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Usuario Casa</label>
+                        <InputText class="form-control" @bind-Value="user.UserCredential.CasaUser"></InputText>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Contraseña</label>
+                        <InputText class="form-control" @bind-Value="user.UserCredential.CasaPass"></InputText>
+                    </div>
+                </div>
+            }
+            @if (user.UserCredential.MozartUser != null)
+            {
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Usuario Casa</label>
+                        <InputText class="form-control" @bind-Value="user.UserCredential.MozartUser"></InputText>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Contraseña</label>
+                        <InputText class="form-control" @bind-Value="user.UserCredential.MozartPass"></InputText>
+                    </div>
+                </div>
+            }
+            @if (user.UserCredential.DarwinUser != null)
+            {
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Usuario Casa</label>
+                        <InputText class="form-control" @bind-Value="user.UserCredential.DarwinUser"></InputText>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Contraseña</label>
+                        <InputText class="form-control" @bind-Value="user.UserCredential.DarwinPass"></InputText>
+                    </div>
+                </div>
+            }
+            @if (user.UserCredential.VpnUser != null)
+            {
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Usuario Casa</label>
+                        <InputText class="form-control" @bind-Value="user.UserCredential.VpnUser"></InputText>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Contraseña</label>
+                        <InputText class="form-control" @bind-Value="user.UserCredential.VpnPass"></InputText>
+                    </div>
+                </div>
+            }
+
+        </EditForm>
+    </FormSection>
+
+}
 
 @code {
-
+    /*
+    [Parameter]
+    public UserCredential userCredential { get; set; } = default!;
+    */
+    [Parameter]
+    public User user { get; set; } = default!;
 }

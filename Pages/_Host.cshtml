@@ -35,5 +35,22 @@
     </div>
 
     <script src="_framework/blazor.server.js"></script>
+    @*Script para detectar navegacion*@
+    <script>
+        window.checkChangesBeforeUnload = function (enable) {
+            if (enable) {
+                window.addEventListener('beforeunload', warnOnPageExit);
+            } else {
+                window.removeEventListener('beforeunload', warnOnPageExit);
+            }
+        };
+
+        function warnOnPageExit(e) {
+            e.preventDefault();
+            e.returnValue = 'Tienes cambios sin guardar. ¿Estás seguro de que quieres abandonar la página?';
+        }
+    </script>
+
+
 </body>
 </html>

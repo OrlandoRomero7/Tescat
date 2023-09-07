@@ -3,7 +3,7 @@
         <div class="row mb-3">
             <div class="col-md-6">
                 <label for="input1" class="form-label">Nombre Completo</label>
-                <InputText class="form-control" @bind-Value="@tempName" />
+                <InputText class="form-control" @bind-Value="user.Name" />
             </div>
 
             <div class="col-md-6">
@@ -98,6 +98,9 @@
     </EditForm>
 </FormSection>
 
+
+
+
 @code {
     [Parameter]
     public User user
@@ -105,10 +108,10 @@
 
     [Parameter]
     public int id { get; set; } = default!;
-
+    /*
     [Parameter]
     public string? tempName { get; set; } 
-
+    */
     [Parameter]
     public string[]? areas { get; set; } = default!;
 
