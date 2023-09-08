@@ -29,14 +29,15 @@ else
 <!-- Card de Informacion de Contacto -->
 <ContacInformation user="user"></ContacInformation>
 
-
+<!-- Card de Cuentas de Usuario -->
+@*<UserAccount userCredential="userCredential"></UserAccount>*@
 
 @code {
     [Parameter]
     public int id { get; set; }
 
     public User? user = new User();
-    //private UserCredential userCredential = new UserCredential();
+    private UserCredential? userCredential = new UserCredential();
 
     //public string? tempName { get; set; }
     public string[]? areas;
@@ -57,7 +58,7 @@ else
             //Console.WriteLine("El nombre es: " + user.Name);
             //tempName = user.Name;
             areas = await OtherServices.prueba();
-            //userCredential = await UserCredentialService.GetUserCredentials(id);
+            userCredential = await UserCredentialService.GetUserCredentials(id);
         }
     }
 

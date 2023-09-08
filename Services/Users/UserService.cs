@@ -31,17 +31,26 @@ namespace Tescat.Services.Users
         public async Task<User> GetUserId(int userID)
         {
             using var context = _contextFactory.CreateDbContext();
-            //var userdb = await context.Users.FindAsync(userID)
+            var userdb = await context.Users.FindAsync(userID);
+            /*
             var userdb = await context.Users
                           .Include(u => u.UserCredential)
-                          .SingleOrDefaultAsync(u => u.IdUser == userID);
+                          .SingleOrDefaultAsync(u => u.IdUser == userID);*/
             if (userdb!=null)
             {
+                //userdb.UserCredential ??= new UserCredential();
                 return userdb;
             }
             else
             {
+                /*
+                var newUser = new User
+                {
+                    UserCredential = new UserCredential()
+                };
+                */
                 return new User();
+                
             }
 
         }
