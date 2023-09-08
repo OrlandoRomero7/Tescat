@@ -1,75 +1,75 @@
-﻿@if (user.UserCredential != null)
+﻿@if (userCredential != null)
 {
     <!-- Card Cuentas de Usuario -->
     <FormSection Title="Cuentas de Usuario">
-        <EditForm Model="@user.UserCredential">
-            @if (user.UserCredential.PortalUser != null)
+        <EditForm Model="@userCredential">
+            @if (userCredential.PortalUser != null)
             {
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label">Usuario Portal</label>
-                        <InputText class="form-control" @bind-Value="user.UserCredential.PortalUser"></InputText>
+                        <InputText class="form-control" @bind-Value="userCredential.PortalUser"></InputText>
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label">Contraseña</label>
-                        <InputText class="form-control" @bind-Value="user.UserCredential.PortalPass"></InputText>
+                        <InputText class="form-control" @bind-Value="userCredential.PortalPass"></InputText>
                     </div>
                 </div>
             }
-            @if (user.UserCredential.CasaUser != null)
+            @if (userCredential.CasaUser != null)
             {
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label">Usuario Casa</label>
-                        <InputText class="form-control" @bind-Value="user.UserCredential.CasaUser"></InputText>
+                        <InputText class="form-control" @bind-Value="userCredential.CasaUser"></InputText>
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label">Contraseña</label>
-                        <InputText class="form-control" @bind-Value="user.UserCredential.CasaPass"></InputText>
+                        <InputText class="form-control" @bind-Value="userCredential.CasaPass"></InputText>
                     </div>
                 </div>
             }
-            @if (user.UserCredential.MozartUser != null)
+            @if (userCredential.MozartUser != null)
             {
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label">Usuario Casa</label>
-                        <InputText class="form-control" @bind-Value="user.UserCredential.MozartUser"></InputText>
+                        <InputText class="form-control" @bind-Value="userCredential.MozartUser"></InputText>
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label">Contraseña</label>
-                        <InputText class="form-control" @bind-Value="user.UserCredential.MozartPass"></InputText>
+                        <InputText class="form-control" @bind-Value="userCredential.MozartPass"></InputText>
                     </div>
                 </div>
             }
-            @if (user.UserCredential.DarwinUser != null)
+            @if (userCredential.DarwinUser != null)
             {
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label">Usuario Casa</label>
-                        <InputText class="form-control" @bind-Value="user.UserCredential.DarwinUser"></InputText>
+                        <InputText class="form-control" @bind-Value="userCredential.DarwinUser"></InputText>
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label">Contraseña</label>
-                        <InputText class="form-control" @bind-Value="user.UserCredential.DarwinPass"></InputText>
+                        <InputText class="form-control" @bind-Value="userCredential.DarwinPass"></InputText>
                     </div>
                 </div>
             }
-            @if (user.UserCredential.VpnUser != null)
+            @if (userCredential.VpnUser != null)
             {
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label">Usuario Casa</label>
-                        <InputText class="form-control" @bind-Value="user.UserCredential.VpnUser"></InputText>
+                        <InputText class="form-control" @bind-Value="userCredential.VpnUser"></InputText>
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label">Contraseña</label>
-                        <InputText class="form-control" @bind-Value="user.UserCredential.VpnPass"></InputText>
+                        <InputText class="form-control" @bind-Value="userCredential.VpnPass"></InputText>
                     </div>
                 </div>
             }
@@ -78,12 +78,11 @@
     </FormSection>
 
 }
-
 @code {
     /*
     [Parameter]
     public UserCredential userCredential { get; set; } = default!;
     */
     [Parameter]
-    public User user { get; set; } = default!;
+    public UserCredential userCredential { get; set; } = default!;
 }

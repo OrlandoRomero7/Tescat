@@ -11,7 +11,7 @@
 @inject NavigationManager NavigationManager
 
 
-@if (user.IdUser == 0)
+@if (user != null && user.IdUser==0)
 {
     <button type="button" class="btn btn-primary" @onclick="CreateUser">Crear</button>
 }
@@ -22,14 +22,13 @@ else
 }
 
 
+
 <!-- Card de Informacion Basica -->
 <BasicInformation user="user" id="id" areas="areas"></BasicInformation>
 
 <!-- Card de Informacion de Contacto -->
 <ContacInformation user="user"></ContacInformation>
 
-<!-- Card de Credenciales de Usuario  -->
-<UserAccount user="user"></UserAccount>
 
 
 @code {
@@ -55,6 +54,7 @@ else
         if (id != 0)
         {
             user = await UserService.GetUserId(id);
+            //Console.WriteLine("El nombre es: " + user.Name);
             //tempName = user.Name;
             areas = await OtherServices.prueba();
             //userCredential = await UserCredentialService.GetUserCredentials(id);
@@ -65,7 +65,7 @@ else
     {
         try
         {
-            if (user.IdUser == 0)
+            if (user!=null && user.IdUser == 0)
             {
                 user.IdUser = id;
                 await UserService.InsertUser(user);
@@ -82,7 +82,7 @@ else
     {
         try
         {
-            if (user.IdUser != 0)
+            if (user!=null && user.IdUser != 0)
             {
                 //user.Name = tempName;
                 await UserService.UpdateUser(user);
