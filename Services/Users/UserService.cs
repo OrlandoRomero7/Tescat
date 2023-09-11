@@ -5,6 +5,7 @@ namespace Tescat.Services.Users
 {
     public class UserService : IUserService
     {
+
         private readonly IDbContextFactory<TescatDbContext> _contextFactory;
         public UserService(IDbContextFactory<TescatDbContext> contextFactory)
         {
@@ -29,10 +30,29 @@ namespace Tescat.Services.Users
 
         public async Task<User> GetUserId(int userID)
         {
-            if(userID==0) throw new ArgumentNullException(nameof(userID));
-
             using var context = _contextFactory.CreateDbContext();
-            return await context.Users.FindAsync(userID);
+            var userdb = await context.Users.FindAsync(userID);
+            /*
+            var userdb = await context.Users
+                          .Include(u => u.UserCredential)
+                          .SingleOrDefaultAsync(u => u.IdUser == userID);*/
+            if (userdb!=null)
+            {
+                //userdb.UserCredential ??= new UserCredential();
+                return userdb;
+            }
+            else
+            {
+                /*
+                var newUser = new User
+                {
+                    UserCredential = new UserCredential()
+                };
+                */
+                return new User();
+                
+            }
+
         }
 
         public async Task<User> InsertUser(User user)
