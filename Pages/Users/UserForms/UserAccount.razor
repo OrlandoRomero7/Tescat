@@ -1,79 +1,74 @@
 ﻿<!-- Card Cuentas de Usuario -->
 
-<FormSection Title="Cuentas de Usuario">
-    <EditForm Model="@userCredential">
+    <FormSection Title="Cuentas de Usuario">
+        <EditForm Model="@userCredential">
 
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label class="form-label">Usuario Portal</label>
-                <InputText class="form-control" @bind-Value="userCredential.PortalUser"></InputText>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Usuario Portal</label>
+                    <InputText class="form-control" @bind-Value="userCredential.PortalUser"></InputText>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Contraseña</label>
+                    <InputText class="form-control" @bind-Value="userCredential.PortalPass"></InputText>
+
+                </div>
             </div>
 
-            <div class="col-md-6">
-                <label class="form-label">Contraseña</label>
-                <InputText class="form-control" @bind-Value="userCredential.PortalPass"></InputText>
 
-            </div>
-        </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Usuario Casa</label>
+                    <InputText class="form-control" @bind-Value="userCredential.CasaUser"></InputText>
+                </div>
 
-
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label class="form-label">Usuario Casa</label>
-                <InputText class="form-control" @bind-Value="userCredential.CasaUser"></InputText>
-            </div>
-
-            <div class="col-md-6">
-                <label class="form-label">Contraseña</label>
-                <InputText class="form-control" @bind-Value="userCredential.CasaPass"></InputText>
-            </div>
-        </div>
-
-
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label class="form-label">Usuario Mozart</label>
-                <InputText class="form-control" @bind-Value="userCredential.MozartUser"></InputText>
+                <div class="col-md-6">
+                    <label class="form-label">Contraseña</label>
+                    <InputText class="form-control" @bind-Value="userCredential.CasaPass"></InputText>
+                </div>
             </div>
 
-            <div class="col-md-6">
-                <label class="form-label">Contraseña</label>
-                <InputText class="form-control" @bind-Value="userCredential.MozartPass"></InputText>
-            </div>
-        </div>
 
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Usuario Mozart</label>
+                    <InputText class="form-control" @bind-Value="userCredential.MozartUser"></InputText>
+                </div>
 
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label class="form-label">Usuario Darwin</label>
-                <InputText class="form-control" @bind-Value="userCredential.DarwinUser"></InputText>
-            </div>
-
-            <div class="col-md-6">
-                <label class="form-label">Contraseña</label>
-                <InputText class="form-control" @bind-Value="userCredential.DarwinPass"></InputText>
-            </div>
-        </div>
-
-
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label class="form-label">Usuario VPN</label>
-                <InputText class="form-control" @bind-Value="userCredential.VpnUser"></InputText>
+                <div class="col-md-6">
+                    <label class="form-label">Contraseña</label>
+                    <InputText class="form-control" @bind-Value="userCredential.MozartPass"></InputText>
+                </div>
             </div>
 
-            <div class="col-md-6">
-                <label class="form-label">Contraseña</label>
-                <InputText class="form-control" @bind-Value="userCredential.VpnPass"></InputText>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Usuario Darwin</label>
+                    <InputText class="form-control" @bind-Value="userCredential.DarwinUser"></InputText>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Contraseña</label>
+                    <InputText class="form-control" @bind-Value="userCredential.DarwinPass"></InputText>
+                </div>
             </div>
-        </div>
 
 
-    </EditForm>
-</FormSection>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Usuario VPN</label>
+                    <InputText class="form-control" @bind-Value="userCredential.VpnUser"></InputText>
+                </div>
 
-
-
+                <div class="col-md-6">
+                    <label class="form-label">Contraseña</label>
+                    <InputText class="form-control" @bind-Value="userCredential.VpnPass"></InputText>
+                </div>
+            </div>
+        </EditForm>
+    </FormSection>
 
 
 
@@ -81,10 +76,9 @@
 
 @code {
     /**/
-    
+    [Parameter]
     public UserCredential? userCredential { get; set; } = default!;
 
-      
-    }
+    
 
 }

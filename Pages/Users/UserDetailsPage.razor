@@ -18,7 +18,7 @@
 else
 {
     <button type="button" class="btn btn-primary" @onclick="Update">Actulizar</button>
-    <button type="button" class="btn btn-danger">Borrar</button>
+    <button type="button" class="btn btn-danger" @onclick="Delete">Borrar</button>
 }
 
 
@@ -30,7 +30,7 @@ else
 <ContacInformation user="user"></ContacInformation>
 
 <!-- Card de Cuentas de Usuario -->
-@*<UserAccount userCredential="userCredential"></UserAccount>*@
+<UserAccount userCredential="userCredential"></UserAccount>
 
 @code {
     [Parameter]
@@ -66,10 +66,12 @@ else
     {
         try
         {
-            if (user!=null && user.IdUser == 0)
+            if (user != null && user.IdUser == 0)
             {
                 user.IdUser = id;
                 await UserService.InsertUser(user);
+                userCredential.IdUser = user.IdUser;
+                await UserCredentialService.InsertUserCredentials(userCredential);
                 Console.WriteLine("Se creo correctamente");
             }
         }
@@ -95,6 +97,24 @@ else
             Console.WriteLine($"Fallo actulizar el usuario {e.Message}");
         }
 
+    }
+    private async Task Delete()
+    {
+        try
+        {
+            if (user != null && user.IdUser != 0)
+            {
+                //user.Name = tempName;
+                await UserService.DeleteUser(user.IdUser);
+                await UserCredentialService.DeleteUserCredentials(user.IdUser);
+                Console.WriteLine("Se elimino correctamente");
+            }
+        }
+        catch (ArgumentException e)
+        {
+            Console.WriteLine($"Fallo al eliminar suario {e.Message}");
+        }
+        
     }
 
 }
