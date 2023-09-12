@@ -9,5 +9,7 @@ namespace Tescat.Services.UserCredentials
         public Task<UserCredential> InsertUserCredentials(UserCredential userCredential);
 
         public Task<UserCredential> DeleteUserCredentials(int userId);
+
+        public Task<bool> UpdateUserCredentials(UserCredential userCredential);
     }
 }

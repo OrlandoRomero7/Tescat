@@ -89,6 +89,8 @@ else
             {
                 //user.Name = tempName;
                 await UserService.UpdateUser(user);
+                if (userCredential != null) 
+                await UserCredentialService.UpdateUserCredentials(userCredential);
                 Console.WriteLine("Se actualizo correctamente");
             }
         }
@@ -104,9 +106,11 @@ else
         {
             if (user != null && user.IdUser != 0)
             {
+                int idtemp = user.IdUser; 
                 //user.Name = tempName;
-                await UserService.DeleteUser(user.IdUser);
-                await UserCredentialService.DeleteUserCredentials(user.IdUser);
+                await UserCredentialService.DeleteUserCredentials(idtemp);
+                await UserService.DeleteUser(idtemp);
+                
                 Console.WriteLine("Se elimino correctamente");
             }
         }
