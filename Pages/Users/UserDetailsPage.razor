@@ -9,7 +9,7 @@
 @inject IUserCredentialService UserCredentialService
 @inject OtherServices OtherServices
 @inject NavigationManager NavigationManager
-
+@inject SaveTempID SaveTemoID
 
 @if (user != null && user.IdUser==0)
 {
@@ -48,6 +48,8 @@ else
     public string? userPortal;
     public string? departament;
 
+    public int IdOld;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -55,12 +57,14 @@ else
         if (id != 0)
         {
             user = await UserService.GetUserId(id);
+            IdOld = user.IdUser;
             //Console.WriteLine("El nombre es: " + user.Name);
             //tempName = user.Name;
             areas = await OtherServices.prueba();
             userCredential = await UserCredentialService.GetUserCredentials(id);
         }
     }
+
 
     private async Task CreateUser()
     {
@@ -85,12 +89,17 @@ else
     {
         try
         {
-            if (user!=null && user.IdUser != 0)
+            if (user != null && user.IdUser != 0)
             {
                 //user.Name = tempName;
-                await UserService.UpdateUser(user);
-                if (userCredential != null) 
-                await UserCredentialService.UpdateUserCredentials(userCredential);
+                await UserService.UpdateUser(IdOld,user);
+                //if (userCredential != null)
+                //    await UserCredentialService.UpdateUserCredentials(userCredential);
+                //SaveTemoID.ID = IdOld;
+                //navigationUpdateUser();
+                NavigationManager.NavigateTo("/userDetails/" + user.IdUser);
+                deleteOldId(IdOld);
+                //await UserService.DeleteUser(SaveTemoID.ID);
                 Console.WriteLine("Se actualizo correctamente");
             }
         }
@@ -98,6 +107,7 @@ else
         {
             Console.WriteLine($"Fallo actulizar el usuario {e.Message}");
         }
+
 
     }
     private async Task Delete()
@@ -110,7 +120,7 @@ else
                 //user.Name = tempName;
                 await UserCredentialService.DeleteUserCredentials(idtemp);
                 await UserService.DeleteUser(idtemp);
-                
+
                 Console.WriteLine("Se elimino correctamente");
             }
         }
@@ -118,7 +128,12 @@ else
         {
             Console.WriteLine($"Fallo al eliminar suario {e.Message}");
         }
-        
+
     }
+    private async void deleteOldId(int id)
+    {
+        await UserService.DeleteUser(id);
+    }
+
 
 }

@@ -24,6 +24,7 @@ builder.Services.AddScoped<OtherServices>();
 //Se añade como inyeccion de dependencias los servicios
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserCredentialService, UserCredentialService>();
+builder.Services.AddScoped<SaveTempID>();
 
 var app = builder.Build();
 
