@@ -96,7 +96,7 @@ namespace Tescat.Services.Users
 
         }
         */
-        public async Task<bool> UpdateUser(int IdOld,User updateUser)
+        public async Task<bool> UpdateUser(int IdOld,User updateUser, UserCredential userCredential)
         {
             if (updateUser == null) throw new ArgumentNullException(nameof(updateUser));
 
@@ -130,25 +130,36 @@ namespace Tescat.Services.Users
                 
 
                 await InsertUser(newUser);
-                //Console.Write(IdOld);
+               
                 
-                var userCredentialDb = await context.UserCredentials.FirstOrDefaultAsync(p => p.IdUser == IdOld);
-                if (userCredentialDb == null)
-                {
-                    throw new InvalidOperationException("Error al crear un nuevo id de usuario para actualizar");
-                }
+                //var userCredentialDb = await context.UserCredentials.FirstOrDefaultAsync(p => p.IdUser == IdOld);
+                var pcDb = await context.Pcs.FirstOrDefaultAsync(p => p.IdUser == IdOld);
+                var emailDb = await context.Emails.FirstOrDefaultAsync(p => p.IdUser == IdOld);
+
+
+               
+                userCredential.IdUser = newUser.IdUser;
+                context.Entry(userCredential).State = EntityState.Modified;
+  
+                //context.UserCredentials.Update(userCredentialDb);
+                //await context.SaveChangesAsync();
+                //var user = await context.Users.FindAsync(IdOld);
+                //if (user == null) return false;
+                //context.Users.Remove(user);
+                //await context.SaveChangesAsync();
+
+                
+                if (pcDb == null) Console.WriteLine("El id old no tiene relacion pcDb");
                 else
                 {
-                    
-                    userCredentialDb.IdUser = newUser.IdUser;
-                    context.Entry(userCredentialDb).State = EntityState.Modified;
-                    //context.UserCredentials.Update(userCredentialDb);
-                    //await context.SaveChangesAsync();
-                    //var user = await context.Users.FindAsync(IdOld);
-                    //if (user == null) return false;
-                    //context.Users.Remove(user);
-                    //await context.SaveChangesAsync();
-
+                    pcDb.IdUser = newUser.IdUser;
+                    context.Entry(pcDb).State = EntityState.Modified;
+                }
+                if (emailDb == null) Console.WriteLine("El id old no tiene relacion en emailDb");
+                else
+                {
+                    emailDb.IdUser = newUser.IdUser;
+                    context.Entry(emailDb).State = EntityState.Modified;
                 }
 
             }
@@ -156,6 +167,7 @@ namespace Tescat.Services.Users
             {
                 // Si no se modificó IdUser, simplemente actualiza el usuario existente.
                 context.Entry(existingUser).CurrentValues.SetValues(updateUser);
+                context.Entry(userCredential).State = EntityState.Modified;
             }
 
             return await context.SaveChangesAsync() > 0;

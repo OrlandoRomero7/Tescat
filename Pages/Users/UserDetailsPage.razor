@@ -9,7 +9,7 @@
 @inject IUserCredentialService UserCredentialService
 @inject OtherServices OtherServices
 @inject NavigationManager NavigationManager
-@inject SaveTempID SaveTemoID
+
 
 @if (user != null && user.IdUser==0)
 {
@@ -92,8 +92,8 @@ else
             if (user != null && user.IdUser != 0)
             {
                 //user.Name = tempName;
-                await UserService.UpdateUser(IdOld,user);
-                //if (userCredential != null)
+                await UserService.UpdateUser(IdOld,user,userCredential);
+                //if (userCredential != null && IdOld==user.IdUser)
                 //    await UserCredentialService.UpdateUserCredentials(userCredential);
                 //SaveTemoID.ID = IdOld;
                 //navigationUpdateUser();
