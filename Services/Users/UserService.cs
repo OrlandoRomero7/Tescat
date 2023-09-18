@@ -28,7 +28,6 @@ namespace Tescat.Services.Users
             {
                 Console.WriteLine(ex.ToString());
                 return null;
-
             }
             
         }
@@ -43,27 +42,16 @@ namespace Tescat.Services.Users
         {
             using var context = _contextFactory.CreateDbContext();
             var userdb = await context.Users.FindAsync(userID);
-            /*
-            var userdb = await context.Users
-                          .Include(u => u.UserCredential)
-                          .SingleOrDefaultAsync(u => u.IdUser == userID);*/
+            
             if (userdb != null)
             {
-                //userdb.UserCredential ??= new UserCredential();
                 return userdb;
             }
             else
             {
-                /*
-                var newUser = new User
-                {
-                    UserCredential = new UserCredential()
-                };
-                */
                 return new User();
 
             }
-
         }
 
         public async Task<User> InsertUser(User user)
@@ -75,27 +63,7 @@ namespace Tescat.Services.Users
             await context.SaveChangesAsync();
             return user;
         }
-        /*
-        public async Task<bool> UpdateUser(User updateUser)
-        {
-            if (updateUser == null) throw new ArgumentNullException(nameof(updateUser));
-
-            using var context = _contextFactory.CreateDbContext();
-            context.Entry(updateUser).State = EntityState.Modified;
-
-
-            var originalValues = context.Entry(updateUser).OriginalValues;
-            var currentValues = context.Entry(updateUser).CurrentValues;
-
-            if (originalValues.GetValue<string>("IdUser") != currentValues.GetValue<string>("IdUser") && updateUser!=null)
-            {
-                await InsertUser(updateUser);
-            }
-
-            return await context.SaveChangesAsync() > 0;
-
-        }
-        */
+        
         public async Task<bool> UpdateUser(int IdOld,User updateUser, UserCredential userCredential)
         {
             if (updateUser == null) throw new ArgumentNullException(nameof(updateUser));
@@ -108,9 +76,6 @@ namespace Tescat.Services.Users
             // Si el IdUser ha sido modificado.
             if (existingUser == null)
             {
-
-                // Crea un nuevo usuario con los mismos atributos pero con el nuevo IdUser.
-
                 User newUser = new User
                 {
                     IdUser = updateUser.IdUser,
@@ -127,27 +92,19 @@ namespace Tescat.Services.Users
                     TelKey = updateUser.TelKey,
                     Cel = updateUser.Cel
                 };
-                
+
 
                 await InsertUser(newUser);
                
-                
-                //var userCredentialDb = await context.UserCredentials.FirstOrDefaultAsync(p => p.IdUser == IdOld);
                 var pcDb = await context.Pcs.FirstOrDefaultAsync(p => p.IdUser == IdOld);
                 var emailDb = await context.Emails.FirstOrDefaultAsync(p => p.IdUser == IdOld);
 
-
-               
-                userCredential.IdUser = newUser.IdUser;
-                context.Entry(userCredential).State = EntityState.Modified;
-  
-                //context.UserCredentials.Update(userCredentialDb);
-                //await context.SaveChangesAsync();
-                //var user = await context.Users.FindAsync(IdOld);
-                //if (user == null) return false;
-                //context.Users.Remove(user);
-                //await context.SaveChangesAsync();
-
+                if (userCredential == null) Console.WriteLine("El id old no tiene relacion userCredential");
+                else
+                {
+                    userCredential.IdUser = newUser.IdUser;
+                    context.Entry(userCredential).State = EntityState.Modified;
+                }
                 
                 if (pcDb == null) Console.WriteLine("El id old no tiene relacion pcDb");
                 else
@@ -165,15 +122,16 @@ namespace Tescat.Services.Users
             }
             else
             {
-                // Si no se modificó IdUser, simplemente actualiza el usuario existente.
                 context.Entry(existingUser).CurrentValues.SetValues(updateUser);
-                context.Entry(userCredential).State = EntityState.Modified;
+                Console.WriteLine(userCredential.IdUser);
+                //if(userCredential.IdUser!=0)
+                //{
+                //    context.Entry(userCredential).State = EntityState.Modified;
+                //}
             }
 
             return await context.SaveChangesAsync() > 0;
         }
-
-
 
     }
 }
