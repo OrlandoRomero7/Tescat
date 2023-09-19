@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Tescat.Models;
-
+using Tescat.Services.UserCredentials;
 
 namespace Tescat.Services.Users
 {
@@ -8,9 +8,11 @@ namespace Tescat.Services.Users
     {
 
         private readonly IDbContextFactory<TescatDbContext> _contextFactory;
-        public UserService(IDbContextFactory<TescatDbContext> contextFactory)
+        private readonly IUserCredentialService _userCredentialService;
+        public UserService(IDbContextFactory<TescatDbContext> contextFactory, IUserCredentialService userCredentialService)
         {
             _contextFactory = contextFactory;
+            _userCredentialService = userCredentialService;
         }
         public async Task<User> DeleteUser(int userID)
         {
@@ -70,64 +72,46 @@ namespace Tescat.Services.Users
 
             using var context = _contextFactory.CreateDbContext();
 
-            var existingUser = await context.Users.FindAsync(updateUser.IdUser);
-            //if (existingUser == null) throw new ArgumentException("User not found");
-
-            // Si el IdUser ha sido modificado.
-            if (existingUser == null)
+            if (IdOld != updateUser.IdUser)
             {
-                User newUser = new User
-                {
-                    IdUser = updateUser.IdUser,
-                    Name = updateUser.Name,
-                    Area = updateUser.Area,
-                    Position = updateUser.Position,
-                    EntryDate = updateUser.EntryDate,
-                    Tel = updateUser.Tel,
-                    WebPrivileges = updateUser.WebPrivileges,
-                    LastModif = updateUser.LastModif,
-                    Dept = updateUser.Dept,
-                    Office = updateUser.Office,
-                    LastWorkingDate = updateUser.LastWorkingDate,
-                    TelKey = updateUser.TelKey,
-                    Cel = updateUser.Cel
-                };
-
-
-                await InsertUser(newUser);
-               
+                await InsertUser(updateUser);
                 var pcDb = await context.Pcs.FirstOrDefaultAsync(p => p.IdUser == IdOld);
                 var emailDb = await context.Emails.FirstOrDefaultAsync(p => p.IdUser == IdOld);
 
-                if (userCredential == null) Console.WriteLine("El id old no tiene relacion userCredential");
+                if (userCredential.IdUser == null) Console.WriteLine("El id old no tiene relacion userCredential");
                 else
                 {
-                    userCredential.IdUser = newUser.IdUser;
+                    userCredential.IdUser = updateUser.IdUser;
                     context.Entry(userCredential).State = EntityState.Modified;
                 }
-                
+                //tal vez ocupe arreglar estos if para que sean igual al de arriba que entre al IdUser
                 if (pcDb == null) Console.WriteLine("El id old no tiene relacion pcDb");
                 else
                 {
-                    pcDb.IdUser = newUser.IdUser;
+                    pcDb.IdUser = updateUser.IdUser;
                     context.Entry(pcDb).State = EntityState.Modified;
                 }
                 if (emailDb == null) Console.WriteLine("El id old no tiene relacion en emailDb");
                 else
                 {
-                    emailDb.IdUser = newUser.IdUser;
+                    emailDb.IdUser = updateUser.IdUser;
                     context.Entry(emailDb).State = EntityState.Modified;
                 }
-
             }
             else
             {
-                context.Entry(existingUser).CurrentValues.SetValues(updateUser);
-                Console.WriteLine(userCredential.IdUser);
-                //if(userCredential.IdUser!=0)
-                //{
-                //    context.Entry(userCredential).State = EntityState.Modified;
-                //}
+                context.Entry(updateUser).State = EntityState.Modified;
+                
+                if(userCredential.IdUser==null)
+                {
+                    userCredential.IdUser = updateUser.IdUser;
+                    await _userCredentialService.InsertUserCredentials(userCredential);                    
+                    
+                }
+                else
+                {
+                    context.Entry(userCredential).State = EntityState.Modified;
+                }
             }
 
             return await context.SaveChangesAsync() > 0;

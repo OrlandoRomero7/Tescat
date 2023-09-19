@@ -11,26 +11,36 @@
 @inject NavigationManager NavigationManager
 
 
-@if (user != null && user.IdUser==0)
+@if (user != null && user.IdUser == 0)
 {
     <button type="button" class="btn btn-primary" @onclick="CreateUser">Crear</button>
+
 }
 else
 {
     <button type="button" class="btn btn-primary" @onclick="Update">Actulizar</button>
     <button type="button" class="btn btn-danger" @onclick="Delete">Borrar</button>
+
+}
+
+
+@if (user != null)
+{
+    <!-- Card de Informacion Basica -->
+    <BasicInformation user="user" id="id" areas="areas"></BasicInformation>
+
+    <!-- Card de Informacion de Contacto -->
+    <ContacInformation user="user"></ContacInformation>
+
+    <!-- Card de Cuentas de Usuario -->
+    <UserAccount userCredential="userCredential"></UserAccount>
+
+    
 }
 
 
 
-<!-- Card de Informacion Basica -->
-<BasicInformation user="user" id="id" areas="areas"></BasicInformation>
 
-<!-- Card de Informacion de Contacto -->
-<ContacInformation user="user"></ContacInformation>
-
-<!-- Card de Cuentas de Usuario -->
-<UserAccount userCredential="userCredential"></UserAccount>
 
 @code {
     [Parameter]
@@ -91,14 +101,15 @@ else
         {
             if (user != null && user.IdUser != 0)
             {
-                //user.Name = tempName;
-                await UserService.UpdateUser(IdOld,user,userCredential);
-                //if (userCredential != null && IdOld==user.IdUser)
-                //    await UserCredentialService.UpdateUserCredentials(userCredential);
-                //SaveTemoID.ID = IdOld;
-                //navigationUpdateUser();
-                NavigationManager.NavigateTo("/userDetails/" + user.IdUser);
-                deleteOldId(IdOld);
+
+                await UserService.UpdateUser(IdOld, user, userCredential);
+
+                if (IdOld != user.IdUser)
+                {
+                    NavigationManager.NavigateTo("/userDetails/" + user.IdUser, true);
+                    deleteOldId(IdOld);
+                } 
+
                 //await UserService.DeleteUser(SaveTemoID.ID);
                 Console.WriteLine("Se actualizo correctamente");
             }
@@ -116,7 +127,7 @@ else
         {
             if (user != null && user.IdUser != 0)
             {
-                int idtemp = user.IdUser; 
+                int idtemp = user.IdUser;
                 //user.Name = tempName;
                 await UserCredentialService.DeleteUserCredentials(idtemp);
                 await UserService.DeleteUser(idtemp);
