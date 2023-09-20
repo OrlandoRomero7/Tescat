@@ -10,10 +10,12 @@
 @inject OtherServices OtherServices
 @inject NavigationManager NavigationManager
 
+@inject IJSRuntime JSRuntime
+
 
 @if (user != null && user.IdUser == 0)
 {
-    <button type="button" class="btn btn-primary" @onclick="CreateUser">Crear</button>
+    <button type="button" class="btn btn-primary" @onclick="SubmitChildForm">Crear</button>
 
 }
 else
@@ -27,7 +29,7 @@ else
 @if (user != null)
 {
     <!-- Card de Informacion Basica -->
-    <BasicInformation user="user" id="id" areas="areas"></BasicInformation>
+    <BasicInformation @ref="childReference" user="user" id="id" areas="areas" departaments="departaments" CreateUserCallback="CreateUser"></BasicInformation>
 
     <!-- Card de Informacion de Contacto -->
     <ContacInformation user="user"></ContacInformation>
@@ -35,7 +37,7 @@ else
     <!-- Card de Cuentas de Usuario -->
     <UserAccount userCredential="userCredential"></UserAccount>
 
-    
+
 }
 
 
@@ -50,13 +52,8 @@ else
     private UserCredential? userCredential { get; set; }
 
     //public string? tempName { get; set; }
-    public string[]? areas;
-
-    // Solo los hice temporalmente para los @bind-Value
-    public string? cel;
-    public string? email;
-    public string? userPortal;
-    public string? departament;
+    public string[] areas;
+    public string[] departaments { get; set; }
 
     public int IdOld;
 
@@ -70,7 +67,8 @@ else
             IdOld = user.IdUser;
             //Console.WriteLine("El nombre es: " + user.Name);
             //tempName = user.Name;
-            areas = await OtherServices.prueba();
+            areas = await OtherServices.getAreas();
+            departaments = await OtherServices.getDepartaments();
             userCredential = await UserCredentialService.GetUserCredentials(id);
         }
     }
@@ -108,7 +106,7 @@ else
                 {
                     NavigationManager.NavigateTo("/userDetails/" + user.IdUser, true);
                     deleteOldId(IdOld);
-                } 
+                }
 
                 //await UserService.DeleteUser(SaveTemoID.ID);
                 Console.WriteLine("Se actualizo correctamente");
@@ -144,6 +142,13 @@ else
     private async void deleteOldId(int id)
     {
         await UserService.DeleteUser(id);
+    }
+
+    private BasicInformation childReference;
+
+    private void SubmitChildForm()
+    {
+        childReference.SubmitFromParent();
     }
 
 
