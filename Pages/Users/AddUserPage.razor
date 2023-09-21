@@ -20,26 +20,48 @@
             <hr>
         </div>
         <div class="card-body" style="text-align:center" >
-            <EditForm Model="@newUser" OnValidSubmit="CrearUser">
-                <h3>Ingrese numero de Usuario</h3>
-                <InputNumber @bind-Value="newUser"></InputNumber>
-                <button class="btn btn-primary" type="submit">Guardar</button>
 
-            </EditForm>
+            <form @onsubmit="CrearUser">
+                <h3>Ingrese numero de Usuario</h3>
+                <InputNumber class="form-control" @bind-Value="newUser"></InputNumber>
+                <button class="btn btn-primary" type="submit">Guardar</button>
+            </form>
+
+            
         </div>
     </div>
 
 </div>
 
+@if (!string.IsNullOrEmpty(ErrorMessage))
+{
+    <div class="alert alert-danger">
+        @ErrorMessage
+    </div>
+}
+
 @code {
     //public int newUserId;
     //private User newUser = new User();
     //private int id;
-    public int newUser;
+    private int newUser { get; set; }
+    public string ErrorMessage { get; set; }
 
     private void CrearUser()
     {
-        NavigationManager.NavigateTo("/userDetails/" + newUser);
+
+        if (newUser > 0)
+        {
+            NavigationManager.NavigateTo("/userDetails/" + newUser);
+        }
+        else
+        {
+            ErrorMessage = "El numero de usuario no es valido.";
+        }
     }
+
+    
+
+    
 
 }

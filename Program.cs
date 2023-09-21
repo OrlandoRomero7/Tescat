@@ -5,6 +5,7 @@ using Tescat.Services;
 using Tescat.Models;
 using Tescat.Services.UserCredentials;
 using Tescat.Services.Users;
+using CurrieTechnologies.Razor.SweetAlert2;
 //using Tescat.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +26,7 @@ builder.Services.AddScoped<OtherServices>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserCredentialService, UserCredentialService>();
 builder.Services.AddScoped<SaveTempID>();
+builder.Services.AddSweetAlert2();
 
 var app = builder.Build();
 

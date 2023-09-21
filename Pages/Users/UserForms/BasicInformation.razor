@@ -140,6 +140,7 @@ else
     [Parameter] 
     public EventCallback CreateUserCallback { get; set; }
 
+
     
     private async Task SomeMethodInsideComponent()
     {
@@ -150,7 +151,7 @@ else
     }
 
     public void SubmitFromParent()
-    {
+    { 
         // Usa JSRuntime para disparar el envío del formulario
         JSRuntime.InvokeVoidAsync("submitFormById", "myForm");
     }
