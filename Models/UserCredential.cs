@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Tescat.Models;
 
@@ -9,6 +10,7 @@ public partial class UserCredential
 
     public int? IdUser { get; set; }
 
+    //[Required(ErrorMessage ="Debe Ingresar el Usuario del Portal")]
     public string? PortalUser { get; set; }
 
     public string? PortalPass { get; set; }

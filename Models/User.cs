@@ -1,4 +1,5 @@
 ﻿
+using System.ComponentModel.DataAnnotations;
 using System.Transactions;
 
 namespace Tescat.Models
@@ -7,11 +8,14 @@ namespace Tescat.Models
     {
         public int IdUser { get; set; }
 
-        public string? Name { get; set; } 
+        [Required(ErrorMessage = "Debes ingresar un nombre")]
+        public string? Name { get; set; }
 
-        public string? Area { get; set; } 
+        [Required(ErrorMessage = "Debe seleccionar un area")]
+        public string? Area { get; set; }
 
-        public string? Position { get; set; } 
+        //[Required(ErrorMessage = "Debe seleccionar un puesto")]
+        public string? Position { get; set; }
 
         public DateTime? EntryDate { get; set; }
 

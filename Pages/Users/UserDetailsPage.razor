@@ -10,57 +10,147 @@
 @inject OtherServices OtherServices
 @inject NavigationManager NavigationManager
 
+@inject IJSRuntime JSRuntime
 
-@if (user != null && user.IdUser==0)
+
+@if (user != null && user.IdUser == 0)
 {
-    <button type="button" class="btn btn-primary" @onclick="CreateUser">Crear</button>
+    <button type="button" class="btn btn-primary" @onclick="SubmitChildForm">Crear</button>
 }
 else
 {
     <button type="button" class="btn btn-primary" @onclick="Update">Actulizar</button>
-    <button type="button" class="btn btn-danger" @onclick="Delete">Borrar</button>
+    <button type="button" class="btn btn-danger" @onclick="ShowConfirmationModal">Borrar</button>
+}
+
+@if (user != null && user.IdUser != 0 && FromUserAddPage)
+{
+    if (!isEdit) // Añade esta condición
+    {
+        <div class="alert alert-primary">El Usuario Con Numero De Empleado: @user.IdUser <br> Ya Existe.</div>
+    <div>
+        <h3>
+            ¿Quiere editar al usuario?
+        </h3>
+        <button class="btn btn-info" @onclick="(() => isEdit = true)">
+            Editar
+        </button>
+            <button class="btn btn-info" @onclick="ReturnToAddUsersHome">
+            Regresar
+        </button>
+    </div>
+    }
+}
+
+@*Cuando se quiere agregar un usuario que ya esta desde AddUserpage*@
+@if(user.IdUser != 0 && isEdit && FromUserAddPage)
+{
+    <!-- Card de Informacion Basica -->
+    <BasicInformation @ref="childReference" user="user" id="id" areas="areas" departaments="departaments" CreateUserCallback="CreateUser"></BasicInformation>
+
+    <!-- Card de Informacion de Contacto -->
+    <ContacInformation user="user"></ContacInformation>
+
+    <!-- Card de Cuentas de Usuario -->
+    <UserAccount userCredential="userCredential"></UserAccount>
+}
+
+@*Cuando se quiere agregar un nuevo Usuario*@
+@if (user.IdUser==0)
+{
+    <!-- Card de Informacion Basica -->
+    <BasicInformation @ref="childReference" user="user" id="id" areas="areas" departaments="departaments" CreateUserCallback="CreateUser"></BasicInformation>
+
+    <!-- Card de Informacion de Contacto -->
+    <ContacInformation user="user"></ContacInformation>
+
+    <!-- Card de Cuentas de Usuario -->
+    <UserAccount userCredential="userCredential"></UserAccount>
+
+}
+
+@*Cuando se queire ver un usuario desde Users(Como que hace conflicto)*@
+@if (user.IdUser != 0 && !isEdit && !FromUserAddPage)
+{
+    <!-- Card de Informacion Basica -->
+    <BasicInformation @ref="childReference" user="user" id="id" areas="areas" departaments="departaments" CreateUserCallback="CreateUser"></BasicInformation>
+
+    <!-- Card de Informacion de Contacto -->
+    <ContacInformation user="user"></ContacInformation>
+
+    <!-- Card de Cuentas de Usuario -->
+    <UserAccount userCredential="userCredential"></UserAccount>
 }
 
 
+<!-- Modal de confirmación -->
+<div class="modal" tabindex="-1" role="dialog" style="display: @modalDisplay">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar eliminación</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar" @onclick="CloseConfirmationModal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que quieres eliminar este elemento?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="CloseConfirmationModal">Cancelar</button>
+                <button type="button" class="btn btn-danger" @onclick="ConfirmDeletion">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-<!-- Card de Informacion Basica -->
-<BasicInformation user="user" id="id" areas="areas"></BasicInformation>
 
-<!-- Card de Informacion de Contacto -->
-<ContacInformation user="user"></ContacInformation>
-
-<!-- Card de Cuentas de Usuario -->
-<UserAccount userCredential="userCredential"></UserAccount>
 
 @code {
     [Parameter]
     public int id { get; set; }
 
-    public User? user = new User();
+    //public int idNewUser { get; set; }
+
+    //public User? user { get; set; }
+    public User user = new User();
     private UserCredential? userCredential = new UserCredential();
 
     //public string? tempName { get; set; }
-    public string[]? areas;
+    public string[] areas;
+    public string[] departaments { get; set; }
 
-    // Solo los hice temporalmente para los @bind-Value
-    public string? cel;
-    public string? email;
-    public string? userPortal;
-    public string? departament;
+    public int IdOld;
 
+    private string modalDisplay = "none";
+
+    public bool FromUserAddPage = false;
+
+    public bool isEdit = false;
 
     protected override async Task OnInitializedAsync()
     {
+        //idNewUser = OtherServices.NewUser;
         //revisar este if
         if (id != 0)
         {
             user = await UserService.GetUserId(id);
-            //Console.WriteLine("El nombre es: " + user.Name);
-            //tempName = user.Name;
-            areas = await OtherServices.prueba();
+            IdOld = user.IdUser;
+
+
+            if (OtherServices.LastNavigatedFrom == "AddUserPage")
+            {
+                FromUserAddPage = true;
+                OtherServices.LastNavigatedFrom = null;
+            }
+
+            areas = await OtherServices.getAreas();
+            departaments = await OtherServices.getDepartaments();
             userCredential = await UserCredentialService.GetUserCredentials(id);
+            
         }
     }
+
 
     private async Task CreateUser()
     {
@@ -85,10 +175,18 @@ else
     {
         try
         {
-            if (user!=null && user.IdUser != 0)
+            if (user != null && user.IdUser != 0)
             {
-                //user.Name = tempName;
-                await UserService.UpdateUser(user);
+
+                await UserService.UpdateUser(IdOld, user, userCredential);
+
+                if (IdOld != user.IdUser)
+                {
+                    NavigationManager.NavigateTo("/userDetails/" + user.IdUser, true);
+                    deleteOldId(IdOld);
+                }
+
+                //await UserService.DeleteUser(SaveTemoID.ID);
                 Console.WriteLine("Se actualizo correctamente");
             }
         }
@@ -97,6 +195,7 @@ else
             Console.WriteLine($"Fallo actulizar el usuario {e.Message}");
         }
 
+
     }
     private async Task Delete()
     {
@@ -104,9 +203,13 @@ else
         {
             if (user != null && user.IdUser != 0)
             {
+                int idtemp = user.IdUser;
                 //user.Name = tempName;
-                await UserService.DeleteUser(user.IdUser);
-                await UserCredentialService.DeleteUserCredentials(user.IdUser);
+                await UserCredentialService.DeleteUserCredentials(idtemp);
+                await UserService.DeleteUser(idtemp);
+                OtherServices.ShowMessage("Se elimino el usuario: " + idtemp);
+                NavigationManager.NavigateTo("/users");
+                
                 Console.WriteLine("Se elimino correctamente");
             }
         }
@@ -114,7 +217,40 @@ else
         {
             Console.WriteLine($"Fallo al eliminar suario {e.Message}");
         }
-        
+
     }
+    private async void deleteOldId(int id)
+    {
+        await UserService.DeleteUser(id);
+    }
+
+    private BasicInformation childReference;
+
+    private void SubmitChildForm()
+    {
+        childReference.SubmitFromParent();
+    }
+
+    private void ShowConfirmationModal()
+    {
+        modalDisplay = "block"; // Mostrar el modal
+    }
+
+    private void CloseConfirmationModal()
+    {
+        modalDisplay = "none"; // Ocultar el modal
+    }
+
+    private async void ConfirmDeletion()
+    {
+        await Delete();
+        // ...
+        CloseConfirmationModal(); // Cerrar el modal después de la confirmación
+    }
+    protected void ReturnToAddUsersHome()
+    {
+        NavigationManager.NavigateTo("/addUser");
+    }
+
 
 }

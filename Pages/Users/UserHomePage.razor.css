@@ -1,0 +1,7 @@
+﻿.overlay-alert {
+    position: fixed; /* Se fija en la pantalla, sin moverse al desplazarse */
+    bottom: 20px; /* 20px desde la parte inferior de la pantalla */
+    right: 20px; /* 20px desde la parte izquierda de la pantalla */
+    z-index: 9999; /* Asegura que esté encima de otros contenidos */
+}
+

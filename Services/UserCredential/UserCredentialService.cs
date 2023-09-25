@@ -34,19 +34,39 @@ namespace Tescat.Services.UserCredentials
             return userCredential;
         }
 
-        public async Task<UserCredential> DeleteUserCredentials(int userID)
+        public async Task<UserCredential> DeleteUserCredentials(int userId)
         {
             using var context = _contextFactory.CreateDbContext();
-            var userCredentialDb = await context.UserCredentials.FindAsync(userID);
+            var userCredentialDb = await context.UserCredentials.FirstOrDefaultAsync(p => p.IdUser == userId);
             if (userCredentialDb == null) return null;
 
             context.UserCredentials.Remove(userCredentialDb);
             await context.SaveChangesAsync();
             return userCredentialDb;
-        }       
-        
+        }
+        /*
+        public async Task<bool> UpdateUserCredentials (int userId)
+        {
+            if (userId == 0) throw new ArgumentNullException(nameof(userId));
 
-        
+            using var context = _contextFactory.CreateDbContext();
+            var userCredentialDb = await context.UserCredentials.FirstOrDefaultAsync(p => p.IdUser == userId);
+            context.Entry(userCredentialDb).State = EntityState.Modified;
+            return await context.SaveChangesAsync() > 0;
+        }
+        */
+        public async Task<bool> UpdateUserCredentials(UserCredential userCredential)
+        {
+            if (userCredential == null) throw new ArgumentNullException(nameof(userCredential));
+
+            using var context = _contextFactory.CreateDbContext();
+            context.Entry(userCredential).State = EntityState.Modified;
+            return await context.SaveChangesAsync() > 0;
+        }
+
+
+
+
 
     }
 }
