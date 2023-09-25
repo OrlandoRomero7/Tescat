@@ -12,6 +12,10 @@ namespace Tescat.Services
         public string Message;
         //public bool HasMessage => !string.IsNullOrEmpty(Message);
 
+        public string LastNavigatedFrom { get; set; }
+
+        public int NewUser { get; set; }
+
         public OtherServices(TescatDbContext context)
         {
             _context = context;
