@@ -1,5 +1,4 @@
-﻿
-@page "/addUser"
+﻿@page "/addUser"
 
 @inject IUserService UserService
 @inject NavigationManager NavigationManager
@@ -20,15 +19,20 @@
         <div>
             <hr>
         </div>
-        <div class="card-body" style="text-align:center" >
+        <div class="card-body" style="text-align:center">
 
             <form @onsubmit="CrearUser">
                 <h3>Ingrese numero de Usuario</h3>
                 <InputNumber class="form-control" @bind-Value="newUser"></InputNumber>
                 <button class="btn btn-primary" type="submit">Guardar</button>
-            </form>
 
             
+
+            </form>
+
+
+
+
         </div>
     </div>
 
@@ -46,7 +50,7 @@
     //private User newUser = new User();
     //private int id;
     private int newUser { get; set; }
-    public string ErrorMessage { get; set; }
+    public string? ErrorMessage { get; set; }
 
     private void CrearUser()
     {
@@ -63,8 +67,8 @@
         }
     }
 
-    
 
-    
+
+
 
 }

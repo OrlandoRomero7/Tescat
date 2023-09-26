@@ -13,103 +13,123 @@ else
 }*@
 
 
+@if (user is not null)
+{
+    <FormSection Title="Informacíón Basica">
+        <EditForm Model="@user" OnValidSubmit="SomeMethodInsideComponent" id="myForm">
+            <DataAnnotationsValidator />
 
-<FormSection Title="Informacíón Basica">
-    <EditForm Model="@user" OnValidSubmit="SomeMethodInsideComponent" id="myForm">
-        <DataAnnotationsValidator />
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label for="input1" class="form-label">Nombre Completo</label>
-                <InputText class="form-control" @bind-Value="user.Name" />
-                <ValidationMessage For="@(() => user.Name)" />
-            </div>
 
-            <div class="col-md-6">
-                <label for="input2" class="form-label">Departamento</label>
-                <InputSelect class="form-select" @bind-Value="user.Dept">
-                    @if (departaments != null && departaments.Length > 0)
-                    {
-                        <option selected disabled>Selecciona una opción</option>
-                        @foreach (var departament in departaments)
+            <img src="@GetImagePath()" style="width:12rem; height:12rem; display:block; border-radius:1rem; margin-bottom:1rem; object-fit: cover;">
+
+            <UserPictureUpload @ref="userPictureUploadRef"
+                               OnFileUploaded="HandleFileUpload"
+                               OnFilePreviewReady="HandleFilePreview"
+                               UploadComponentStyle="@HandlingUploadStyles()"
+                               IdUser="@user.IdUser" />
+
+            @if (user?.IMAGE_NAME != null)
+            {
+
+                <button type="button" class="btn btn-danger mt-2" @onclick="RemoveImage" style="width: 8rem;">Quitar Imagen</button>
+            }
+
+
+
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="input1" class="form-label">Nombre Completo</label>
+                    <InputText class="form-control" @bind-Value="user.Name" />
+                    <ValidationMessage For="@(() => user.Name)" />
+                </div>
+
+                <div class="col-md-6">
+                    <label for="input2" class="form-label">Departamento</label>
+                    <InputSelect class="form-select" @bind-Value="user.Dept">
+                        @if (departaments != null && departaments.Length > 0)
                         {
-                            <option value="@departament">@departament</option>
+                            <option selected disabled>Selecciona una opción</option>
+                            @foreach (var departament in departaments)
+                            {
+                                <option value="@departament">@departament</option>
+                            }
+
                         }
-
-                    }
-                </InputSelect>
+                    </InputSelect>
+                </div>
             </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <input class="form-check-input" type="radio" name="radioGroup" id="radio1" value="option1">
-                <label class="form-check-label" for="radio1">Masculino</label>
-                <input class="form-check-input" type="radio" name="radioGroup" id="radio2" value="option2">
-                <label class="form-check-label" for="radio2">Femenino</label>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <input class="form-check-input" type="radio" name="radioGroup" id="radio1" value="option1">
+                    <label class="form-check-label" for="radio1">Masculino</label>
+                    <input class="form-check-input" type="radio" name="radioGroup" id="radio2" value="option2">
+                    <label class="form-check-label" for="radio2">Femenino</label>
+                </div>
+
             </div>
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label for="input1" class="form-label">Fecha de Ingreso</label>
+                    <InputDate class="form-control" @bind-Value="user.EntryDate"></InputDate>
+                </div>
 
-        </div>
-        <div class="row g-3">
-            <div class="col-md-3">
-                <label for="input1" class="form-label">Fecha de Ingreso</label>
-                <InputDate class="form-control" @bind-Value="user.EntryDate"></InputDate>
-            </div>
-            
-            
-            <div class="col-md-3">
-                <label for="input4" class="form-label">Oficina</label>
-                <InputSelect class="form-select" @bind-Value="user.Office">
-                    <option selected disabled>Selecciona una opción</option>
-                    @foreach (var ofi in Oficina)
-                    {
-                        <option value="@ofi">@ofi</option>
-                    }
-                </InputSelect>
-            </div>
 
-            <div class="col-md-3">
-                <label for="input1" class="form-label">Area</label>
-
-                <InputSelect class="form-select" @bind-Value="user.Area">
-
-                    @if (areas != null && areas.Length > 0)
-                    {
+                <div class="col-md-3">
+                    <label for="input4" class="form-label">Oficina</label>
+                    <InputSelect class="form-select" @bind-Value="user.Office">
                         <option selected disabled>Selecciona una opción</option>
-                        @foreach (var area in areas)
+                        @foreach (var ofi in Oficina)
                         {
-                            <option value="@area">@area</option>
+                            <option value="@ofi">@ofi</option>
                         }
+                    </InputSelect>
+                </div>
 
+                <div class="col-md-3">
+                    <label for="input1" class="form-label">Area</label>
+
+                    <InputSelect class="form-select" @bind-Value="user.Area">
+
+                        @if (areas != null && areas.Length > 0)
+                        {
+                            <option selected disabled>Selecciona una opción</option>
+                            @foreach (var area in areas)
+                            {
+                                <option value="@area">@area</option>
+                            }
+
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="@(() => user.Area)" />
+                </div>
+                <div class="col-md-3">
+                    @if (user.IdUser == 0)
+                    {
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label for="input1" class="form-label">ID</label>
+                                <InputNumber @bind-Value="id"></InputNumber>
+                            </div>
+                        </div>
                     }
-                </InputSelect>
-                <ValidationMessage For="@(() => user.Area)" />
-            </div>
-            <div class="col-md-3">
-                @if (user.IdUser == 0)
-                {
-                    <div class="row g-3">
-                        <div class="col-md-3">
-                            <label for="input1" class="form-label">ID</label>
-                            <InputNumber  @bind-Value="id"></InputNumber>
+                    else
+                    {
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label for="input1" class="form-label">ID</label>
+                                <InputNumber @bind-Value="user.IdUser"></InputNumber>
+                            </div>
                         </div>
-                    </div>
-                }
-                else
-                {
-                    <div class="row g-3">
-                        <div class="col-md-3">
-                            <label for="input1" class="form-label">ID</label>
-                            <InputNumber  @bind-Value="user.IdUser"></InputNumber>
-                        </div>
-                    </div>
-                }
+                    }
+                </div>
+
+
             </div>
 
-
-        </div>
-        
-    </EditForm>
-</FormSection>
-
+        </EditForm>
+    </FormSection>
+}
 
 
 
@@ -129,7 +149,7 @@ else
     public int id { get; set; }
     /*
     [Parameter]
-    public string? tempName { get; set; } 
+    public string? tempName { get; set; }
     */
     [Parameter]
     public string[]? areas { get; set; } = default!;
@@ -137,11 +157,68 @@ else
     [Parameter]
     public string[]? departaments { get; set; } = default!;
 
-    [Parameter] 
+    [Parameter]
     public EventCallback CreateUserCallback { get; set; }
 
+    private string? imageFilePath;
 
-    
+    private string? base64ImagePreview;
+
+    private UserPictureUpload? userPictureUploadRef;
+
+    private void HandleFileUpload(string path)
+    {
+        imageFilePath = path;
+        Console.WriteLine("Ruta de la imagen: " + imageFilePath);
+        // Aquí puede a signar imageFilePath al modelo de usuario, si es necesario
+        if (user is not null)
+        {
+            user.IMAGE_NAME = imageFilePath;
+        }
+
+    }
+
+    private void HandleFilePreview(string base64String)
+    {
+        base64ImagePreview = base64String;
+    }
+
+    private string GetImagePath()
+    {
+
+        if (!string.IsNullOrEmpty(base64ImagePreview))
+        {
+            return base64ImagePreview;
+        }
+        else if (user?.IMAGE_NAME is not null)
+        {
+            return $"/Images/{user.IMAGE_NAME}";
+        }
+        else
+        {
+            return $"/Images/default.svg";
+        }
+    }
+
+    private void RemoveImage()
+    {
+        base64ImagePreview = null;
+        imageFilePath = null;
+        if (user is not null)
+        {
+            user.IMAGE_NAME = null;
+        }
+        userPictureUploadRef?.ClearingFile();
+    }
+
+    private string HandlingUploadStyles()
+    {
+        return
+        (!string.IsNullOrEmpty(base64ImagePreview) || (user?.IMAGE_NAME is not null && user.IMAGE_NAME != "default.svg"))
+        ? "Cambiar" : "Agregar";
+    }
+
+
     private async Task SomeMethodInsideComponent()
     {
         if (CreateUserCallback.HasDelegate)
@@ -151,10 +228,10 @@ else
     }
 
     public void SubmitFromParent()
-    { 
+    {
         // Usa JSRuntime para disparar el envío del formulario
         JSRuntime.InvokeVoidAsync("submitFormById", "myForm");
     }
-    
+
 
 }

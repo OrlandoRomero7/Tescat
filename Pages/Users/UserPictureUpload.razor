@@ -1,0 +1,153 @@
+﻿@inject IConfiguration config
+
+<label for="file-upload"
+       style="border: 1px solid #ccc; display:block; padding: 6px 12px;cursor: pointer; width:10rem;">@UploadComponentStyle Imagen</label>
+
+<InputFile OnChange="LoadFiles" id="file-upload" accept=".png,.jpg,.jpeg,.webp,.tiff"
+           class="form-control" style="display: none" />
+
+
+@if (errors.Count > 0)
+{
+  @*  <h3>Errores</h3>*@
+    <ul class="text-danger">
+        @foreach (var error in errors)
+        {
+            <li>@error</li>
+        }
+    </ul>
+}
+
+@code {
+    private long maxFileSize = 1024 * 1024 * 3; //3MB
+    private List<string> errors = new();
+    private IBrowserFile? file;
+
+    [Parameter]
+    public EventCallback<string> OnFileUploaded { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnFilePreviewReady { get; set; }
+
+    [Parameter]
+    public int IdUser { get; set; }
+
+    [Parameter]
+    public string? UploadComponentStyle { get; set; }
+
+    public async void LoadFiles(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            file = e.File;
+            string[] permittedExtensions = { ".png", ".jpg", ".jpeg", ".webp", ".tiff" };
+            string ext = Path.GetExtension(file.Name).ToLowerInvariant();
+
+            if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
+            {
+                errors.Add($"Error en su archivo: {file?.Name}. Formato de imagen no valido.");
+                ClearingFile();
+                return;
+            }
+
+
+            // Resize the image and limit its file size
+            var resizedImage = await file.RequestImageFileAsync("image/png", 600, 600);
+
+            // Convert to Base64
+            using Stream imageStream = resizedImage.OpenReadStream(1024 * 1024 * 3); // Limit to 3MB
+            using MemoryStream ms = new MemoryStream();
+            await imageStream.CopyToAsync(ms);
+            var base64Image = $"data:image/png;base64,{Convert.ToBase64String(ms.ToArray())}";
+
+            // Invoke Preview and Upload
+            await OnFilePreviewReady.InvokeAsync(base64Image);
+            // If you also want to upload the file after resizing and conversion
+            // await OnFileUploaded.InvokeAsync(base64Image);
+        }
+        catch (Exception ex)
+        {
+            errors.Add($"File: {file?.Name} Error: {ex.Message}");
+        }
+    }
+
+    private async Task<string> ToBase64(IBrowserFile file)
+    {
+        var buffer = new byte[file.Size];
+        await file.OpenReadStream(maxFileSize).ReadAsync(buffer);
+        return $"data:{file.ContentType};base64,{Convert.ToBase64String(buffer)}";
+    }
+
+
+    private async Task<string> CaptureFile()
+    {
+        if (file is null)
+        {
+            return null;
+        }
+        try
+        {
+            // Convert IdUser to string
+            string idUserStr = IdUser.ToString();
+
+            // Get the directory where the files are stored
+            string directoryPath = config.GetValue<string>("FileStorage")!;
+
+            // List all files that start with the IdUser in the directory and delete them
+            var existingFiles = Directory.GetFiles(directoryPath, $"{idUserStr}.*");
+            foreach (var existingFile in existingFiles)
+            {
+                File.Delete(existingFile);
+            }
+
+            // Use IdUser as the new file name, and keep the original extension
+            string newFileName = $"{idUserStr}{Path.GetExtension(file.Name)}";
+
+            string path = Path.Combine(directoryPath, newFileName);
+            string relativePath = Path.Combine(newFileName);
+
+            await using FileStream fs = new(path, FileMode.Create);
+            await file.OpenReadStream(maxFileSize).CopyToAsync(fs);
+
+            Console.WriteLine("Ruta de la imagen: " + relativePath);
+            return relativePath;
+
+        }
+        catch (Exception ex)
+        {
+            errors.Add($"File: {file.Name} Error: {ex.Message}");
+            throw;
+        }
+
+    }
+
+    public void ClearingFile()
+    {
+        file = null;
+        //errors.Clear();
+    }
+
+    private User newImage = new();
+    public async Task SubmitImage()
+    {
+        if (file == null)
+        {
+            return;
+        }
+
+        try
+        {
+            string relativePath = await CaptureFile();
+            if (!string.IsNullOrEmpty(relativePath)) // Añadir esta comprobación
+            {
+                newImage.IMAGE_NAME = relativePath;
+                await OnFileUploaded.InvokeAsync(relativePath);
+            }
+        }
+        catch (Exception ex)
+        {
+            errors.Add($"Error: {ex.Message}");
+        }
+    }
+}
+
