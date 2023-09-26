@@ -6,6 +6,7 @@ using Tescat.Models;
 using Tescat.Services.UserCredentials;
 using Tescat.Services.Users;
 using CurrieTechnologies.Razor.SweetAlert2;
+using Tescat.Services.Emails;
 //using Tescat.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,13 +19,15 @@ builder.Services.AddDbContextFactory<TescatDbContext>(options =>
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
-builder.Services.AddScoped<OtherServices>();
+
 
 //builder.Services.AddSingleton<WeatherForecastService>();
 
 //Se añade como inyeccion de dependencias los servicios
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserCredentialService, UserCredentialService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<OtherServices>();
 builder.Services.AddScoped<SaveTempID>();
 builder.Services.AddSweetAlert2();
 

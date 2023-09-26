@@ -9,25 +9,116 @@
 
             <div class="col-md-6">
                 <label for="input2" class="form-label">Numero de celular</label>
-                <InputText class="form-control" @bind-Value="user.Cel"></InputText>
+                <InputText class="form-control" placeholder="(000)-000-00-00" @bind-Value="user.Cel"></InputText>
             </div>
         </div>
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label for="input1" class="form-label">Correo(s)</label>
-                <InputSelect class="form-select" @bind-Value="email">
 
-                </InputSelect>
-            </div>
-        </div>
+
     </EditForm>
+    @if (userEmails != null && userEmails.IdUser != null)
+    {
+        <EditForm Model="@userEmails">
+            @if (userEmails.Email1 != null)
+            {
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Correo 1</label>
+                        <InputText class="form-control" @bind-Value="userEmails.Email1"></InputText>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Contraseña</label>
+                        <InputText class="form-control" @bind-Value="userEmails.Pass1"></InputText>
+                    </div>
+                </div>
+            }
+            
+
+
+            @if (currentEmailCount > 1 || userEmails.Email2!=null)
+            {
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Correo 2</label>
+                        <InputText class="form-control" @bind-Value="userEmails.Email2"></InputText>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Contraseña</label>
+                        <InputText class="form-control" @bind-Value="userEmails.Pass2"></InputText>
+                    </div>
+                </div>
+            }
+
+            @if (currentEmailCount > 2 || userEmails.Email3 != null)
+            {
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Correo 3</label>
+                        <InputText class="form-control" @bind-Value="userEmails.Email3"></InputText>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Contraseña</label>
+                        <InputText class="form-control" @bind-Value="userEmails.Pass3"></InputText>
+                    </div>
+                </div>
+            }
+
+            @if (currentEmailCount < 3 )
+            {
+                <button type="button" class="btn btn-primary" @onclick="AddEmailField">Agregar otro correo</button>
+            }
+        </EditForm>
+    }
+    
+    @*@if (userEmails != null && userEmails.IdUser != null)
+    {
+        <EditForm Model="@userEmails">
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Correo 1</label>
+                    <InputText class="form-control" @bind-Value="userEmails.Email1"></InputText>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Contraseña</label>
+                    <InputText class="form-control" @bind-Value="userEmails.Pass1"></InputText>
+
+                </div>
+                <div class="col-md-4">
+
+                    <button type="button" class="btn btn-primary">+</button>
+
+                </div>
+            </div>
+        </EditForm>
+    }
+    else
+    {
+        <button type="button" class="btn btn-primary">Agregar Correos</button>
+    }*@
+
 </FormSection>
 
+    
+
+
+
+
+
 @code {
+
     [Parameter]
     public User user { get; set; }
-    // Solo los hice temporalmente para los @bind-Value
-    public string? cel;
-    public string? email;
+    [Parameter]
+    public Email? userEmails { get; set; } = default!;
+
+    private int currentEmailCount = 1;
+
+    private void AddEmailField()
+    {
+        currentEmailCount++;
+    }
 
 }
+
+
