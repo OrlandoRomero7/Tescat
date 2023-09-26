@@ -36,5 +36,7 @@ namespace Tescat.Models
         public DateTime? LastWorkingDate { get; set; }
         public int? TelKey { get; set; }
         public string? Cel { get; set; }
+
+        public string? IMAGE_NAME { get; set; }
     }
 }
