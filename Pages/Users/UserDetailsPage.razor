@@ -74,21 +74,21 @@ else
 
 @*Cuando se queire ver un usuario desde Users(Como que hace conflicto)*@
 
-@if (user.IdUser != 0 && !isEdit && !FromUserAddPage && dataLoaded)
 
-    @if (user?.IdUser != 0 && !isEdit && !FromUserAddPage)
 
-    {
-        <!-- Card de Informacion Basica -->
-        <BasicInformation @ref="childReference" user="user" id="id" areas="areas" departaments="departaments" CreateUserCallback="CreateUser"></BasicInformation>
+@if (user?.IdUser != 0 && !isEdit && !FromUserAddPage)
 
-        <!-- Card de Informacion de Contacto -->
-        <ContacInformation user="user" userEmails="userEmails"></ContacInformation>
+{
+    <!-- Card de Informacion Basica -->
+    <BasicInformation @ref="childReference" user="user" id="id" areas="areas" departaments="departaments" CreateUserCallback="CreateUser"></BasicInformation>
 
-        <!-- Card de Cuentas de Usuario -->
-        <UserAccount userCredential="userCredential"></UserAccount>
+    <!-- Card de Informacion de Contacto -->
+    <ContacInformation user="user" userEmails="userEmails"></ContacInformation>
 
-    }
+    <!-- Card de Cuentas de Usuario -->
+    <UserAccount userCredential="userCredential"></UserAccount>
+
+}
 
 <!-- Modal de confirmación -->
 <div class="modal" tabindex="-1" role="dialog" style="display: @modalDisplay">
@@ -137,6 +137,8 @@ else
     public bool isEdit = false;
 
     private bool dataLoaded = false;
+
+    //private BasicInformation hijoRefencia;
 
     protected override async Task OnInitializedAsync()
     {
@@ -196,7 +198,7 @@ else
         {
             if (user != null && user.IdUser != 0)
             {
-
+                await childReference.SomeMethodInsideComponent();
                 await UserService.UpdateUser(IdOld, user, userCredential);
 
                 if (IdOld != user.IdUser)

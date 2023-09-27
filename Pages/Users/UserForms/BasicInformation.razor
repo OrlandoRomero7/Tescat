@@ -12,11 +12,22 @@
 
             <img src="@GetImagePath()" style="width:12rem; height:12rem; display:block; border-radius:1rem; margin-bottom:1rem; object-fit: cover;">
 
-            <UserPictureUpload @ref="userPictureUploadRef"
-                               OnFileUploaded="HandleFileUpload"
-                               OnFilePreviewReady="HandleFilePreview"
-                               UploadComponentStyle="@HandlingUploadStyles()"
-                               IdUser="@user.IdUser" />
+            @if (user.IdUser == 0)
+            {
+                <UserPictureUpload @ref="userPictureUploadRef"
+                                   OnFileUploaded="HandleFileUpload"
+                                   OnFilePreviewReady="HandleFilePreview"
+                                   UploadComponentStyle="@HandlingUploadStyles()"
+                                   IdUser="@id" />
+            }
+            else
+            {
+                <UserPictureUpload @ref="userPictureUploadRef"
+                                   OnFileUploaded="HandleFileUpload"
+                                   OnFilePreviewReady="HandleFilePreview"
+                                   UploadComponentStyle="@HandlingUploadStyles()"
+                                   IdUser="@user.IdUser" />
+            }
 
             @if (user?.IMAGE_NAME != null)
             {
@@ -238,8 +249,18 @@
     }
 
 
-    private async Task SomeMethodInsideComponent()
+    public async Task SomeMethodInsideComponent()
     {
+        if (userPictureUploadRef != null)
+        {
+            await userPictureUploadRef.SubmitImage();
+        }
+
+        // Actualizar User.IMAGE_NAME sólo si imageFilePath tiene un valor
+        if (user != null && !string.IsNullOrEmpty(imageFilePath))
+        {
+            user.IMAGE_NAME = imageFilePath;
+        }
         if (CreateUserCallback.HasDelegate)
         {
             await CreateUserCallback.InvokeAsync(null);
@@ -252,37 +273,6 @@
         JSRuntime.InvokeVoidAsync("submitFormById", "myForm");
     }
 
-    //private bool _isSwitchChecked;
-
-    //public bool WebPrivilegesProxy
-    //{
-    //    get => user?.WebPrivileges ?? false;
-    //    set
-    //    {
-    //        if (user != null && user.WebPrivileges != value)
-    //        {
-    //            user.WebPrivileges = value;
-    //            HandleWebPrivilegesChange();
-    //        }
-    //    }
-    //}
-
-    private string label { get; set; }
-
-    //private void HandleWebPrivilegesChange()
-    //{
-    //    // Aquí puedes agregar lógica adicional si es necesario
-    //    if (WebPrivilegesProxy)
-    //    {
-    //        label = "Si";
-    //        // El switch está activado
-    //    }
-    //    else
-    //    {
-    //        label = "No";
-    //        // El switch está desactivado
-    //    }
-    //}
 
     private void SetUserWeb(ChangeEventArgs e)
     {

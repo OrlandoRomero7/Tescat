@@ -8,10 +8,10 @@ namespace Tescat.Models
     {
         public int IdUser { get; set; }
 
-        [Required(ErrorMessage = "Debes ingresar un nombre")]
+        //[Required(ErrorMessage = "Debes ingresar un nombre")]
         public string? Name { get; set; }
 
-        [Required(ErrorMessage = "Debe seleccionar un area")]
+        //[Required(ErrorMessage = "Debe seleccionar un area")]
         public string? Area { get; set; }
 
         //[Required(ErrorMessage = "Debe seleccionar un puesto")]
