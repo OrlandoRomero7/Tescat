@@ -65,40 +65,20 @@
                 <div class="col-md-6">
                     <input class="form-check-input" type="radio" name="radioGroup" id="radio1" value="true" @onchange="SetUserWeb" checked="@(user?.WebPrivileges == true)">
                     <label class="form-check-label" for="radio1">Si</label>
+                    <input class="form-check-input" type="radio" name="radioGroup" id="radio2" value="false" @onchange="SetUserWeb" checked="@(user?.WebPrivileges == false || user?.WebPrivileges == null)">
+                    <label class="form-check-label" for="radio2">No</label>
 
-                </div>
-                <input class="form-check-input" type="radio" name="radioGroup" id="radio2" value="false" @onchange="SetUserWeb" checked="@(user?.WebPrivileges == false || user?.WebPrivileges == null)">
-                <label class="form-check-label" for="radio2">No</label>
-
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <input class="form-check-input" type="radio" name="radioGroup" id="radio1" value="option1">
-                        <label class="form-check-label" for="radio1">Masculino</label>
-                        <input class="form-check-input" type="radio" name="radioGroup" id="radio2" value="option2">
-                        <label class="form-check-label" for="radio2">Femenino</label>
-                    </div>
-
-
-                </div>
-                <div class="row g-3">
-                    <div class="col-md-3">
-                        <label for="input1" class="form-label">Fecha de Ingreso</label>
-                        <InputDate class="form-control" @bind-Value="user.EntryDate"></InputDate>
-                    </div>
-
-                </div>
-            </div>
-
-
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <input class="form-check-input" type="radio" name="radioGroup" id="radio1" value="option1">
-                    <label class="form-check-label" for="radio1">Masculino</label>
-                    <input class="form-check-input" type="radio" name="radioGroup" id="radio2" value="option2">
-                    <label class="form-check-label" for="radio2">Femenino</label>
                 </div>
 
             </div>
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label for="input1" class="form-label">Fecha de Ingreso</label>
+                    <InputDate class="form-control" @bind-Value="user.EntryDate"></InputDate>
+                </div>
+
+            </div>
+
             <div class="row g-3">
                 <div class="col-md-3">
                     <label for="input1" class="form-label">Fecha de Ingreso</label>

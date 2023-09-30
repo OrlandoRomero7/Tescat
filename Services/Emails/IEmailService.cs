@@ -5,5 +5,7 @@ namespace Tescat.Services.Emails
     public interface IEmailService
     {
         public Task<Email> GetEmails(int userId);
+
+        public Task<Email> InsertUserEmail(Email userEmail);
     }
 }

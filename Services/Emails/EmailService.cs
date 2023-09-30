@@ -26,6 +26,13 @@ namespace Tescat.Services.Emails
                 return new Email();
             }
         }
-        
+        public async Task<Email> InsertUserEmail(Email userEmail)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            context.Emails.Add(userEmail);
+            await context.SaveChangesAsync();
+            return userEmail;
+        }
+
     }
 }
