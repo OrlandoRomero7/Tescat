@@ -136,7 +136,7 @@ else
 
     public bool isEdit = false;
 
-    private bool dataLoaded = false;
+    //private bool dataLoaded = false;
 
     //private BasicInformation hijoRefencia;
 
@@ -162,7 +162,7 @@ else
                 departaments = await OtherServices.getDepartaments();
                 userCredential = await UserCredentialService.GetUserCredentials(id);
                 userEmails = await EmailService.GetEmails(id);
-                dataLoaded = true;
+                //dataLoaded = true;
             }
         }
         catch (ArgumentException e)
@@ -199,7 +199,7 @@ else
             if (user != null && user.IdUser != 0)
             {
                 await childReference.SomeMethodInsideComponent();
-                await UserService.UpdateUser(IdOld, user, userCredential);
+                await UserService.UpdateUser(IdOld, user, userCredential, userEmails);
 
                 if (IdOld != user.IdUser)
                 {

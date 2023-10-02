@@ -1,4 +1,6 @@
-﻿
+﻿@using Tescat.Services.Emails;
+@inject IEmailService EmailService
+
 <FormSection Title="Información de Contacto">
     <EditForm Model="@user">
         <div class="row mb-3">
@@ -15,10 +17,11 @@
 
 
     </EditForm>
-    @if (userEmails != null && userEmails.IdUser != null)
+    @if (userEmails != null)
     {
         <EditForm Model="@userEmails">
-            @if (userEmails.Email1 != null)
+
+            @if ((currentEmailCount > 1 || !string.IsNullOrEmpty(userEmails.Email1)) && !hideEmail1)
             {
                 <div class="row mb-3">
                     <div class="col-md-4">
@@ -29,12 +32,16 @@
                         <label class="form-label">Contraseña</label>
                         <InputText class="form-control" @bind-Value="userEmails.Pass1"></InputText>
                     </div>
+                    <div class="col-md-4">
+                        @if (!string.IsNullOrEmpty(email1))
+                        {
+                            <button type="button" class="btn btn-primary" @onclick="(e)=>DeleteEmail(1)">Eliminar</button>
+                        }
+                    </div>
                 </div>
             }
-            
 
-
-            @if (currentEmailCount > 1 || userEmails.Email2!=null)
+            @if ((currentEmailCount > 2 || !string.IsNullOrEmpty(userEmails.Email2)) && !hideEmail2)
             {
                 <div class="row mb-3">
                     <div class="col-md-4">
@@ -45,10 +52,18 @@
                         <label class="form-label">Contraseña</label>
                         <InputText class="form-control" @bind-Value="userEmails.Pass2"></InputText>
                     </div>
-                </div>
-            }
+                    <div class="col-md-4">
 
-            @if (currentEmailCount > 2 || userEmails.Email3 != null)
+                        @if (!string.IsNullOrEmpty(email2))
+                        {
+                            <button type="button" class="btn btn-primary" @onclick="(e)=>DeleteEmail(2)">Eliminar</button>
+                        }
+                    </div>
+
+                </div>
+
+            }
+            @if ((currentEmailCount > 3 || !string.IsNullOrEmpty(userEmails.Email3)) && !hideEmail3)
             {
                 <div class="row mb-3">
                     <div class="col-md-4">
@@ -59,47 +74,30 @@
                         <label class="form-label">Contraseña</label>
                         <InputText class="form-control" @bind-Value="userEmails.Pass3"></InputText>
                     </div>
+                    <div class="col-md-4">
+
+                        @if (!string.IsNullOrEmpty(email3))
+                        {
+                            <button type="button" class="btn btn-primary" @onclick="(e)=>DeleteEmail(3)">Eliminar</button>
+                        }
+                    </div>
                 </div>
             }
-
-            @if (currentEmailCount < 3 )
+            @if (currentEmailCount < 4 && allNull && someNull)
             {
-                <button type="button" class="btn btn-primary" @onclick="AddEmailField">Agregar otro correo</button>
+                <button type="button" class="btn btn-primary" @onclick="AddEmailField">Agregar Correo</button>
             }
+            @if (currentEmailCount < 4 && someNull && !allNull)
+            {
+                <button type="button" class="btn btn-primary" @onclick="AddEmailField">Agregar correo</button>
+            }
+
         </EditForm>
     }
-    
-    @*@if (userEmails != null && userEmails.IdUser != null)
-    {
-        <EditForm Model="@userEmails">
-
-            <div class="row mb-3">
-                <div class="col-md-4">
-                    <label class="form-label">Correo 1</label>
-                    <InputText class="form-control" @bind-Value="userEmails.Email1"></InputText>
-                </div>
-
-                <div class="col-md-4">
-                    <label class="form-label">Contraseña</label>
-                    <InputText class="form-control" @bind-Value="userEmails.Pass1"></InputText>
-
-                </div>
-                <div class="col-md-4">
-
-                    <button type="button" class="btn btn-primary">+</button>
-
-                </div>
-            </div>
-        </EditForm>
-    }
-    else
-    {
-        <button type="button" class="btn btn-primary">Agregar Correos</button>
-    }*@
 
 </FormSection>
 
-    
+
 
 
 
@@ -112,12 +110,130 @@
     [Parameter]
     public Email? userEmails { get; set; } = default!;
 
+    public bool allNull = false;
+
+    public bool someNull = false;
+
+    public string? email1;
+    public string? email2;
+    public string? email3;
+
+    public bool hideEmail1 = false;
+    public bool hideEmail2 = false;
+    public bool hideEmail3 = false;
+
+    protected override void OnInitialized()
+    {
+        if (userEmails != null)
+        {
+            email1 = userEmails.Email1;
+            email2 = userEmails.Email2;
+            email3 = userEmails.Email3;
+
+            if (string.IsNullOrEmpty(userEmails.Email1) && string.IsNullOrEmpty(userEmails.Email2) && string.IsNullOrEmpty(userEmails.Email3))
+            {
+                allNull = true;
+            }
+            if (string.IsNullOrEmpty(userEmails.Email1) || string.IsNullOrEmpty(userEmails.Email2) || string.IsNullOrEmpty(userEmails.Email3))
+            {
+                someNull = true;
+
+                if (!string.IsNullOrEmpty(userEmails.Email1)) currentEmailCount++;
+                if (!string.IsNullOrEmpty(userEmails.Email2)) currentEmailCount++;
+                if (!string.IsNullOrEmpty(userEmails.Email3)) currentEmailCount++;
+            }
+
+        }
+    }
+
+
+
     private int currentEmailCount = 1;
 
     private void AddEmailField()
     {
+        Console.WriteLine(currentEmailCount);
         currentEmailCount++;
+        
+        
+        if (currentEmailCount > 3 && !hideEmail2 && !hideEmail1)
+            hideEmail3 = false;
+        if (currentEmailCount > 2 && !hideEmail1)
+            hideEmail2 = false;
+        if (currentEmailCount > 1)
+            hideEmail1 = false;
+        
+        
+        
     }
+    private void DeleteEmail(int email)
+    {
+        if (userEmails != null)
+        {
+            if (email == 1)
+            {
+                userEmails.Email1 = null;
+                userEmails.Pass1 = null;
+                someNull = true;
+                hideEmail1 = true;
+                if (!string.IsNullOrEmpty(userEmails.Email2) && !string.IsNullOrEmpty(userEmails.Email3))
+                    currentEmailCount = 3;
+
+                if (string.IsNullOrEmpty(userEmails.Email2) && !string.IsNullOrEmpty(userEmails.Email3))
+                    currentEmailCount = 2;
+
+                if (!string.IsNullOrEmpty(userEmails.Email2) && string.IsNullOrEmpty(userEmails.Email3))
+                    currentEmailCount = 2;
+
+                if (string.IsNullOrEmpty(userEmails.Email2) && string.IsNullOrEmpty(userEmails.Email3))
+                    currentEmailCount = 1;
+
+            }
+            if (email == 2)
+            {
+                userEmails.Email2 = null;
+                userEmails.Pass2 = null;
+                someNull = true;
+                hideEmail2 = true;
+
+                if (!string.IsNullOrEmpty(userEmails.Email1) && !string.IsNullOrEmpty(userEmails.Email3))
+                    currentEmailCount = 3;
+
+                if (string.IsNullOrEmpty(userEmails.Email1) && !string.IsNullOrEmpty(userEmails.Email3))
+                    currentEmailCount = 2;
+
+                if (!string.IsNullOrEmpty(userEmails.Email1) && string.IsNullOrEmpty(userEmails.Email3))
+                    currentEmailCount = 2;
+
+                if (string.IsNullOrEmpty(userEmails.Email1) && string.IsNullOrEmpty(userEmails.Email3))
+                    currentEmailCount = 1;
+
+            }
+            if (email == 3)
+            {
+                userEmails.Email3 = null;
+                userEmails.Pass3 = null;
+                someNull = true;
+                hideEmail3 = true;
+
+                if (!string.IsNullOrEmpty(userEmails.Email1) && !string.IsNullOrEmpty(userEmails.Email2))
+                    currentEmailCount = 3;
+
+                if (string.IsNullOrEmpty(userEmails.Email1) && !string.IsNullOrEmpty(userEmails.Email3))
+                    currentEmailCount = 2;
+
+                if (!string.IsNullOrEmpty(userEmails.Email1) && string.IsNullOrEmpty(userEmails.Email2))
+                    currentEmailCount = 2;
+
+                if (string.IsNullOrEmpty(userEmails.Email1) && string.IsNullOrEmpty(userEmails.Email2))
+                    currentEmailCount = 1;
+
+            }
+        }
+
+
+    }
+    
 
 }
 

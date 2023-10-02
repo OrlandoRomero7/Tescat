@@ -1,8 +1,27 @@
 ﻿<!-- Card Cuentas de Usuario -->
 
-    <FormSection Title="Cuentas de Usuario">
-        <EditForm Model="@userCredential">
-
+<FormSection Title="Cuentas de Usuario">
+    <EditForm Model="@userCredential">
+        @if (!portal || !casa || !mozart || !darwin || !vpn)
+        {
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Agregar Cuenta</label>
+                    <select @onchange="OnSelectionChanged">
+                        @foreach (var option in options)
+                        {
+                            if (!option.Value) // Aquí estamos verificando que el valor sea 'false'.
+                            {
+                                <option>@option.Key</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+        }
+        
+        @if (selectedOptions.Contains("portal") || !string.IsNullOrEmpty(userCredential.PortalUser))
+        {
             <div class="row mb-3">
                 <div class="col-md-6">
                     <label class="form-label">Usuario Portal</label>
@@ -16,7 +35,9 @@
                 </div>
             </div>
 
-
+        }
+        @if (selectedOptions.Contains("casa") || !string.IsNullOrEmpty(userCredential.CasaUser))
+        {
             <div class="row mb-3">
                 <div class="col-md-6">
                     <label class="form-label">Usuario Casa</label>
@@ -28,8 +49,9 @@
                     <InputText class="form-control" @bind-Value="userCredential.CasaPass"></InputText>
                 </div>
             </div>
-
-
+        }
+        @if (selectedOptions.Contains("mozart") || !string.IsNullOrEmpty(userCredential.MozartUser))
+        {
             <div class="row mb-3">
                 <div class="col-md-6">
                     <label class="form-label">Usuario Mozart</label>
@@ -41,8 +63,9 @@
                     <InputText class="form-control" @bind-Value="userCredential.MozartPass"></InputText>
                 </div>
             </div>
-
-
+        }
+        @if (selectedOptions.Contains("darwin") || !string.IsNullOrEmpty(userCredential.DarwinPass))
+        {
             <div class="row mb-3">
                 <div class="col-md-6">
                     <label class="form-label">Usuario Darwin</label>
@@ -54,8 +77,9 @@
                     <InputText class="form-control" @bind-Value="userCredential.DarwinPass"></InputText>
                 </div>
             </div>
-
-
+        }
+        @if (selectedOptions.Contains("vpn") || !string.IsNullOrEmpty(userCredential.VpnUser))
+        {
             <div class="row mb-3">
                 <div class="col-md-6">
                     <label class="form-label">Usuario VPN</label>
@@ -67,8 +91,12 @@
                     <InputText class="form-control" @bind-Value="userCredential.VpnPass"></InputText>
                 </div>
             </div>
-        </EditForm>
-    </FormSection>
+            
+        }
+
+
+    </EditForm>
+</FormSection>
 
 
 
@@ -79,6 +107,78 @@
     [Parameter]
     public UserCredential? userCredential { get; set; } = default!;
 
+    public bool portal = false;
+    public bool casa = false;
+    public bool mozart = false;
+    public bool darwin = false;
+    public bool vpn = false;
+
+    private Dictionary<string, bool> options = new Dictionary<string, bool>();
+
+    private string selectedOption;
+
+    private List<string> selectedOptions = new List<string>();
+
+
     
+
+    protected override void OnInitialized()
+    {
+        if (userCredential != null)
+        {
+            portal = !string.IsNullOrEmpty(userCredential.PortalUser);
+            casa = !string.IsNullOrEmpty(userCredential.CasaUser);
+            mozart = !string.IsNullOrEmpty(userCredential.MozartUser);
+            darwin = !string.IsNullOrEmpty(userCredential.DarwinUser);
+            vpn = !string.IsNullOrEmpty(userCredential.VpnUser);
+
+            options.Add("portal", portal);
+            options.Add("casa", casa);
+            options.Add("mozart", mozart);
+            options.Add("darwin", darwin);
+            options.Add("vpn", vpn);
+        }
+    }
+
+    private void OnSelectionChanged(ChangeEventArgs e)
+    {
+        selectedOption = e.Value.ToString();
+        options.Remove(selectedOption); // Eliminamos la opción del diccionario
+        selectedOptions.Add(selectedOption); // Agregamos a la lista de seleccionados
+    }
+    /*
+    public bool portal = false;
+    public bool casa = false;
+    public bool mozart = false;
+    public bool darwin = false;
+    public bool vpn = false;
+
+    protected override void OnInitialized()
+    {
+        if (userCredential != null)
+        {
+            if (string.IsNullOrEmpty(userCredential.PortalUser))
+            {
+                portal = true;
+            }
+            if (string.IsNullOrEmpty(userCredential.CasaUser))
+            {
+                casa = true;
+            }
+            if (string.IsNullOrEmpty(userCredential.MozartUser))
+            {
+                mozart = true;
+            }
+            if (string.IsNullOrEmpty(userCredential.DarwinUser))
+            {
+                darwin = true;
+            }
+            if (string.IsNullOrEmpty(userCredential.VpnUser))
+            {
+                vpn = true;
+            }
+        }
+    }
+    */
 
 }
