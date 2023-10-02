@@ -7,10 +7,11 @@
             <div class="row mb-3">
                 <div class="col-md-6">
                     <label class="form-label">Agregar Cuenta</label>
-                    <select @onchange="OnSelectionChanged">
+                    <select @bind="selectedOption">
+                        <option value="default">Seleccione una opción</option>
                         @foreach (var option in options)
                         {
-                            if (!option.Value) // Aquí estamos verificando que el valor sea 'false'.
+                            if (!option.Value)
                             {
                                 <option>@option.Key</option>
                             }
@@ -23,15 +24,18 @@
         @if (selectedOptions.Contains("portal") || !string.IsNullOrEmpty(userCredential.PortalUser))
         {
             <div class="row mb-3">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label">Usuario Portal</label>
                     <InputText class="form-control" @bind-Value="userCredential.PortalUser"></InputText>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label">Contraseña</label>
                     <InputText class="form-control" @bind-Value="userCredential.PortalPass"></InputText>
 
+                </div>
+                <div class="col-md-4">
+                    <button type="button" class="btn btn-primary">Quitar</button>
                 </div>
             </div>
 
@@ -39,56 +43,68 @@
         @if (selectedOptions.Contains("casa") || !string.IsNullOrEmpty(userCredential.CasaUser))
         {
             <div class="row mb-3">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label">Usuario Casa</label>
                     <InputText class="form-control" @bind-Value="userCredential.CasaUser"></InputText>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label">Contraseña</label>
                     <InputText class="form-control" @bind-Value="userCredential.CasaPass"></InputText>
+                </div>
+                <div class="col-md-4">
+                    <button type="button" class="btn btn-primary">Quitar</button>
                 </div>
             </div>
         }
         @if (selectedOptions.Contains("mozart") || !string.IsNullOrEmpty(userCredential.MozartUser))
         {
             <div class="row mb-3">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label">Usuario Mozart</label>
                     <InputText class="form-control" @bind-Value="userCredential.MozartUser"></InputText>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label">Contraseña</label>
                     <InputText class="form-control" @bind-Value="userCredential.MozartPass"></InputText>
+                </div>
+                <div class="col-md-4">
+                    <button type="button" class="btn btn-primary">Quitar</button>
                 </div>
             </div>
         }
         @if (selectedOptions.Contains("darwin") || !string.IsNullOrEmpty(userCredential.DarwinPass))
         {
             <div class="row mb-3">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label">Usuario Darwin</label>
                     <InputText class="form-control" @bind-Value="userCredential.DarwinUser"></InputText>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label">Contraseña</label>
                     <InputText class="form-control" @bind-Value="userCredential.DarwinPass"></InputText>
+                </div>
+                <div class="col-md-4">
+                    <button type="button" class="btn btn-primary">Quitar</button>
                 </div>
             </div>
         }
         @if (selectedOptions.Contains("vpn") || !string.IsNullOrEmpty(userCredential.VpnUser))
         {
             <div class="row mb-3">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label">Usuario VPN</label>
                     <InputText class="form-control" @bind-Value="userCredential.VpnUser"></InputText>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label">Contraseña</label>
                     <InputText class="form-control" @bind-Value="userCredential.VpnPass"></InputText>
+                </div>
+                <div class="col-md-4">
+                    <button type="button" class="btn btn-primary">Quitar</button>
                 </div>
             </div>
             
@@ -115,12 +131,12 @@
 
     private Dictionary<string, bool> options = new Dictionary<string, bool>();
 
-    private string selectedOption;
+    //private string selectedOption;
 
     private List<string> selectedOptions = new List<string>();
 
 
-    
+
 
     protected override void OnInitialized()
     {
@@ -139,13 +155,49 @@
             options.Add("vpn", vpn);
         }
     }
-
-    private void OnSelectionChanged(ChangeEventArgs e)
+    private string _selectedOption = "default";
+    public string selectedOption
     {
-        selectedOption = e.Value.ToString();
-        options.Remove(selectedOption); // Eliminamos la opción del diccionario
-        selectedOptions.Add(selectedOption); // Agregamos a la lista de seleccionados
+        get => _selectedOption;
+        set
+        {
+            _selectedOption = value;
+            HandleSelectionChange();
+        }
     }
+
+    private void HandleSelectionChange()
+    {
+        if (_selectedOption == "default")
+        {
+            return;
+        }
+        options.Remove(_selectedOption);
+        selectedOptions.Add(_selectedOption);
+        _selectedOption = "default"; // Restablecer a la opción por defecto
+    }
+
+    private void DeleteAccount(string account)
+    {
+        switch(account)
+        {
+            case "portal":
+                var kk = 1;
+                break;
+        }
+    }
+
+    //private void OnSelectionChanged(ChangeEventArgs e)
+    //{
+    //    selectedOption = e.Value.ToString();
+    //    if (selectedOption == "default")
+    //    {
+    //        return; // Si la opción seleccionada es la opción por defecto, no hacemos nada.
+    //    }
+    //    options.Remove(selectedOption);
+    //    selectedOptions.Add(selectedOption);
+    //    selectedOption = "default"; // Restablecer a la opción por defecto
+    //}
     /*
     public bool portal = false;
     public bool casa = false;
