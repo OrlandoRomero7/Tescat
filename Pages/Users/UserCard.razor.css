@@ -1,0 +1,69 @@
+﻿h5.card-title {
+    font-weight: 700;
+}
+
+h6.card-subtitle {
+    font-weight: 500;
+    color: #113B55;
+}
+
+.card-body h4 {
+    font-weight: 500;
+    color: var(--brand-text);
+    font-size: 16px;
+    display: inline-block;
+}
+
+.card-body h6 {
+    font-size: 18px;
+    display: inline-block;
+}
+
+small.text-details {
+    font-size: 1.10rem;
+    color: var(--brand-text);
+    /*   font-weight:600;*/
+}
+
+
+.card-body {
+    padding: 1.25rem 1.25rem;
+}
+
+.user-card {
+    transition: all 200ms ease-in-out;
+}
+
+    .user-card:hover {
+        transform: scale(1.040);
+        transition: all 200ms ease-in-out;
+        transition-delay: 300ms;
+    }
+
+    .user-card:nth-child(3n-2) {
+        padding-left: 0px;
+        padding-right: 5%;
+    }
+
+    .user-card:nth-child(3n-1) {
+        padding-left: 3%;
+        padding-right: 3%;
+    }
+
+
+    .user-card:nth-child(3n) {
+        padding-left: 5%;
+        padding-right: 0px;
+    }
+
+
+.card {
+    transition: all 200ms ease-in-out;
+}
+
+
+    .card:hover {
+        box-shadow: 0 1rem 3rem rgba(0,0,0, .175) !important;
+        transition: all 200ms ease-in-out;
+        transition-delay: 300ms;
+    }
