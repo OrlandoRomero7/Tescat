@@ -16,13 +16,14 @@ body {
     background-color: var(--brand-white);
 }
 
-h1:focus {
-    outline: none;
-}
-
-span {
+p, h1, h2, h3, h4, h5, h6, span, strong, em, a, li, td, th, b, i, label {
     color: var(--brand-text);
 }
+
+    h1:focus {
+        outline: none;
+    }
+
 
 a {
     color: var(--brand);
@@ -131,7 +132,6 @@ span.nav-link-tab {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
-
 
 
 
