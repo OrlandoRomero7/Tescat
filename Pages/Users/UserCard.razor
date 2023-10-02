@@ -1,10 +1,5 @@
-﻿@*@using Tescat.Services;
-@using Tescat.Services.Users;*@
-
-@inject IUserService UserService
+﻿@inject IUserService UserService
 @inject NavigationManager NavigationManager
-
-
 
 
 
@@ -33,7 +28,8 @@
         </div>
 
 
-        <button type="button" class="btn btn-info" @onclick="() => UserDetails(User.IdUser)">Ver</button>
+        <button type="button" class="btn btn-primary bi bi-binoculars me-2" @onclick="() => UserDetails(User.IdUser)">Ver</button>
+   
 
 
     </div>
@@ -42,17 +38,6 @@
 
 
 
-
-
-
-<style>
-    .profile-img img {
-        width: 150px;
-        height: 150px;
-        object-fit: cover;
-        border-radius: 50%;
-    }
-</style>
 
 
 @code {
