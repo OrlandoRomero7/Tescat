@@ -2,6 +2,9 @@
 using Tescat.Models;
 using Tescat.Services.Emails;
 using Tescat.Services.UserCredentials;
+using System.IO;
+using System.Linq;
+
 
 namespace Tescat.Services.Users
 {
@@ -11,11 +14,15 @@ namespace Tescat.Services.Users
         private readonly IDbContextFactory<TescatDbContext> _contextFactory;
         private readonly IUserCredentialService _userCredentialService;
         private readonly IEmailService _userEmailService;
-        public UserService(IDbContextFactory<TescatDbContext> contextFactory, IUserCredentialService userCredentialService, IEmailService userEmailService)
+        private readonly IConfiguration _config;
+
+        public UserService(IDbContextFactory<TescatDbContext> contextFactory, IUserCredentialService userCredentialService, IEmailService userEmailService, IConfiguration config)
         {
             _contextFactory = contextFactory;
             _userCredentialService = userCredentialService;
             _userEmailService = userEmailService;
+            _config = config;
+
         }
         public async Task<User> DeleteUser(int userID)
         {
@@ -37,10 +44,10 @@ namespace Tescat.Services.Users
             
         }
 
-        public Task<List<User>> GetAllUsers()
+        public async Task<List<User>> GetAllUsers()
         {
             using var context = _contextFactory.CreateDbContext();
-            return context.Users.ToListAsync();
+            return await context.Users.ToListAsync();
         }
 
         public async Task<User> GetUserId(int userID)
@@ -77,9 +84,42 @@ namespace Tescat.Services.Users
 
             if (IdOld != updateUser.IdUser)
             {
-                await InsertUser(updateUser);
-                var pcDb = await context.Pcs.FirstOrDefaultAsync(p => p.IdUser == IdOld);
+                
                 //var emailDb = await context.Emails.FirstOrDefaultAsync(p => p.IdUser == IdOld);
+
+                //------------------------------------------------------------------------------------------------------------
+
+
+                string directoryPath = _config.GetValue<string>("FileStorage")!;
+                string fileName = IdOld.ToString(); // Aquí pones el nombre de tu archivo sin la extensión.
+                string newFileName = updateUser.IdUser.ToString(); // Aquí pones el nuevo nombre del archivo sin extensión.
+                string[] validImageExtensions = new[] { ".png", ".jpg", ".jpeg", ".webp", ".tiff" };
+
+                // Buscar todos los archivos que coincidan con el nombre sin importar la extensión
+                var matchingFiles = Directory.GetFiles(directoryPath, $"{fileName}.*")
+                                             .Where(file => validImageExtensions.Contains(Path.GetExtension(file).ToLower()))
+                                             .ToList();
+                string existingFilePath = null;
+                if (matchingFiles.Any())
+                {
+                    existingFilePath = matchingFiles.First();
+                    string newFilePath = Path.Combine(directoryPath, $"{newFileName}{Path.GetExtension(existingFilePath)}");
+
+                    // Cambiar el nombre del archivo
+                    File.Move(existingFilePath, newFilePath);
+                    Console.WriteLine($"El archivo ha sido renombrado a {newFileName}{Path.GetExtension(existingFilePath)}.");
+                    
+                }
+                else
+                {
+                    Console.WriteLine($"No se encontró un archivo de imagen con nombre {fileName} en el directorio.");
+                }
+
+                //------------------------------------------------------------------------------------------------------
+                
+                await InsertUser(updateUser);
+                
+                var pcDb = await context.Pcs.FirstOrDefaultAsync(p => p.IdUser == IdOld);
 
                 if (userCredential.IdUser == null) Console.WriteLine("El id old no tiene relacion userCredential");
                 else
