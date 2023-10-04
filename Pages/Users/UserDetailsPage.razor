@@ -11,6 +11,7 @@
 @inject IEmailService EmailService
 @inject OtherServices OtherServices
 @inject NavigationManager NavigationManager
+@inject IDbContextFactory<TescatDbContext> ContextFactory
 
 @inject IJSRuntime JSRuntime
 
@@ -134,6 +135,8 @@ else
 
     public bool FromUserAddPage = false;
 
+    private int? OriginalUserId { get; set; }
+
     public bool isEdit = false;
 
     //private bool dataLoaded = false;
@@ -163,6 +166,8 @@ else
                 userCredential = await UserCredentialService.GetUserCredentials(id);
                 userEmails = await EmailService.GetEmails(id);
                 //dataLoaded = true;
+
+                OriginalUserId = user?.IdUser;
             }
         }
         catch (ArgumentException e)
@@ -198,6 +203,19 @@ else
         {
             if (user != null && user.IdUser != 0)
             {
+                using var context = ContextFactory.CreateDbContext();
+
+                var existingUser = await context.Users
+         .AsNoTracking().FirstOrDefaultAsync(usr => usr.IdUser == usr.IdUser);
+
+
+
+                if (existingUser != null && user.IMAGE_NAME != null)
+                {
+                    existingUser.IMAGE_NAME = user.IMAGE_NAME; // Update the image ID or path
+                }
+
+
                 await childReference.SomeMethodInsideComponent();
                 await UserService.UpdateUser(IdOld, user, userCredential, userEmails);
 

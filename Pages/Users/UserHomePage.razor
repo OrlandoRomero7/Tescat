@@ -3,13 +3,14 @@
 @inject OtherServices OtherServices
 @inject TescatDbContext Context
 @inject NavigationManager NavigationManager
+@using System.Reflection;
 
 
 
 <UserSearch></UserSearch>
 <button type="button" class="btn btn-primary" @onclick="CreateNewUser">Agregar Usuario</button>
 <div class="container">
-    <div class="row">
+    <div style="row-gap:4rem; justify-content:center; display:grid; grid-template-columns: 1fr 1fr 1fr">
 
         @if (Users == null)
         {

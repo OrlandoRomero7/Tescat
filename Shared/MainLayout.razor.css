@@ -12,9 +12,23 @@ main {
 
 
 
+    main.visible-transition {
+        opacity: 1;
+        filter: blur(0);
+        transition: opacity 250ms, filter 250ms ease;
+    }
+
+    main.hidden-transition {
+        opacity: 0;
+        filter: blur(10px);
+        transition: filter 250ms ease-out;
+    }
+
+
 
 .active-sidebar-toggle {
     display: none;
+    z-index: 9;
 }
 
 
