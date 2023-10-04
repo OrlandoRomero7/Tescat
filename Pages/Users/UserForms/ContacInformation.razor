@@ -21,24 +21,22 @@
     {
         <EditForm Model="@userEmails">
 
-            @if (options.Any(o => !o.Value))
+
+            @if (!options["Correo 1"])
             {
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <label class="form-label">Agregar Correo</label>
-                        <InputSelect class="form-select" @bind-Value="selectedOption">
-                            <option value="default">Seleccione una opción</option>
-                            @foreach (var option in options)
-                            {
-                                if (!option.Value)
-                                {
-                                    <option>@option.Key</option>
-                                }
-                            }
-                        </InputSelect>
-                    </div>
-                </div>
+                <button class="btn btn-secondary" @onclick="(e) => AddEmail(1)">Agregar Correo 1</button>
             }
+
+            @if (!options["Correo 2"] && options["Correo 1"])
+            {
+                <button class="btn btn-secondary" @onclick="(e) => AddEmail(2)">Agregar Correo 2</button>
+            }
+
+            @if (!options["Correo 3"] && options["Correo 2"] && options["Correo 1"])
+            {
+                <button class="btn btn-secondary" @onclick="(e) => AddEmail(3)">Agregar Correo 3</button>
+            }
+
 
             @if (selectedOptions.Contains("Correo 1") || !string.IsNullOrEmpty(userEmails.Email1))
             {
@@ -52,7 +50,7 @@
                         <InputText class="form-control" @bind-Value="userEmails.Pass1"></InputText>
                     </div>
                     <div class="col-md-4">
-                          <button type="button" class="btn btn-primary" @onclick="(e)=>DeleteEmail(1)">Eliminar</button>
+                        <button type="button" class="btn btn-primary" @onclick="(e)=>DeleteEmail(1)">Eliminar</button>
                     </div>
                 </div>
             }
@@ -69,7 +67,7 @@
                         <InputText class="form-control" @bind-Value="userEmails.Pass2"></InputText>
                     </div>
                     <div class="col-md-4">
-                            <button type="button" class="btn btn-primary" @onclick="(e)=>DeleteEmail(2)">Eliminar</button>
+                        <button type="button" class="btn btn-primary" @onclick="(e)=>DeleteEmail(2)">Eliminar</button>
                     </div>
                 </div>
             }
@@ -85,20 +83,15 @@
                         <InputText class="form-control" @bind-Value="userEmails.Pass3"></InputText>
                     </div>
                     <div class="col-md-4">
-                            <button type="button" class="btn btn-primary" @onclick="(e)=>DeleteEmail(3)">Eliminar</button>
+                        <button type="button" class="btn btn-primary" @onclick="(e)=>DeleteEmail(3)">Eliminar</button>
                     </div>
                 </div>
             }
-            
+
         </EditForm>
     }
 
 </FormSection>
-
-
-
-
-
 
 
 @code {
@@ -132,38 +125,39 @@
         }
     }
 
-    private string _selectedOption = "default";
-
-    public string selectedOption
+    private void AddEmail(int opc)
     {
-        get => _selectedOption;
-        set
+        bool canAdd = true;
+        if (opc == 2 && string.IsNullOrEmpty(userEmails.Email1))
         {
-            _selectedOption = value;
-            HandleSelectionChange();
+            canAdd = false;
         }
-    }
+        else if (opc == 3 && string.IsNullOrEmpty(userEmails.Email2))
+        {
+            canAdd = false;
+        }
+        if (canAdd)
+        {
+            switch (opc)
+            {
+                case 1:
+                    selectedOptions.Add("Correo 1");
+                    options["Correo 1"] = true;
+                    break;
+                case 2:
+                    selectedOptions.Add("Correo 2");
+                    options["Correo 2"] = true;
+                    break;
+                case 3:
+                    selectedOptions.Add("Correo 3");
+                    options["Correo 3"] = true;
+                    break;
 
-    private void HandleSelectionChange()
-    {
-        if (_selectedOption == "default")
-        {
-            return;
+            }
         }
-        if (_selectedOption == "Correo 2" && string.IsNullOrEmpty(userEmails.Email1))
-        {
-            _selectedOption = "default";
-            return;
-        }
-        if (_selectedOption == "Correo 3" && string.IsNullOrEmpty(userEmails.Email1) && string.IsNullOrEmpty(userEmails.Email3))
-        {
-            _selectedOption = "default";
-            return;
-        }
-        options.Remove(_selectedOption);
-        selectedOptions.Add(_selectedOption);
-        _selectedOption = "default"; // Restablecer a la opción por defecto
+       
     }
+   
     private void DeleteEmail(int account)
     {
         switch (account)
@@ -186,16 +180,14 @@
                 userEmails.Pass3 = string.Empty;
                 selectedOptions.Remove("Correo 3");
                 break;
-            
+
 
         }
     }
-    
 
 
-    
-    
+
+
+
 
 }
-
-
