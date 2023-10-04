@@ -21,7 +21,24 @@
     {
         <EditForm Model="@userEmails">
 
-            @if ((currentEmailCount > 1 || !string.IsNullOrEmpty(userEmails.Email1)) && !hideEmail1)
+
+            @if (!options["Correo 1"])
+            {
+                <button class="btn btn-secondary" @onclick="(e) => AddEmail(1)">Agregar Correo 1</button>
+            }
+
+            @if (!options["Correo 2"] && options["Correo 1"])
+            {
+                <button class="btn btn-secondary" @onclick="(e) => AddEmail(2)">Agregar Correo 2</button>
+            }
+
+            @if (!options["Correo 3"] && options["Correo 2"] && options["Correo 1"])
+            {
+                <button class="btn btn-secondary" @onclick="(e) => AddEmail(3)">Agregar Correo 3</button>
+            }
+
+
+            @if (selectedOptions.Contains("Correo 1") || !string.IsNullOrEmpty(userEmails.Email1))
             {
                 <div class="row mb-3">
                     <div class="col-md-4">
@@ -33,15 +50,12 @@
                         <InputText class="form-control" @bind-Value="userEmails.Pass1"></InputText>
                     </div>
                     <div class="col-md-4">
-                        @if (!string.IsNullOrEmpty(email1))
-                        {
-                            <button type="button" class="btn btn-primary" @onclick="(e)=>DeleteEmail(1)">Eliminar</button>
-                        }
+                        <button type="button" class="btn btn-primary" @onclick="(e)=>DeleteEmail(1)">Eliminar</button>
                     </div>
                 </div>
             }
 
-            @if ((currentEmailCount > 2 || !string.IsNullOrEmpty(userEmails.Email2)) && !hideEmail2)
+            @if (selectedOptions.Contains("Correo 2") || !string.IsNullOrEmpty(userEmails.Email2))
             {
                 <div class="row mb-3">
                     <div class="col-md-4">
@@ -53,17 +67,11 @@
                         <InputText class="form-control" @bind-Value="userEmails.Pass2"></InputText>
                     </div>
                     <div class="col-md-4">
-
-                        @if (!string.IsNullOrEmpty(email2))
-                        {
-                            <button type="button" class="btn btn-primary" @onclick="(e)=>DeleteEmail(2)">Eliminar</button>
-                        }
+                        <button type="button" class="btn btn-primary" @onclick="(e)=>DeleteEmail(2)">Eliminar</button>
                     </div>
-
                 </div>
-
             }
-            @if ((currentEmailCount > 3 || !string.IsNullOrEmpty(userEmails.Email3)) && !hideEmail3)
+            @if (selectedOptions.Contains("Correo 3") || !string.IsNullOrEmpty(userEmails.Email3))
             {
                 <div class="row mb-3">
                     <div class="col-md-4">
@@ -75,32 +83,15 @@
                         <InputText class="form-control" @bind-Value="userEmails.Pass3"></InputText>
                     </div>
                     <div class="col-md-4">
-
-                        @if (!string.IsNullOrEmpty(email3))
-                        {
-                            <button type="button" class="btn btn-primary" @onclick="(e)=>DeleteEmail(3)">Eliminar</button>
-                        }
+                        <button type="button" class="btn btn-primary" @onclick="(e)=>DeleteEmail(3)">Eliminar</button>
                     </div>
                 </div>
-            }
-            @if (currentEmailCount < 4 && allNull && someNull)
-            {
-                <button type="button" class="btn btn-primary" @onclick="AddEmailField">Agregar Correo</button>
-            }
-            @if (currentEmailCount < 4 && someNull && !allNull)
-            {
-                <button type="button" class="btn btn-primary" @onclick="AddEmailField">Agregar correo</button>
             }
 
         </EditForm>
     }
 
 </FormSection>
-
-
-
-
-
 
 
 @code {
@@ -110,131 +101,93 @@
     [Parameter]
     public Email? userEmails { get; set; } = default!;
 
-    public bool allNull = false;
 
-    public bool someNull = false;
+    public bool email1 = false;
+    public bool email2 = false;
+    public bool email3 = false;
 
-    public string? email1;
-    public string? email2;
-    public string? email3;
+    private Dictionary<string, bool> options = new Dictionary<string, bool>();
 
-    public bool hideEmail1 = false;
-    public bool hideEmail2 = false;
-    public bool hideEmail3 = false;
+    private List<string> selectedOptions = new List<string>();
+
 
     protected override void OnInitialized()
     {
         if (userEmails != null)
         {
-            email1 = userEmails.Email1;
-            email2 = userEmails.Email2;
-            email3 = userEmails.Email3;
+            email1 = !string.IsNullOrEmpty(userEmails.Email1);
+            email2 = !string.IsNullOrEmpty(userEmails.Email2);
+            email3 = !string.IsNullOrEmpty(userEmails.Email3);
 
-            if (string.IsNullOrEmpty(userEmails.Email1) && string.IsNullOrEmpty(userEmails.Email2) && string.IsNullOrEmpty(userEmails.Email3))
-            {
-                allNull = true;
-            }
-            if (string.IsNullOrEmpty(userEmails.Email1) || string.IsNullOrEmpty(userEmails.Email2) || string.IsNullOrEmpty(userEmails.Email3))
-            {
-                someNull = true;
-
-                if (!string.IsNullOrEmpty(userEmails.Email1)) currentEmailCount++;
-                if (!string.IsNullOrEmpty(userEmails.Email2)) currentEmailCount++;
-                if (!string.IsNullOrEmpty(userEmails.Email3)) currentEmailCount++;
-            }
-
+            options.Add("Correo 1", email1);
+            options.Add("Correo 2", email2);
+            options.Add("Correo 3", email3);
         }
     }
 
-
-
-    private int currentEmailCount = 1;
-
-    private void AddEmailField()
+    private void AddEmail(int opc)
     {
-        Console.WriteLine(currentEmailCount);
-        currentEmailCount++;
-        
-        
-        if (currentEmailCount > 3 && !hideEmail2 && !hideEmail1)
-            hideEmail3 = false;
-        if (currentEmailCount > 2 && !hideEmail1)
-            hideEmail2 = false;
-        if (currentEmailCount > 1)
-            hideEmail1 = false;
-        
-        
-        
-    }
-    private void DeleteEmail(int email)
-    {
-        if (userEmails != null)
+        bool canAdd = true;
+        if (opc == 2 && string.IsNullOrEmpty(userEmails.Email1))
         {
-            if (email == 1)
+            canAdd = false;
+        }
+        else if (opc == 3 && string.IsNullOrEmpty(userEmails.Email2))
+        {
+            canAdd = false;
+        }
+        if (canAdd)
+        {
+            switch (opc)
             {
-                userEmails.Email1 = null;
-                userEmails.Pass1 = null;
-                someNull = true;
-                hideEmail1 = true;
-                if (!string.IsNullOrEmpty(userEmails.Email2) && !string.IsNullOrEmpty(userEmails.Email3))
-                    currentEmailCount = 3;
-
-                if (string.IsNullOrEmpty(userEmails.Email2) && !string.IsNullOrEmpty(userEmails.Email3))
-                    currentEmailCount = 2;
-
-                if (!string.IsNullOrEmpty(userEmails.Email2) && string.IsNullOrEmpty(userEmails.Email3))
-                    currentEmailCount = 2;
-
-                if (string.IsNullOrEmpty(userEmails.Email2) && string.IsNullOrEmpty(userEmails.Email3))
-                    currentEmailCount = 1;
-
-            }
-            if (email == 2)
-            {
-                userEmails.Email2 = null;
-                userEmails.Pass2 = null;
-                someNull = true;
-                hideEmail2 = true;
-
-                if (!string.IsNullOrEmpty(userEmails.Email1) && !string.IsNullOrEmpty(userEmails.Email3))
-                    currentEmailCount = 3;
-
-                if (string.IsNullOrEmpty(userEmails.Email1) && !string.IsNullOrEmpty(userEmails.Email3))
-                    currentEmailCount = 2;
-
-                if (!string.IsNullOrEmpty(userEmails.Email1) && string.IsNullOrEmpty(userEmails.Email3))
-                    currentEmailCount = 2;
-
-                if (string.IsNullOrEmpty(userEmails.Email1) && string.IsNullOrEmpty(userEmails.Email3))
-                    currentEmailCount = 1;
-
-            }
-            if (email == 3)
-            {
-                userEmails.Email3 = null;
-                userEmails.Pass3 = null;
-                someNull = true;
-                hideEmail3 = true;
-
-                if (!string.IsNullOrEmpty(userEmails.Email1) && !string.IsNullOrEmpty(userEmails.Email2))
-                    currentEmailCount = 3;
-
-                if (string.IsNullOrEmpty(userEmails.Email1) && !string.IsNullOrEmpty(userEmails.Email3))
-                    currentEmailCount = 2;
-
-                if (!string.IsNullOrEmpty(userEmails.Email1) && string.IsNullOrEmpty(userEmails.Email2))
-                    currentEmailCount = 2;
-
-                if (string.IsNullOrEmpty(userEmails.Email1) && string.IsNullOrEmpty(userEmails.Email2))
-                    currentEmailCount = 1;
+                case 1:
+                    selectedOptions.Add("Correo 1");
+                    options["Correo 1"] = true;
+                    break;
+                case 2:
+                    selectedOptions.Add("Correo 2");
+                    options["Correo 2"] = true;
+                    break;
+                case 3:
+                    selectedOptions.Add("Correo 3");
+                    options["Correo 3"] = true;
+                    break;
 
             }
         }
-
-
+       
     }
-    
+   
+    private void DeleteEmail(int account)
+    {
+        switch (account)
+        {
+            case 1:
+                options["Correo 1"] = false; // Hacer que "portal" vuelva a estar disponible en el <select>.
+                userEmails.Email1 = string.Empty; // Limpiar el valor en userCredential.
+                userEmails.Pass1 = string.Empty;
+                selectedOptions.Remove("Correo 1"); // Eliminar "portal" de las opciones seleccionadas.
+                break;
+            case 2:
+                options["Correo 2"] = false;
+                userEmails.Email2 = string.Empty;
+                userEmails.Pass2 = string.Empty;
+                selectedOptions.Remove("Correo 2");
+                break;
+            case 3:
+                options["Correo 3"] = false;
+                userEmails.Email3 = string.Empty;
+                userEmails.Pass3 = string.Empty;
+                selectedOptions.Remove("Correo 3");
+                break;
+
+
+        }
+    }
+
+
+
+
+
 
 }
-
-

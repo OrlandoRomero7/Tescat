@@ -2,36 +2,43 @@
 
 <FormSection Title="Cuentas de Usuario">
     <EditForm Model="@userCredential">
-        @if (!portal || !casa || !mozart || !darwin || !vpn)
+        @if (options.Any(o => !o.Value))
         {
             <div class="row mb-3">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label">Agregar Cuenta</label>
-                    <select @onchange="OnSelectionChanged">
+                    <InputSelect class="form-select" @bind-Value="selectedOption">
+                        <option value="default">Seleccione una opción</option>
                         @foreach (var option in options)
                         {
-                            if (!option.Value) // Aquí estamos verificando que el valor sea 'false'.
+                            if (!option.Value)
                             {
                                 <option>@option.Key</option>
                             }
                         }
-                    </select>
+                    </InputSelect>
                 </div>
             </div>
         }
         
+            
+        
+        
         @if (selectedOptions.Contains("portal") || !string.IsNullOrEmpty(userCredential.PortalUser))
         {
             <div class="row mb-3">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label">Usuario Portal</label>
                     <InputText class="form-control" @bind-Value="userCredential.PortalUser"></InputText>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label">Contraseña</label>
                     <InputText class="form-control" @bind-Value="userCredential.PortalPass"></InputText>
 
+                </div>
+                <div class="col-md-4">
+                    <button type="button" class="btn btn-primary" @onclick="(e)=>DeleteAccount(1)">Quitar</button>
                 </div>
             </div>
 
@@ -39,56 +46,70 @@
         @if (selectedOptions.Contains("casa") || !string.IsNullOrEmpty(userCredential.CasaUser))
         {
             <div class="row mb-3">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label">Usuario Casa</label>
                     <InputText class="form-control" @bind-Value="userCredential.CasaUser"></InputText>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label">Contraseña</label>
                     <InputText class="form-control" @bind-Value="userCredential.CasaPass"></InputText>
+                </div>
+                <div class="col-md-4">
+                    <button type="button" class="btn btn-primary" @onclick="(e)=>DeleteAccount(2)">Quitar</button>
                 </div>
             </div>
         }
         @if (selectedOptions.Contains("mozart") || !string.IsNullOrEmpty(userCredential.MozartUser))
         {
             <div class="row mb-3">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label">Usuario Mozart</label>
                     <InputText class="form-control" @bind-Value="userCredential.MozartUser"></InputText>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label">Contraseña</label>
                     <InputText class="form-control" @bind-Value="userCredential.MozartPass"></InputText>
+                </div>
+                <div class="col-md-4">
+                    <button type="button" class="btn btn-primary" @onclick="(e)=>DeleteAccount(3)">Quitar</button>
                 </div>
             </div>
         }
         @if (selectedOptions.Contains("darwin") || !string.IsNullOrEmpty(userCredential.DarwinPass))
         {
             <div class="row mb-3">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label">Usuario Darwin</label>
                     <InputText class="form-control" @bind-Value="userCredential.DarwinUser"></InputText>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label">Contraseña</label>
                     <InputText class="form-control" @bind-Value="userCredential.DarwinPass"></InputText>
                 </div>
+                <div class="col-md-4">
+                    <button type="button" class="btn btn-primary" @onclick="(e)=>DeleteAccount(4)">Quitar</button>
+                </div>
+                
+                
             </div>
         }
         @if (selectedOptions.Contains("vpn") || !string.IsNullOrEmpty(userCredential.VpnUser))
         {
             <div class="row mb-3">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label">Usuario VPN</label>
                     <InputText class="form-control" @bind-Value="userCredential.VpnUser"></InputText>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label">Contraseña</label>
                     <InputText class="form-control" @bind-Value="userCredential.VpnPass"></InputText>
+                </div>
+                <div class="col-md-4">
+                    <button type="button" class="btn btn-primary" @onclick="(e)=>DeleteAccount(5)">Quitar</button>
                 </div>
             </div>
             
@@ -115,12 +136,10 @@
 
     private Dictionary<string, bool> options = new Dictionary<string, bool>();
 
-    private string selectedOption;
-
     private List<string> selectedOptions = new List<string>();
 
 
-    
+
 
     protected override void OnInitialized()
     {
@@ -139,46 +158,65 @@
             options.Add("vpn", vpn);
         }
     }
+    private string _selectedOption = "default";
 
-    private void OnSelectionChanged(ChangeEventArgs e)
+    public string selectedOption
     {
-        selectedOption = e.Value.ToString();
-        options.Remove(selectedOption); // Eliminamos la opción del diccionario
-        selectedOptions.Add(selectedOption); // Agregamos a la lista de seleccionados
-    }
-    /*
-    public bool portal = false;
-    public bool casa = false;
-    public bool mozart = false;
-    public bool darwin = false;
-    public bool vpn = false;
-
-    protected override void OnInitialized()
-    {
-        if (userCredential != null)
+        get => _selectedOption;
+        set
         {
-            if (string.IsNullOrEmpty(userCredential.PortalUser))
-            {
-                portal = true;
-            }
-            if (string.IsNullOrEmpty(userCredential.CasaUser))
-            {
-                casa = true;
-            }
-            if (string.IsNullOrEmpty(userCredential.MozartUser))
-            {
-                mozart = true;
-            }
-            if (string.IsNullOrEmpty(userCredential.DarwinUser))
-            {
-                darwin = true;
-            }
-            if (string.IsNullOrEmpty(userCredential.VpnUser))
-            {
-                vpn = true;
-            }
+            _selectedOption = value;
+            HandleSelectionChange();
         }
     }
-    */
+
+    private void HandleSelectionChange()
+    {
+        if (_selectedOption == "default")
+        {
+            return;
+        }
+        options.Remove(_selectedOption);
+        selectedOptions.Add(_selectedOption);
+        _selectedOption = "default"; // Restablecer a la opción por defecto
+    }
+
+    private void DeleteAccount(int account)
+    {
+        switch(account)
+        {
+            case 1:
+                options["portal"] = false; // Hacer que "portal" vuelva a estar disponible en el <select>.
+                userCredential.PortalUser = string.Empty; // Limpiar el valor en userCredential.
+                userCredential.PortalPass = string.Empty;
+                selectedOptions.Remove("portal"); // Eliminar "portal" de las opciones seleccionadas.
+                break;
+            case 2:
+                options["casa"] = false; 
+                userCredential.CasaUser = string.Empty; 
+                userCredential.CasaPass = string.Empty;
+                selectedOptions.Remove("casa");
+                break;
+            case 3:
+                options["mozart"] = false;
+                userCredential.MozartUser = string.Empty;
+                userCredential.MozartPass = string.Empty;
+                selectedOptions.Remove("mozart");
+                break;
+            case 4:
+                options["darwin"] = false;
+                userCredential.DarwinUser = string.Empty;
+                userCredential.DarwinPass = string.Empty;
+                selectedOptions.Remove("darwin");
+                break;
+            case 5:
+                options["vpn"] = false;
+                userCredential.VpnUser = string.Empty;
+                userCredential.VpnPass = string.Empty;
+                selectedOptions.Remove("vpn");
+                break;
+
+        }
+    }
 
 }

@@ -75,13 +75,11 @@ else
 
 @*Cuando se queire ver un usuario desde Users(Como que hace conflicto)*@
 
-
-
 @if (user?.IdUser != 0 && !isEdit && !FromUserAddPage)
 
 {
     <!-- Card de Informacion Basica -->
-    <BasicInformation @ref="childReference" user="user" id="id" areas="areas" departaments="departaments" CreateUserCallback="CreateUser"></BasicInformation>
+    <BasicInformation @ref="childReference" user="@user" id="id" areas="areas" departaments="departaments" CreateUserCallback="CreateUser"></BasicInformation>
 
     <!-- Card de Informacion de Contacto -->
     <ContacInformation user="user" userEmails="userEmails"></ContacInformation>
@@ -224,6 +222,7 @@ else
                     NavigationManager.NavigateTo("/userDetails/" + user.IdUser, true);
                     deleteOldId(IdOld);
                 }
+                StateHasChanged();
 
                 //await UserService.DeleteUser(SaveTemoID.ID);
                 Console.WriteLine("Se actualizo correctamente");
