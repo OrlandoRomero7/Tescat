@@ -1,0 +1,46 @@
+﻿
+<FormSection Title="Tarjeta Madre">
+    <EditForm Model="@motherboard">
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <label class="form-label">Modelo</label>
+                <InputText class="form-control" @bind-Value="motherboard.Model" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Tamaño</label>
+                <InputText class="form-control" @bind-Value="motherboard.FormFactor" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Version</label>
+                <InputText class="form-control" @bind-Value="motherboard.Version" />
+            </div>
+
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <label class="form-label">Socket CPU</label>
+                <InputText class="form-control" @bind-Value="motherboard.SocketCpu" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Tipo de Slot</label>
+                <InputText class="form-control" @bind-Value="motherboard.TypeSlot" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Numero de Slots</label>
+                <InputText class="form-control" @bind-Value="motherboard.RamSlotsNumb" />
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <label class="form-label">M.2 Slot</label>
+                <InputText class="form-control" @bind-Value="motherboard.M2Slot" />
+            </div>
+            
+        </div>
+    </EditForm>
+</FormSection>
+
+@code {
+    [Parameter]
+    public Motherboard motherboard { get; set; }
+}

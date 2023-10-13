@@ -9,11 +9,11 @@ public partial class Storage
 
     public string? Type { get; set; }
 
-    public string? TotalStrge { get; set; }
+    public int? TotalStrge { get; set; }
 
-    public string? AvailableStrge { get; set; }
+    public int? AvailableStrge { get; set; }
 
-    public string? UsedStrge { get; set; }
+    public int? UsedStrge { get; set; }
 
     public string? Model { get; set; }
 
@@ -25,9 +25,9 @@ public partial class Storage
 
     public string? NumberWrite { get; set; }
 
-    public string? ReadSpeed { get; set; }
+    public int? ReadSpeed { get; set; }
 
-    public string? WriteSpeed { get; set; }
+    public int? WriteSpeed { get; set; }
 
     public string? Gbw { get; set; }
 
@@ -35,3 +35,6 @@ public partial class Storage
 
     public virtual Pc? IdPcNavigation { get; set; }
 }
+
+
+

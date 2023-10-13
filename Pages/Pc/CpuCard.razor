@@ -1,0 +1,27 @@
+﻿
+<FormSection Title="Procesador">
+    <EditForm Model="@cpu">
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label class="form-label">Tipo</label>
+                <InputText class="form-control" @bind-Value="cpu.Model" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Modelo</label>
+                <InputText class="form-control" @bind-Value="cpu.Socket" />
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label class="form-label">Benchmark</label>
+                <InputNumber class="form-control" @bind-Value="cpu.Benchmark" />
+            </div>
+        </div>
+    </EditForm>
+</FormSection>
+
+@code {
+    [Parameter]
+    public Cpu cpu{ get; set; }
+}

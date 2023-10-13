@@ -1,0 +1,75 @@
+﻿@page "/devices"
+@using Tescat.Services.Pcs
+@inject IPcService PcService
+@inject NavigationManager NavigationManager
+
+@if (pcs is null)
+{
+
+    <p>Cargando Equipos...</p>
+
+}
+else
+{
+    <button type="button" class="btn btn-primary" @onclick="navigateToAddDevice">Agregar Equipo</button>
+    <br />
+    <br />
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Id Equipo</th>
+                        <th scope="col">Id Usuario</th>
+                        <th scope="col">Tipo de PC</th>
+                        <th scope="col">Nombre de PC</th>
+                        <th scope="col">Ram Usadas</th>
+                        <th scope="col">Accion</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var pc in pcs)
+                    {
+                        <tr>
+                            @{
+                                string firstEightCharacters = @pc.IdPc.ToString().Substring(0, 8);
+                            }
+                            <th scope="row">@firstEightCharacters</th>
+                            <td>@pc.IdUser</td>
+                            <td>@pc.PcType</td>
+                            <td>@pc.PcName</td>
+                            <td>@pc.UsedRamSlots</td>
+                            <td><button type="button" class="btn btn-info" @onclick="() => navigateToPcDetails(pc.IdPc)">Ver</button></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+
+}
+
+@code {
+    private List<Pc> pcs { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            pcs = await PcService.GetAllPc();
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Hubo un problema al cargar la informacion de los equipos{ex.Message}");
+        }
+    }
+    private void navigateToPcDetails(Guid IdPc)
+    {
+        NavigationManager.NavigateTo("/pcDetails/" + IdPc);
+    }
+    private void navigateToAddDevice()
+    {
+        NavigationManager.NavigateTo("/addDevice/");
+    }
+}

@@ -1,0 +1,77 @@
+﻿
+@if(pc != null )
+{
+    <FormSection Title="Informacíón Basica">
+        <EditForm Model="@pc">
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    <label class="form-label">Usuario al que pertenece</label>
+                    <InputText class="form-control" @bind-Value="name" disabled readonly/>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="input1" class="form-label">Tipo de PC</label>
+                    <br>
+                    <input class="form-check-input" type="radio" name="radioGroup" id="radio1" value="pc" @onchange="SetPc" checked="@(pc?.PcType == "pc")">
+                    <label class="form-check-label" for="radio1">PC Escritorio</label>
+                    <input class="form-check-input" type="radio" name="radioGroup" id="radio2" value="laptop" @onchange="SetPc" checked="@(pc?.PcType == "laptop")">
+                    <label class="form-check-label" for="radio2">Laptop</label>
+
+                </div>
+                
+
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    <label class="form-label">Nombre de PC</label>
+                    <InputText class="form-control" @bind-Value="pc.PcName" />
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">IP</label>
+                    <InputText class="form-control" @bind-Value="pc.Ip" />
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Modelo</label>
+                    <InputText class="form-control" @bind-Value="pc.Model" />
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    <label class="form-label">Ram Usadas</label>
+                    <InputText class="form-control" @bind-Value="pc.UsedRamSlots" />
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Ultimo mantenimiento</label>
+                    <InputDate class="form-control" @bind-Value="pc.LastMaint" />
+                </div>
+
+                
+            </div>
+
+        </EditForm>
+    </FormSection>
+}
+
+@code {
+    [Parameter]
+    public Pc? pc { get; set; } = default!;
+
+    [Parameter]
+    public string name { get; set; } = default!;
+
+    public string user;
+
+    private void SetPc(ChangeEventArgs e)
+    {
+        if(pc is not null)
+        {
+            pc.PcType = e.Value.ToString();
+        }
+        
+    }
+
+    
+}

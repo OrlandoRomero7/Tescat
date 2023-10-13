@@ -1,0 +1,173 @@
+﻿@page "/pcDetails"
+@page "/pcDetails/{id:guid}"
+
+@inject IPcService PcService
+@inject IStorageService StorageService
+@inject IUserService userService
+@inject IMemoryRamService MemoryRamService
+@inject ICpuService CpuService
+@inject IMotherboardService MotherboardService
+@inject IPowerSupplyService PowerSupplyService
+
+@if (pc is null)
+{
+    <button type="button" class="btn btn-primary">Crear</button>
+}
+else
+{
+    <button type="button" class="btn btn-primary" @onclick="updatePc">Actulizar</button>
+    <button type="button" class="btn btn-danger">Borrar</button>
+}
+
+@if(pc!=null && user != null)
+{
+    @if (nullComponents.Any(o => o.Value))
+    {
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label class="form-label">Agregar Componente</label>
+                <InputSelect class="form-select" @bind-Value="selectedOption">
+                    <option value="default">Seleccione una opción</option>
+                    @foreach (var option in nullComponents)
+                    {
+                        if (option.Value)
+                        {
+                            <option>@option.Key</option>
+                        }
+                    }
+                </InputSelect>
+            </div>
+        </div>
+    }
+    
+    <BasicPcInformation pc="pc" name="@user.Name"></BasicPcInformation>
+
+    @if (selectedOptions.Contains("Almacenamiento") || storage is not null)
+    {
+        <StorageCard storage="storage"></StorageCard>
+    }
+    @if (selectedOptions.Contains("Memoria RAM") || memoryRam is not null)
+    {
+        <MemoryRamCard memoryRam="memoryRam"></MemoryRamCard>
+    }
+    @if (selectedOptions.Contains("CPU") || cpu is not null)
+    {
+        <CpuCard cpu="cpu"></CpuCard>
+    }
+    @if (selectedOptions.Contains("Tarjeta Madre") || motherboard is not null)
+    {
+        <MotherboardCard motherboard="motherboard"></MotherboardCard>
+    }
+    @if (selectedOptions.Contains("Fuente de Poder") || powerSupply is not null)
+    {
+        <PowerSupplyCard powerSupply="powerSupply"></PowerSupplyCard>
+    }
+    
+}
+
+
+@code {
+    [Parameter]
+    public Guid id { get; set; }
+
+    public Pc pc { get; set; }
+
+    public User user { get; set; }
+
+    public Storage storage { get; set; }
+
+    public MemoryRam memoryRam { get; set; }
+
+    public Cpu cpu { get; set; }
+
+    public Motherboard motherboard { get; set; }
+
+    public PowerSupply powerSupply { get; set; }
+
+    //List<string> nullComponents = new List<string>();
+    private Dictionary<string, bool> nullComponents = new Dictionary<string, bool>();
+
+    private List<string> selectedOptions = new List<string>();
+
+    private bool _storage, _memoryRam, _cpu, _motherboard, _powerSupply;
+
+    protected override async Task OnInitializedAsync()
+    {
+        base.OnInitialized();
+        pc = await PcService.GetPcId(id);
+
+        if(pc != null)
+        {
+            if (pc.IdUser.HasValue)
+            { 
+                user = await userService.GetUserId(pc.IdUser.Value);
+                storage = await StorageService.GetStorageWithPcId(pc.IdPc);
+                memoryRam = await MemoryRamService.GetMemoryRamWithPcId(pc.IdPc);
+                cpu = await CpuService.GetCpuWithPcId(pc.IdPc);
+                motherboard = await MotherboardService.GetMotherboardWithPcId(pc.IdPc);
+                powerSupply = await PowerSupplyService.GetPowerSupplyWithPcId(pc.IdPc);
+
+                //if (user == null) nullComponents.Add("User",true);
+                if (storage == null)
+                {
+                    nullComponents.Add("Almacenamiento", true);
+                    _storage = true;
+                }
+                if (memoryRam == null)
+                {
+                    nullComponents.Add("Memoria RAM", true);
+                    _memoryRam = true;
+                }
+                if (cpu == null)
+                {
+                    nullComponents.Add("CPU", true);
+                    _cpu = true;
+                }
+                if (motherboard == null)
+                {
+                    nullComponents.Add("Tarjeta Madre", true);
+                    _motherboard = true;
+                }
+
+                if (powerSupply is null)
+                {
+                    nullComponents.Add("Fuente de Poder", true);
+                    _powerSupply = true;
+                }
+            }
+        }
+
+    }
+    private string _selectedOption = "default";
+
+    public string selectedOption
+    {
+        get => _selectedOption;
+        set
+        {
+            _selectedOption = value;
+            HandleSelectionChange();
+        }
+    }
+
+    private void HandleSelectionChange()
+    {
+        if (_selectedOption == "default")
+        {
+            return;
+        }
+        nullComponents.Remove(_selectedOption);
+        selectedOptions.Add(_selectedOption);
+        _selectedOption = "default"; // Restablecer a la opción por defecto
+    }
+
+    private async void updatePc()
+    {
+        pc = await PcService.UpdatePc(pc);
+        if(!_storage) storage = await StorageService.UpdateStorage(storage);
+        if (!_memoryRam) memoryRam = await MemoryRamService.UpdateMemoryRam(memoryRam);
+        if (!_motherboard) motherboard = await MotherboardService.UpdateMotherboard(motherboard);
+        if (!_cpu) cpu = await CpuService.UpdateCpu(cpu);
+        if (!_powerSupply) powerSupply = await PowerSupplyService.UpdatePowerSupply(powerSupply);
+    }
+}

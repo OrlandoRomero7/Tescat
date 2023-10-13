@@ -1,0 +1,23 @@
+﻿
+<FormSection Title="Fuente de Poder">
+    <EditForm Model="@powerSupply">
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label class="form-label">Tipo</label>
+                <InputText class="form-control" @bind-Value="powerSupply.Model" />
+            </div>
+        </div>
+    </EditForm>
+</FormSection>
+
+@code {
+    [Parameter]
+    public PowerSupply powerSupply { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        if (powerSupply is null) powerSupply = new PowerSupply();
+    }
+}

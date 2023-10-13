@@ -1,0 +1,53 @@
+﻿@page "/addDevice"
+
+@*<div class="col-lg-4" style="margin: 0 auto;">
+    <div class="card border-rounded" style="width: 300px; border-radius: 15px;">
+        <div class="card-body">
+            <center class="m-t-30">
+                <div class="profile-img">
+                    <img src="/Images/default.svg" class="img-circle" width="150">
+                </div>
+            </center>
+        </div>
+        <div>
+            <hr>
+        </div>
+        <div class="card-body" style="text-align:center">
+
+            <form @onsubmit="CrearUser">
+                <h3>Ingrese numero de Usuario</h3>
+                <InputNumber class="form-control" @bind-Value="newDevice"></InputNumber>
+                <button class="btn btn-primary" type="submit">Guardar</button>
+            </form>
+
+
+
+
+        </div>
+    </div>
+
+</div>*@
+@*<BasicPcInformation pc="new Pc()"></BasicPcInformation>*@
+
+@code {
+
+    private int newDevice { get; set; }
+    public string? ErrorMessage { get; set; }
+    public Pc pc { get; set; }
+
+    private void CrearUser()
+    {
+
+        if (newDevice > 0)
+        {
+            //NavigationManager.NavigateTo("/userDevice/" + newDevice);
+            //OtherServices.NewUser = newUser;
+            //OtherServices.LastNavigatedFrom = "AddUserPage";
+        }
+        else
+        {
+            ErrorMessage = "El numero de usuario no es valido.";
+        }
+    }
+
+}
