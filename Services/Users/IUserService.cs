@@ -9,5 +9,7 @@ namespace Tescat.Services.Users
         public Task<User> InsertUser(User user);
         public Task<bool> UpdateUser(int IdOld,User updateUser, UserCredential userCredential, Email userEmail);
         public Task<User> DeleteUser(int userID);
+
+        public Task<List<User>> GetUsersWithoutPC();
     }
 }

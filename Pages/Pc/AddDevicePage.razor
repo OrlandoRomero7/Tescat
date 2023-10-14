@@ -1,6 +1,10 @@
 ﻿@page "/addDevice"
 
-@*<div class="col-lg-4" style="margin: 0 auto;">
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+
+
+<div class="col-lg-4" style="margin: 0 auto;">
     <div class="card border-rounded" style="width: 300px; border-radius: 15px;">
         <div class="card-body">
             <center class="m-t-30">
@@ -14,40 +18,37 @@
         </div>
         <div class="card-body" style="text-align:center">
 
-            <form @onsubmit="CrearUser">
-                <h3>Ingrese numero de Usuario</h3>
-                <InputNumber class="form-control" @bind-Value="newDevice"></InputNumber>
+            <form @onsubmit="CreateDevice">
+                <h3>Agregar Equipo a Usuario</h3>
+                    <div class="rz-p-sm-12 rz-text-align-center">
+                        <RadzenDropDown AllowClear="true" @bind-Value=idUser AllowVirtualization="true"
+                                        AllowFiltering="true" Data=@users TextProperty="Name" ValueProperty="IdUser" />
+                    </div>
+                
                 <button class="btn btn-primary" type="submit">Guardar</button>
             </form>
-
-
-
-
         </div>
     </div>
+</div>
 
-</div>*@
-@*<BasicPcInformation pc="new Pc()"></BasicPcInformation>*@
+
+
 
 @code {
+    int idUser;
+    //public string? ErrorMessage { get; set; }
+    //public Pc pc { get; set; } = new Pc();
+    IEnumerable<User> users; 
 
-    private int newDevice { get; set; }
-    public string? ErrorMessage { get; set; }
-    public Pc pc { get; set; }
-
-    private void CrearUser()
+    protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
 
-        if (newDevice > 0)
-        {
-            //NavigationManager.NavigateTo("/userDevice/" + newDevice);
-            //OtherServices.NewUser = newUser;
-            //OtherServices.LastNavigatedFrom = "AddUserPage";
-        }
-        else
-        {
-            ErrorMessage = "El numero de usuario no es valido.";
-        }
+        users = await UserService.GetAllUsers();
     }
 
+    public void CreateDevice()
+    {
+        NavigationManager.NavigateTo("/addDevice/" + idUser);
+    }
 }

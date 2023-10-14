@@ -50,6 +50,18 @@ namespace Tescat.Services.Users
             return await context.Users.ToListAsync();
         }
 
+        public async Task<List<User>> GetUsersWithoutPC()
+        {
+            using var context = _contextFactory.CreateDbContext();
+
+            var usersWithoutPC = await context.Users
+                .Where(u => u.Pcs == null || !u.Pcs.Any()) // Filtrar usuarios sin relación con PC
+                .ToListAsync();
+
+            return usersWithoutPC;
+        }
+
+
         public async Task<User> GetUserId(int userID)
         {
             using var context = _contextFactory.CreateDbContext();

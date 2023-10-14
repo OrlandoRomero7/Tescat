@@ -13,5 +13,7 @@ namespace Tescat.Services.Pcs
         public Task<Pc> UpdatePc(Pc pc);
 
         public Task<Pc> DeletePc(Guid IdPc);
+
+        public Task<Pc> GetPcWithIdUSer(int IdUSer);
     }
 }

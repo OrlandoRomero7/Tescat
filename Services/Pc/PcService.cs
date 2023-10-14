@@ -31,6 +31,20 @@ namespace Tescat.Services.Pcs
             }
         }
 
+        public async Task<Pc> GetPcWithIdUSer(int IdUSer)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            var pcDb = await context.Pcs.FindAsync(IdUSer);
+            if (pcDb != null)
+            {
+                return pcDb;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         public Task<Pc> InsertPc(Pc pc)
         {
             throw new NotImplementedException();
