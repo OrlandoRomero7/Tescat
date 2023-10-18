@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Tescat.Models;
 
 namespace Tescat.Services.Pcs
@@ -14,7 +15,7 @@ namespace Tescat.Services.Pcs
         public async Task<List<Pc>> GetAllPc()
         {
             using var context = _contextFactory.CreateDbContext();
-            return await context.Pcs.ToListAsync();
+            return await context.Pcs.Where(pc => pc.IdUser != null).ToListAsync();
         }
 
         public async Task<Pc> GetPcId(Guid IdPc)
@@ -29,6 +30,15 @@ namespace Tescat.Services.Pcs
             {
                 return null;
             }
+        }
+        //private List<Pc> pcDb = new List<Pc>();
+        public async Task<List<Pc>> GetNumberPc(int IdUser)
+        {
+            
+            using var context = _contextFactory.CreateDbContext();
+            var pcDb = await context.Pcs.Where(pc => pc.IdUser == IdUser).ToListAsync();
+            return pcDb.Count > 0 ? pcDb : new List<Pc>();
+
         }
 
         public async Task<Pc> GetPcWithIdUSer(int IdUSer)
@@ -45,11 +55,14 @@ namespace Tescat.Services.Pcs
             }
         }
 
-        public Task<Pc> InsertPc(Pc pc)
+        public async Task<Pc> InsertPc(Pc pc)
         {
-            throw new NotImplementedException();
+            using var context = _contextFactory.CreateDbContext();
+            context.Pcs.Add(pc);
+            await context.SaveChangesAsync();
+            return pc;
         }
-
+        
         public async Task<Pc> UpdatePc(Pc pc)
         {
             using var context = _contextFactory.CreateDbContext();
@@ -59,10 +72,25 @@ namespace Tescat.Services.Pcs
 
         }
 
+        public async Task<Pc> QuitPc(Pc pc)
+        {
+            using var context = _contextFactory.CreateDbContext();
+
+            // Attach the entity without marking it as modified
+            context.Pcs.Attach(pc);
+
+            // Mark only the ID_USER property as modified
+            context.Entry(pc).Property(p => p.IdUser).IsModified = true;
+
+            await context.SaveChangesAsync();
+            return pc;
+        }
+
         public Task<Pc> DeletePc(Guid IdPc)
         {
             throw new NotImplementedException();
         }
+
     }
 }
 

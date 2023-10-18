@@ -9,7 +9,7 @@ namespace Tescat.Services.Storages
 
         public Task<Storage> InsertStorage(Storage storage);
 
-        public Task<Storage> UpdateStorage(Storage storage);
+        public Task<Storage> UpdateStorage(Storage storage, Guid IdPc);
 
         public Task<Storage> DeleteStorage(Guid storageGuid);
     }

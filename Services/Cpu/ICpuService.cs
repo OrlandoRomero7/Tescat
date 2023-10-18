@@ -9,7 +9,7 @@ namespace Tescat.Services.Cpus
 
         public Task<Cpu> InsertCpu(Cpu cpu);
 
-        public Task<Cpu> UpdateCpu(Cpu cpu);
+        public Task<Cpu> UpdateCpu(Cpu cpu, Guid IdPc);
 
         public Task<Cpu> DeleteCpu(Guid cpuGuid);
     }

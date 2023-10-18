@@ -19,13 +19,13 @@
         <div class="card-body" style="text-align:center">
 
             <form @onsubmit="CreateDevice">
-                <h3>Agregar Equipo a Usuario</h3>
+                <h3>Usuario al que le pertenecera el equipo</h3>
                     <div class="rz-p-sm-12 rz-text-align-center">
                         <RadzenDropDown AllowClear="true" @bind-Value=idUser AllowVirtualization="true"
                                         AllowFiltering="true" Data=@users TextProperty="Name" ValueProperty="IdUser" />
                     </div>
                 
-                <button class="btn btn-primary" type="submit">Guardar</button>
+                <button class="btn btn-primary" type="submit">Siguiente</button>
             </form>
         </div>
     </div>

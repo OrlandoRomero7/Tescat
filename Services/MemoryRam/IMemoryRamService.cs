@@ -9,7 +9,7 @@ namespace Tescat.Services.MemoryRams
 
         public Task<MemoryRam> InsertMemoryRam(MemoryRam memory);
 
-        public Task<MemoryRam> UpdateMemoryRam(MemoryRam memory);
+        public Task<MemoryRam> UpdateMemoryRam(MemoryRam memory,Guid IdPC);
 
         public Task<MemoryRam> DeleteMemoryRam(Guid memoryGuid);
     }

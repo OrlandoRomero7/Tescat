@@ -9,18 +9,16 @@
 @inject IMotherboardService MotherboardService
 @inject IPowerSupplyService PowerSupplyService
 @inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+@inject OtherServices OtherServices
 
-@if (pc is null)
-{
-    <button type="button" class="btn btn-primary">Crear</button>
-}
-else
+@if (pc is not null)
 {
     <button type="button" class="btn btn-primary" @onclick="updatePc">Actulizar</button>
-    <button type="button" class="btn btn-danger">Borrar</button>
+    <button type="button" class="btn btn-danger" @onclick="ShowConfirmationModal">Quitar</button>
 }
 
-@if(pc!=null && user != null)
+@if (pc != null && user != null)
 {
     @if (nullComponents.Any(o => o.Value))
     {
@@ -34,45 +32,85 @@ else
                         if (option.Value)
                         {
                             <option>@option.Key</option>
-                           
+
                         }
-                       
+
                     }
                 </InputSelect>
             </div>
         </div>
     }
-    
-    <BasicPcInformation pc="pc" name="@user.Name"></BasicPcInformation>
 
-    @if (selectedOptions.Contains("Almacenamiento") || storage is not null)
-    {
-        <StorageCard storage="storage"></StorageCard>
-    }
-    @if (selectedOptions.Contains("Memoria RAM") || memoryRam is not null)
-    {
-        <MemoryRamCard memoryRam="memoryRam"></MemoryRamCard>
-    }
-    @if (selectedOptions.Contains("CPU") || cpu is not null)
-    {
-        <CpuCard cpu="cpu"></CpuCard>
-    }
-    @if (selectedOptions.Contains("Tarjeta Madre") || motherboard is not null)
-    {
-        <MotherboardCard motherboard="motherboard"></MotherboardCard>
-    }
-    
-    @if (selectedOptions.Contains("Fuente de Poder") || powerSupply is not null)
-    {
+    <BasicPcInformation pc="pc" user="user"></BasicPcInformation>
 
-        <div id="fuente-de-poder">
-            <PowerSupplyCard powerSupply="powerSupply"></PowerSupplyCard>
-        </div>
+    @if (selectedOptions.Contains("Almacenamiento") || storage.IdStorage != Guid.Empty)
+    {
+        <StorageCard storage="storage" confirmationModalChild="@( () => ShowModalComponents("Almacenamiento") )"></StorageCard>
     }
-        
-    
-    
+    @if (selectedOptions.Contains("Memoria RAM") || memoryRam.IdRam != Guid.Empty)
+    {
+        <MemoryRamCard memoryRam="memoryRam" confirmationModalChild="@( () => ShowModalComponents("Memoria RAM") )"></MemoryRamCard>
+    }
+    @if (selectedOptions.Contains("CPU") && cpu.IdCpu != Guid.Empty)
+    {
+        <CpuCard cpu="cpu" confirmationModalChild="@( () => ShowModalComponents("CPU") )"></CpuCard>
+    }
+    @if (selectedOptions.Contains("Tarjeta Madre") || motherboard.IdMotherboard != Guid.Empty)
+    {
+        <MotherboardCard motherboard="motherboard" confirmationModalChild="@( () => ShowModalComponents("Tarjeta Madre") )"></MotherboardCard>
+    }
+    @if (selectedOptions.Contains("Fuente de Poder") || powerSupply.IdPsu != Guid.Empty)
+    {
+        <PowerSupplyCard powerSupply="powerSupply" confirmationModalChild="@( () => ShowModalComponents("Fuente de Poder") )"></PowerSupplyCard>
+    }
+
 }
+@if(user is not null)
+{
+    <!-- Modal -->
+    <div class="modal" tabindex="-1" role="dialog" style="display: @modalDisplay">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Quitar PC a usuario</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar" @onclick="CloseConfirmationModal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Estás seguro de que quieres quitarle esta PC a @user.Name ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="CloseConfirmationModal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" @onclick="ConfirmDeletion">Quitar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Modal Quitar Componente-->
+<div class="modal" tabindex="-1" role="dialog" style="display: @modalComponentsDisplay">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Quitar @componentName</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar" @onclick="CloseModalComponents">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que quieres quitar este componente a la PC?.<br />Se ira al Almacen de Hardware</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="CloseModalComponents">Cancelar</button>
+                <button type="button" class="btn btn-danger" @onclick="ConfirmQuitModalComponents">Quitar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 
 @code {
@@ -88,10 +126,12 @@ else
     public MemoryRam memoryRam { get; set; }
 
     public Cpu cpu { get; set; }
-
+    //public Cpu bdCpu { get; set; }
     public Motherboard motherboard { get; set; }
 
     public PowerSupply powerSupply { get; set; }
+
+    public Guid kk;
 
     //List<string> nullComponents = new List<string>();
     private Dictionary<string, bool> nullComponents = new Dictionary<string, bool>();
@@ -105,10 +145,10 @@ else
         base.OnInitialized();
         pc = await PcService.GetPcId(id);
 
-        if(pc != null)
+        if (pc != null)
         {
             if (pc.IdUser.HasValue)
-            { 
+            {
                 user = await userService.GetUserId(pc.IdUser.Value);
                 storage = await StorageService.GetStorageWithPcId(pc.IdPc);
                 memoryRam = await MemoryRamService.GetMemoryRamWithPcId(pc.IdPc);
@@ -117,28 +157,29 @@ else
                 powerSupply = await PowerSupplyService.GetPowerSupplyWithPcId(pc.IdPc);
 
                 //if (user == null) nullComponents.Add("User",true);
-                if (storage == null)
+                if (storage.IdStorage == Guid.Empty)
                 {
                     nullComponents.Add("Almacenamiento", true);
                     _storage = true;
                 }
-                if (memoryRam == null)
+                if (memoryRam.IdRam == Guid.Empty)
                 {
                     nullComponents.Add("Memoria RAM", true);
                     _memoryRam = true;
                 }
-                if (cpu == null)
+                if (cpu.IdCpu == Guid.Empty)
                 {
                     nullComponents.Add("CPU", true);
                     _cpu = true;
                 }
-                if (motherboard == null)
+
+                if (motherboard.IdMotherboard == Guid.Empty)
                 {
                     nullComponents.Add("Tarjeta Madre", true);
                     _motherboard = true;
                 }
 
-                if (powerSupply is null)
+                if (powerSupply.IdPsu == Guid.Empty)
                 {
                     nullComponents.Add("Fuente de Poder", true);
                     _powerSupply = true;
@@ -157,7 +198,6 @@ else
             _selectedOption = value;
             HandleSelectionChange();
             //OptionSelected(_selectedOption);
-           
         }
     }
 
@@ -167,6 +207,24 @@ else
         {
             return;
         }
+        switch (_selectedOption)
+        {
+            case "Almacenamiento":
+                _storage = false;
+                break;
+            case "Memoria RAM":
+                _memoryRam = false;
+                break;
+            case "CPU":
+                _cpu = false;
+                break;
+            case "Tarjeta Madre":
+                _motherboard = false;
+                break;
+            case "Fuente de Poder":
+                _powerSupply = false;
+                break;
+        }
         nullComponents.Remove(_selectedOption);
         selectedOptions.Add(_selectedOption);
         _selectedOption = "default"; // Restablecer a la opción por defecto
@@ -175,13 +233,115 @@ else
     private async Task updatePc()
     {
         pc = await PcService.UpdatePc(pc);
-        if(!_storage) storage = await StorageService.UpdateStorage(storage);
-        if (!_memoryRam) memoryRam = await MemoryRamService.UpdateMemoryRam(memoryRam);
-        if (!_motherboard) motherboard = await MotherboardService.UpdateMotherboard(motherboard);
-        if (!_cpu) cpu = await CpuService.UpdateCpu(cpu);
-        if (!_powerSupply) powerSupply = await PowerSupplyService.UpdatePowerSupply(powerSupply);
+        var IdPc = pc.IdPc;
+        if (!_storage) storage = await StorageService.UpdateStorage(storage, IdPc);
+        if (!_memoryRam) memoryRam = await MemoryRamService.UpdateMemoryRam(memoryRam, IdPc);
+        if (!_motherboard) motherboard = await MotherboardService.UpdateMotherboard(motherboard, IdPc);
+        if (!_cpu) cpu = await CpuService.UpdateCpu(cpu, IdPc);
+        if (!_powerSupply) powerSupply = await PowerSupplyService.UpdatePowerSupply(powerSupply, IdPc);
+    }
+    private async Task QuitPC()
+    {
+        if (pc.IdUser != 0)
+        {
+            int idtemp = pc.IdUser.Value;
+            pc.IdUser = null;
+            pc = await PcService.UpdatePc(pc);
+            OtherServices.ShowMessage("Se le quito el equipo al usuario: " + idtemp);
+            NavigationManager.NavigateTo("/devices");
+        }
+
+    }
+    private string modalDisplay = "none";
+    private void ShowConfirmationModal()
+    {
+        modalDisplay = "block"; // Mostrar el modal
+        StateHasChanged(); // Esto podría ser necesario
     }
 
+    private void CloseConfirmationModal()
+    {
+        modalDisplay = "none"; // Ocultar el modal
+    }
+
+    private async void ConfirmDeletion()
+    {
+        await QuitPC();
+        // ...
+        CloseConfirmationModal(); // Cerrar el modal después de la confirmación
+    }
+
+
+
+    private string modalComponentsDisplay = "none";
+    private string componentName { get; set; } = "";
+    private void ShowModalComponents(string component)
+    {
+        switch (component)
+        {
+            case "Almacenamiento":
+                componentName = component;
+                break;
+            case "Memoria RAM":
+                componentName = component;
+                break;
+            case "CPU":
+                componentName = component;
+                break;
+            case "Tarjeta Madre":
+                componentName = component;
+                break;
+            case "Fuente de Poder":
+                componentName = component;
+                break;
+
+                // ... otros casos
+        }
+        modalComponentsDisplay = "block"; // Mostrar el modal
+        StateHasChanged(); // Esto podría ser necesario
+    }
+
+    private void CloseModalComponents()
+    {
+        modalComponentsDisplay = "none"; // Ocultar el modal
+    }
+
+    private async Task ConfirmQuitModalComponents()
+    {
+        switch (componentName)
+        {
+            case "Almacenamiento":
+                var IdPcSto = storage.IdPc.Value; 
+                storage.IdPc = null;
+                storage = await StorageService.UpdateStorage(storage, IdPcSto);
+                break;
+            case "Memoria RAM":
+                var IdPcRam = memoryRam.IdPc.Value;
+                memoryRam.IdPc = null;
+                memoryRam = await MemoryRamService.UpdateMemoryRam(memoryRam, IdPcRam);
+                break;
+            case "CPU":
+                var IdPcCPU = cpu.IdPc.Value;
+                cpu.IdPc = null;
+                cpu = await CpuService.UpdateCpu(cpu, IdPcCPU);
+                break;
+            case "Tarjeta Madre":
+                var IdPcMother = motherboard.IdPc.Value;
+                motherboard.IdPc = null;
+                motherboard = await MotherboardService.UpdateMotherboard(motherboard, IdPcMother);
+                break;
+            case "Fuente de Poder":
+                var IdPcPSU = powerSupply.IdPc.Value;
+                powerSupply.IdPc = null;
+                powerSupply = await PowerSupplyService.UpdatePowerSupply(powerSupply, IdPcPSU);
+                break;
+        }
+        
+        CloseModalComponents(); // Cerrar el modal después de la confirmación
+        StateHasChanged();
+    }
+
+    @*
     private async void OptionSelected(string a)
     {
         if (a == "Fuente de Poder")
@@ -190,6 +350,7 @@ else
             // Llamada a la función de desplazamiento o cualquier otra lógica que desees ejecutar.
         }
          _selectedOption = "default"; // Restablecer a la opción por defecto
-        
+
     }
+    *@
 }

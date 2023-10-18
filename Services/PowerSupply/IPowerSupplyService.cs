@@ -9,7 +9,7 @@ namespace Tescat.Services.PowerSupplys
 
         public Task<PowerSupply> InsertPowerSupply(PowerSupply powerSupply);
 
-        public Task<PowerSupply> UpdatePowerSupply(PowerSupply powerSupply);
+        public Task<PowerSupply> UpdatePowerSupply(PowerSupply powerSupply, Guid IdPc);
 
         public Task<PowerSupply> DeletePowerSupplyd(Guid cpuGuid);
     }

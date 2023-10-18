@@ -33,21 +33,35 @@ namespace Tescat.Services.Motherboards
             }
             else
             {
-                return null;
+                return new Motherboard();
             }
         }
 
-        public Task<Motherboard> InsertMotherboard(Motherboard motherboard)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<Motherboard> UpdateMotherboard(Motherboard motherboard)
+        public async Task<Motherboard> InsertMotherboard(Motherboard motherboard)
         {
             using var context = _contextFactory.CreateDbContext();
-            context.Entry(motherboard).State = EntityState.Modified;
+            context.Motherboards.Add(motherboard);
             await context.SaveChangesAsync();
             return motherboard;
+        }
+
+        public async Task<Motherboard> UpdateMotherboard(Motherboard motherboard, Guid IdPc)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            bool existeMotherboard = context.Motherboards.Any(c => c.IdPc == IdPc);
+
+            if (existeMotherboard)
+            {
+                context.Entry(motherboard).State = EntityState.Modified;
+                await context.SaveChangesAsync();
+                return motherboard;
+            }
+            else
+            {
+                motherboard.IdPc = IdPc;
+                return await InsertMotherboard(motherboard);
+            }
+            
         }
     }
 }

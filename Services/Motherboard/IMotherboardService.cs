@@ -9,7 +9,7 @@ namespace Tescat.Services.Motherboards
 
         public Task<Motherboard> InsertMotherboard(Motherboard motherboard);
 
-        public Task<Motherboard> UpdateMotherboard(Motherboard motherboard);
+        public Task<Motherboard> UpdateMotherboard(Motherboard motherboard, Guid IdPc);
 
         public Task<Motherboard> DeleteMotherboard(Guid cpuGuid);
     }

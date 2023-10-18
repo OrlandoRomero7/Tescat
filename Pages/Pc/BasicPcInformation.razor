@@ -1,12 +1,12 @@
 ﻿
 @if(pc != null )
 {
-    <FormSection Title="Informacíón Basica">
+    <FormSection Title="Informacíón Basica PC">
         <EditForm Model="@pc">
             <div class="row mb-3">
                 <div class="col-md-3">
                     <label class="form-label">Usuario al que pertenece</label>
-                    <InputText class="form-control" @bind-Value="name" disabled readonly/>
+                    <InputText class="form-control" @bind-Value="user.Name" disabled readonly/>
                 </div>
 
                 <div class="col-md-3">
@@ -60,9 +60,9 @@
     public Pc? pc { get; set; } = default!;
 
     [Parameter]
-    public string name { get; set; } = default!;
+    public User user { get; set; } = default!;
 
-    public string user;
+    //public string user;
 
     private void SetPc(ChangeEventArgs e)
     {

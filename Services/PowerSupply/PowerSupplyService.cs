@@ -33,21 +33,35 @@ namespace Tescat.Services.PowerSupplys
             }
             else
             {
-                return null;
+                return new PowerSupply();
             }
         }
 
-        public Task<PowerSupply> InsertPowerSupply(PowerSupply powerSupply)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<PowerSupply> UpdatePowerSupply(PowerSupply powerSupply)
+        public async Task<PowerSupply> InsertPowerSupply(PowerSupply powerSupply)
         {
             using var context = _contextFactory.CreateDbContext();
-            context.Entry(powerSupply).State = EntityState.Modified;
+            context.PowerSupplies.Add(powerSupply);
             await context.SaveChangesAsync();
             return powerSupply;
+        }
+
+        public async Task<PowerSupply> UpdatePowerSupply(PowerSupply powerSupply, Guid IdPc)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            bool powerSuppyExists = context.PowerSupplies.Any(c => c.IdPc == IdPc);
+            if(powerSuppyExists)
+            {
+                context.Entry(powerSupply).State = EntityState.Modified;
+                await context.SaveChangesAsync();
+                return powerSupply;
+            }
+            else
+            { 
+                powerSupply.IdPc = IdPc;
+                return await InsertPowerSupply(powerSupply);
+            
+            }    
+            
         }
     }
 }

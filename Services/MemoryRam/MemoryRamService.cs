@@ -33,21 +33,34 @@ namespace Tescat.Services.MemoryRams
             }
             else
             {
-                return null;
+                return new MemoryRam();
             }
         }
 
-        public Task<MemoryRam> InsertMemoryRam(MemoryRam memory)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<MemoryRam> UpdateMemoryRam(MemoryRam memory)
+        public async Task<MemoryRam> InsertMemoryRam(MemoryRam memory)
         {
             using var context = _contextFactory.CreateDbContext();
-            context.Entry(memory).State = EntityState.Modified;
+            context.MemoryRams.Add(memory);
             await context.SaveChangesAsync();
             return memory;
+        }
+
+        public async Task<MemoryRam> UpdateMemoryRam(MemoryRam memory, Guid IdPc)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            bool ramExists = context.Motherboards.Any(c => c.IdPc == IdPc);
+            if (ramExists)
+            {
+                context.Entry(memory).State = EntityState.Modified;
+                await context.SaveChangesAsync();
+                return memory;
+            }
+            else
+            {
+                memory.IdPc = IdPc;
+                return await InsertMemoryRam(memory);
+            }
+            
         }
     }
 }

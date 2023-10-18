@@ -14,6 +14,10 @@ namespace Tescat.Services.Pcs
 
         public Task<Pc> DeletePc(Guid IdPc);
 
+        public Task<Pc> QuitPc(Pc pc);
+
         public Task<Pc> GetPcWithIdUSer(int IdUSer);
+
+        public Task<List<Pc>> GetNumberPc(int IdUser);
     }
 }

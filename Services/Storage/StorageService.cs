@@ -37,17 +37,30 @@ namespace Tescat.Services.Storages
             }
         }
 
-        public Task<Storage> InsertStorage(Storage storage)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<Storage> UpdateStorage(Storage storage)
+        public async Task<Storage> InsertStorage(Storage storage)
         {
             using var context = _contextFactory.CreateDbContext();
-            context.Entry(storage).State = EntityState.Modified;
+            context.Storages.Add(storage);
             await context.SaveChangesAsync();
             return storage;
+        }
+
+        public async Task<Storage> UpdateStorage(Storage storage, Guid IdPc)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            bool existeStorage = context.Storages.Any(c => c.IdPc == IdPc);
+            if (existeStorage)
+            {
+                context.Entry(storage).State = EntityState.Modified;
+                await context.SaveChangesAsync();
+                return storage;
+            }
+            else
+            {
+                storage.IdPc = IdPc;
+                return await InsertStorage(storage);
+            }
+            
         }
     }
 }

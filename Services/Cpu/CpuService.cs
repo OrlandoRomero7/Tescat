@@ -33,21 +33,36 @@ namespace Tescat.Services.Cpus
             }
             else
             {
-                return null;
+                return new Cpu();
             }
         }
 
-        public Task<Cpu> InsertCpu(Cpu cpu)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<Cpu> UpdateCpu(Cpu cpu)
+        public async Task<Cpu> InsertCpu(Cpu cpu)
         {
             using var context = _contextFactory.CreateDbContext();
-            context.Entry(cpu).State = EntityState.Modified;
+            context.Cpus.Add(cpu);
             await context.SaveChangesAsync();
             return cpu;
+        }
+
+        public async Task<Cpu> UpdateCpu(Cpu cpu, Guid IdPc)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            bool existeCpu = context.Cpus.Any(c => c.IdPc == IdPc);
+            if (existeCpu)
+            {
+                context.Entry(cpu).State = EntityState.Modified;
+                await context.SaveChangesAsync();
+                return cpu;
+            }
+            else
+            {
+                cpu.IdPc = IdPc;
+                return await InsertCpu(cpu);
+            }
+
+
+                
         }
     }
 }
