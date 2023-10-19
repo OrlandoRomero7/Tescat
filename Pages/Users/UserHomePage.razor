@@ -7,16 +7,42 @@
 
 
 
-<UserSearch></UserSearch>
-<button type="button" class="btn btn-primary" @onclick="CreateNewUser">Agregar Usuario</button>
+@*<UserSearch></UserSearch>*@
+<div style="display:flex; justify-content:flex-end; position:relative;" >
+    <div class="user-buttons-box">
+
+        <button type="button" class="btn btn-primary" style="margin-right:.5rem;" @onclick="@(e => CombinedClickHandler(e, RippleType.Add))">
+            <i class="bi bi-plus" style="padding-top:2px;"></i>
+            <span style="left: @(xPos)px; top: @(yPos)px;" class="@(showRippleAdd ? "ripple" : "")"></span>
+        </button>
+
+        <button type="button" class="btn btn-primary" style="margin-right:.5rem;" @onclick="@(e => ClickHandler(e, RippleType.Filter))">
+            <i class="bi bi-filter" style="padding-top:2px"></i>
+            <span style="left: @(xPos)px; top: @(yPos)px;" class="@(showRippleFilter ? "ripple" : "")"></span>
+        </button>
+
+
+
+        <button type="button" class="btn btn-primary">
+            <div >
+                <UserSearch OnDivClicked="HandleDivClickInChildComponent" OnInputFocus="OnSearchInputFocus"></UserSearch>
+                <span style="left: @(xPos)px; top: @(yPos)px;" class="@(showRippleSearch ? "ripple" : "")"></span>
+            </div>
+        </button>
+
+
+        <span class="user-buttons-box-indicator @(showIndicator ? "indicator-active" : "")" style="right: @indicatorRight; width:@indicatorWidth;"></span>
+
+
+    </div>
+</div>
+
 <div class="container">
     <div style="row-gap:4rem; justify-content:center; display:grid; grid-template-columns: 1fr 1fr 1fr">
 
         @if (Users == null)
         {
-
             <p>Loading users...</p>
-
         }
         else
         {
@@ -24,7 +50,6 @@
             {
                 <UserCard User="user"></UserCard>
             }
-
         }
     </div>
 </div>
@@ -45,24 +70,109 @@
 @code
 {
     private List<User>? Users { get; set; }
-    //private User[]? Users { get; set; }
-
     public string? localMessage;
-
     private bool showAlert = false;
+    double xPos = 0;
+    double yPos = 0;
+    bool showRippleAdd = false;
+    bool showRippleFilter = false;
+    bool showRippleSearch = false;
+    bool showIndicator = false;
+    string indicatorRight = "126px";
+    string indicatorWidth = "50.8px";
+
+    public enum RippleType
+    {
+        Add,
+        Filter,
+        Search
+    }
+
+    private Dictionary<RippleType, CancellationTokenSource> ctsDictionary = new Dictionary<RippleType, CancellationTokenSource>
+{
+    { RippleType.Add, new CancellationTokenSource() },
+    { RippleType.Filter, new CancellationTokenSource() },
+    { RippleType.Search, new CancellationTokenSource() }
+};
+
+    private async Task ClickHandler(MouseEventArgs e, RippleType rippleType)
+    {
+        // Cancelar cualquier tarea pendiente para este tipo de botón
+        if (ctsDictionary.ContainsKey(rippleType))
+        {
+            ctsDictionary[rippleType].Cancel();
+            ctsDictionary[rippleType] = new CancellationTokenSource();
+        }
+
+        xPos = e.OffsetX;
+        yPos = e.OffsetY;
+
+        await Task.Delay(1);
+        showIndicator = true;
+
+
+        switch (rippleType)
+        {
+            case RippleType.Add:
+                indicatorRight = "126px";
+                indicatorWidth = "50.8px";
+                showRippleAdd = true;
+                break;
+
+            case RippleType.Filter:
+                indicatorRight = "65px";
+                indicatorWidth = "50.8px";
+                showRippleFilter = true;
+                break;
+
+            case RippleType.Search:
+                indicatorRight = "4px";
+                indicatorWidth = "262.8px";
+                showRippleSearch = true;
+                break;
+        }
+
+        StateHasChanged();
+
+        try
+        {
+            await Task.Delay(1000, ctsDictionary[rippleType].Token); // Espera 1 segundo
+
+            showIndicator = true;
+
+
+            switch (rippleType)
+            {
+                case RippleType.Add:
+                    showRippleAdd = false;
+                    break;
+                case RippleType.Filter:
+                    showRippleFilter = false;
+                    break;
+
+                case RippleType.Search:
+                    showRippleSearch = false;
+                    break;
+            }
+            StateHasChanged();
+        }
+        catch (TaskCanceledException)
+        {
+
+        }
+
+    }
 
 
     protected override async
        Task OnInitializedAsync()
     {
-        //base.OnInitialized();
         try
         {
             Users = await UserService.GetAllUsers();
 
             localMessage = OtherServices.Message;
             if (localMessage != null) await ShowAndHideAlert();
-
         }
         catch (Exception ex)
         {
@@ -70,39 +180,54 @@
         }
     }
 
-    /*
-    protected override async
-        Task OnInitializedAsync()
-    {
-        users = await UserService.GetAllUsers();
-    }
-    */
 
     protected void CreateNewUser()
     {
         NavigationManager.NavigateTo("/addUser");
     }
 
+
+
     private void CloseAlert()
     {
         showAlert = false;
     }
+
+
     private async Task ShowAndHideAlert()
     {
         showAlert = true;
-        StateHasChanged();  // Forzamos una actualización inmediata para mostrar el alerta
+        StateHasChanged();
 
-        await Task.Delay(5000);  // Espera 5 segundos
+        await Task.Delay(5000);
 
         showAlert = false;
-        StateHasChanged();  // Forzamos una nueva actualización para ocultar el alerta
+        StateHasChanged();
     }
 
 
+    private async Task CombinedClickHandler(MouseEventArgs e, RippleType rippleType)
+    {
+        await ClickHandler(e, rippleType);  // Ejecuta la lógica actual de ClickHandler
+        CreateNewUser();
+    }
 
+    private async Task OnSearchInputFocus(FocusEventArgs e)
+    {
+        await ClickHandler(new MouseEventArgs(), RippleType.Search);
+    }
+
+    private void HandleDivClickInChildComponent()
+    {
+        ResetIndicatorWidth();
+    }
+    private void ResetIndicatorWidth()
+    {
+       
+            indicatorRight = "126px";
+            indicatorWidth = "50.8px";
+            StateHasChanged();
+        
+    }
 
 }
-
-
-
-
