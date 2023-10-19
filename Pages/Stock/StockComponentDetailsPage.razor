@@ -1,9 +1,76 @@
-﻿@page "/stock{IdComponent:Guid}"
+﻿@page "/stock/{nameComponent}/{IdComponent:guid}"
+@using Tescat.Pages.Pc
+@inject IPcService PcService
+@inject IStorageService StorageService
+@inject IUserService userService
+@inject IMemoryRamService MemoryRamService
+@inject ICpuService CpuService
+@inject IMotherboardService MotherboardService
+@inject IPowerSupplyService PowerSupplyService 
 
-<h3>StockComponentDetailsPage</h3>
+@if (nameComponent == "storage" && storage is not null)
+{
+    <StorageCard storage="storage"></StorageCard>
+}
+@if (nameComponent == "CPU" && cpu is not null)
+{
+    <CpuCard cpu="cpu"></CpuCard>
+}
+@if (nameComponent == "RAM" && memoryRam is not null)
+{
+    <MemoryRamCard memoryRam="memoryRam"></MemoryRamCard>
+}
+@if (nameComponent == "Motherboard" && motherboard is not null)
+{
+    <MotherboardCard motherboard="motherboard"></MotherboardCard>
+}
+@if (nameComponent == "PowerSupply" && powerSupply is not null)
+{
+    <PowerSupplyCard powerSupply="powerSupply"></PowerSupplyCard>
+}
+
+
 
 @code {
     [Parameter]
+    public string nameComponent { get; set; }
+
+    [Parameter]
     public Guid IdComponent { get; set; }
+
+    public Storage storage { get; set; }
+
+    public Cpu cpu { get; set; }
+
+    public MemoryRam memoryRam { get; set; }
+
+    public Motherboard motherboard { get; set; }
+
+    public PowerSupply powerSupply { get; set; }
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        switch (nameComponent)
+        {
+            case "storage":
+                storage = await StorageService.GetStorage(IdComponent);
+                break;
+            case "CPU":
+                cpu = await CpuService.GetCpu(IdComponent);
+                break;
+            case "RAM":
+                memoryRam = await MemoryRamService.GetMemoryRam(IdComponent);
+                break;
+            case "Motherboard":
+                motherboard = await MotherboardService.GetMotherboard(IdComponent);
+                break;
+            case "PowerSupply":
+                powerSupply = await PowerSupplyService.GetPowerSupply(IdComponent);
+                break;
+        }
+        
+    }
 
 }

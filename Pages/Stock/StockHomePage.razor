@@ -1,29 +1,30 @@
 ﻿@page "/stock"
 
 @using Tescat.Services.Cpus
-@inject ICpuService CpuService
+@inject IPcService PcService
 @inject IStorageService StorageService
+@inject IUserService userService
+@inject IMemoryRamService MemoryRamService
+@inject ICpuService CpuService
+@inject IMotherboardService MotherboardService
+@inject IPowerSupplyService PowerSupplyService
 @inject NavigationManager NavigationManager
 
-@if (cpus is null || storages is null)
-{
 
-    <p>Cargando Componentes...</p>
-
-}
-else
-{
-    <div class="card">
-        <div class="card-body">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col">Id Componente</th>
-                        <th scope="col">Tipo de Componente</th>
-                        <th scope="col">Modelo</th>
-                    </tr>
-                </thead>
-                <tbody>
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Id Componente</th>
+                    <th scope="col">Tipo de Componente</th>
+                    <th scope="col">Modelo</th>
+                    <th scope="col">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (cpus is not null)
+                {
                     @foreach (var cpu in cpus)
                     {
                         <tr>
@@ -33,8 +34,15 @@ else
                             <th scope="row">@firstEightCharacters</th>
                             <td>CPU</td>
                             <td>@cpu.Model</td>
+                            <td>
+                                <button type="button" class="btn btn-info" @onclick='() => NavigateToComponent(cpu.IdCpu, "CPU")'>Ver</button>
+
+                            </td>
                         </tr>
                     }
+                }
+                @if (storages is not null)
+                {
                     @foreach (var s in storages)
                     {
                         <tr>
@@ -42,21 +50,80 @@ else
                                 string firstEightCharacters = s.IdStorage.ToString().Substring(0, 8);
                             }
                             <th scope="row">@firstEightCharacters</th>
-                            <td>Storage</td>
+                            <td>Almacenamiento</td>
                             <td>@s.Model</td>
-                            <td><button type="button" class="btn btn-info">Ver</button></td>
+                            <td>
+                                <button type="button" class="btn btn-info" @onclick='() => NavigateToComponent(s.IdStorage, "storage")'>Ver</button>
+
+                            </td>
                         </tr>
                     }
-                </tbody>
-            </table>
-        </div>
+                }
+                @if (memoryRams is not null)
+                {
+                    @foreach (var m in memoryRams)
+                    {
+                        <tr>
+                            @{
+                                string firstEightCharacters = m.IdRam.ToString().Substring(0, 8);
+                            }
+                            <th scope="row">@firstEightCharacters</th>
+                            <td>Memoria RAM</td>
+                            <td>@m.Model</td>
+                            <td>
+                                <button type="button" class="btn btn-info" @onclick='() => NavigateToComponent(m.IdRam, "RAM")'>Ver</button>
+                            </td>
+                        </tr>
+                    }
+                }
+                @if (motherboards is not null)
+                {
+                    @foreach (var m in motherboards)
+                    {
+                        <tr>
+                            @{
+                                string firstEightCharacters = m.IdMotherboard.ToString().Substring(0, 8);
+                            }
+                            <th scope="row">@firstEightCharacters</th>
+                            <td>Tarjeta Madre</td>
+                            <td>@m.Model</td>
+                            <td>
+                                <button type="button" class="btn btn-info" @onclick='() => NavigateToComponent(m.IdMotherboard, "Motherboard")'>Ver</button>
+                            </td>
+                        </tr>
+                    }
+                }
+                @if (powerSupplies is not null)
+                {
+                    @foreach (var m in powerSupplies)
+                    {
+                        <tr>
+                            @{
+                                string firstEightCharacters = m.IdPsu.ToString().Substring(0, 8);
+                            }
+                            <th scope="row">@firstEightCharacters</th>
+                            <td>Fuente de Poder</td>
+                            <td>@m.Model</td>
+                            <td>
+                                <button type="button" class="btn btn-info" @onclick='() => NavigateToComponent(m.IdPsu, "PowerSupply")'>Ver</button>
+                            </td>
+                        </tr>
+                    }
+                }
+
+            </tbody>
+        </table>
     </div>
-}
+</div>
+
 
 
 @code {
     private List<Cpu> cpus { get; set; }
     private List<Storage> storages { get; set; }
+    private List<MemoryRam> memoryRams { get; set; }
+    private List<Motherboard> motherboards { get; set; }
+    private List<PowerSupply> powerSupplies { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -64,6 +131,9 @@ else
         {
             cpus = await CpuService.GetCpusWithoutIdPC();
             storages = await StorageService.GetStoragesWithoutIdPC();
+            memoryRams = await MemoryRamService.GetMemoryRamsWithoutIdPC();
+            motherboards = await MotherboardService.GetMotherboardsWithoutIdPC();
+            powerSupplies = await PowerSupplyService.GetPowerSuppliesWithoutIdPC();
 
         }
         catch (Exception ex)
@@ -71,9 +141,14 @@ else
             Console.WriteLine($"Hubo un problema al cargar la informacion de los equipos{ex.Message}");
         }
     }
-    private void navigateToPcDetails(Guid IdComponent,string nameComponent)
+    public void NavigateToComponent(Guid IdComponent, string nameComponent)
     {
-        NavigationManager.NavigateTo("/stock/" + IdComponent);
+        var url = $"/stock/{Uri.EscapeDataString(nameComponent)}/{IdComponent}";
+        NavigationManager.NavigateTo(url);
     }
+    //private void NavigateToComponent(int idStorage, string anotherVariable)
+    //{
+    //    // Tu lógica aquí
+    //}
 
 }

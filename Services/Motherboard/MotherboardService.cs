@@ -36,6 +36,26 @@ namespace Tescat.Services.Motherboards
                 return new Motherboard();
             }
         }
+        public async Task<List<Motherboard>> GetMotherboardsWithoutIdPC()
+        {
+            using var context = _contextFactory.CreateDbContext();
+            return await context.Motherboards.Where(m => m.IdPc==null).ToListAsync();
+        }
+
+        public async Task<Motherboard> GetMotherboard(Guid guid)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            var motherboardDb = await context.Motherboards
+                                 .FirstOrDefaultAsync(motherboard => motherboard.IdMotherboard == guid);
+            if (motherboardDb != null)
+            {
+                return motherboardDb;
+            }
+            else
+            {
+                return new Motherboard();
+            }
+        }
 
         public async Task<Motherboard> InsertMotherboard(Motherboard motherboard)
         {

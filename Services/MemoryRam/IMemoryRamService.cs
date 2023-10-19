@@ -5,7 +5,10 @@ namespace Tescat.Services.MemoryRams
     public interface IMemoryRamService
     {
         public Task<List<MemoryRam>> GetAllMemoryRams();
+        public Task<MemoryRam> GetMemoryRam(Guid guid);
+
         public Task<MemoryRam> GetMemoryRamWithPcId(Guid guid);
+        public Task<List<MemoryRam>> GetMemoryRamsWithoutIdPC();
 
         public Task<MemoryRam> InsertMemoryRam(MemoryRam memory);
 

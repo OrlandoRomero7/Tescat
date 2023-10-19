@@ -37,6 +37,20 @@ namespace Tescat.Services.Storages
                 return new Storage();
             }
         }
+        public async Task<Storage> GetStorage(Guid guid)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            var storageDb = await context.Storages
+                                 .FirstOrDefaultAsync(storage => storage.IdStorage == guid);
+            if (storageDb != null)
+            {
+                return storageDb;
+            }
+            else
+            {
+                return new Storage();
+            }
+        }
 
         public async Task<Storage> InsertStorage(Storage storage)
         {

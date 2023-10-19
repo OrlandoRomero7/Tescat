@@ -5,6 +5,8 @@ namespace Tescat.Services.Storages
     public interface IStorageService
     {
         public Task<List<Storage>> GetStoragesWithoutIdPC();
+
+        public Task<Storage> GetStorage(Guid guid);
         public Task<Storage> GetStorageWithPcId(Guid guid);
 
         public Task<Storage> InsertStorage(Storage storage);

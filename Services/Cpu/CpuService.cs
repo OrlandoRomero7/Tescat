@@ -37,6 +37,20 @@ namespace Tescat.Services.Cpus
                 return new Cpu();
             }
         }
+        public async Task<Cpu> GetCpu(Guid guid)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            var cpuDb = await context.Cpus
+                                 .FirstOrDefaultAsync(cpu => cpu.IdCpu == guid);
+            if (cpuDb != null)
+            {
+                return cpuDb;
+            }
+            else
+            {
+                return new Cpu();
+            }
+        }
 
         public async Task<Cpu> InsertCpu(Cpu cpu)
         {

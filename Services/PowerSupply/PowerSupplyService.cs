@@ -36,6 +36,25 @@ namespace Tescat.Services.PowerSupplys
                 return new PowerSupply();
             }
         }
+        public async Task<PowerSupply> GetPowerSupply(Guid guid)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            var powerSupplyDb = await context.PowerSupplies
+                                 .FirstOrDefaultAsync(powerSupply => powerSupply.IdPsu == guid);
+            if (powerSupplyDb != null)
+            {
+                return powerSupplyDb;
+            }
+            else
+            {
+                return new PowerSupply();
+            }
+        }
+        public async Task<List<PowerSupply>> GetPowerSuppliesWithoutIdPC()
+        {
+            using var context = _contextFactory.CreateDbContext();
+            return await context.PowerSupplies.Where(p => p.IdPc == null).ToListAsync();
+        }
 
         public async Task<PowerSupply> InsertPowerSupply(PowerSupply powerSupply)
         {

@@ -7,6 +7,10 @@ namespace Tescat.Services.PowerSupplys
         public Task<List<PowerSupply>> GetAllMotherboards();
         public Task<PowerSupply> GetPowerSupplyWithPcId(Guid guid);
 
+        public Task<List<PowerSupply>> GetPowerSuppliesWithoutIdPC();
+
+        public Task<PowerSupply> GetPowerSupply(Guid guid);
+
         public Task<PowerSupply> InsertPowerSupply(PowerSupply powerSupply);
 
         public Task<PowerSupply> UpdatePowerSupply(PowerSupply powerSupply, Guid IdPc);

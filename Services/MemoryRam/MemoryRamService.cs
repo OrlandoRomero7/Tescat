@@ -22,6 +22,22 @@ namespace Tescat.Services.MemoryRams
             throw new NotImplementedException();
         }
 
+        public async Task<MemoryRam> GetMemoryRam(Guid guid)
+        {
+
+            using var context = _contextFactory.CreateDbContext();
+            var memoryDb = await context.MemoryRams
+                                 .FirstOrDefaultAsync(memory => memory.IdRam == guid);
+            if (memoryDb != null)
+            {
+                return memoryDb;
+            }
+            else
+            {
+                return new MemoryRam();
+            }
+        }
+
         public async Task<MemoryRam> GetMemoryRamWithPcId(Guid guid)
         {
             using var context = _contextFactory.CreateDbContext();
@@ -35,6 +51,11 @@ namespace Tescat.Services.MemoryRams
             {
                 return new MemoryRam();
             }
+        }
+        public async Task<List<MemoryRam>> GetMemoryRamsWithoutIdPC()
+        {
+            using var context = _contextFactory.CreateDbContext();
+            return await context.MemoryRams.Where(m => m.IdPc == null).ToListAsync();
         }
 
         public async Task<MemoryRam> InsertMemoryRam(MemoryRam memory)
