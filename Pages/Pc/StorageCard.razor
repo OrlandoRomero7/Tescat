@@ -2,7 +2,10 @@
 
 <FormSection Title="Almacenamiento">
     <EditForm Model="@storage">
-        <button type="button" class="btn btn-danger" @onclick="FunctionCallShowModal">Quitar</button>
+        @if (storage.IdStorage != Guid.Empty)
+        {
+            <button type="button" class="btn btn-danger" @onclick="FunctionCallShowModal">Quitar</button>
+        }
         <div class="row mb-3">
             <div class="col-md-3">
                 <label class="form-label">Tipo</label>

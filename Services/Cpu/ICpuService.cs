@@ -4,7 +4,7 @@ namespace Tescat.Services.Cpus
 {
     public interface ICpuService
     {
-        public Task<List<Cpu>> GetAllCpus();
+        public Task<List<Cpu>> GetCpusWithoutIdPC();
         public Task<Cpu> GetCpuWithPcId(Guid guid);
 
         public Task<Cpu> InsertCpu(Cpu cpu);

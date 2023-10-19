@@ -1,7 +1,10 @@
 ﻿
 <FormSection Title="Memoria RAM">
     <EditForm Model="@memoryRam">
-        <button type="button" class="btn btn-danger" @onclick="FunctionCallShowModal">Quitar</button>
+        @if (memoryRam.IdRam != Guid.Empty)
+        {
+            <button type="button" class="btn btn-danger" @onclick="FunctionCallShowModal">Quitar</button>
+        }
         <div class="row mb-3">
             <div class="col-md-4">
                 <label class="form-label">Tipo</label>

@@ -17,9 +17,10 @@ namespace Tescat.Services.Cpus
             throw new NotImplementedException();
         }
 
-        public Task<List<Cpu>> GetAllCpus()
+        public async Task<List<Cpu>> GetCpusWithoutIdPC()
         {
-            throw new NotImplementedException();
+            using var context = _contextFactory.CreateDbContext();
+            return await context.Cpus.Where(c => c.IdPc == null).ToListAsync();
         }
 
         public async Task<Cpu> GetCpuWithPcId(Guid guid)

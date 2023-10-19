@@ -1,7 +1,11 @@
 ﻿
 <FormSection Title="Fuente de Poder">
     <EditForm Model="@powerSupply">
-        <button type="button" class="btn btn-danger" @onclick="FunctionCallShowModal">Quitar</button>
+        @if (powerSupply.IdPsu != Guid.Empty)
+        {
+            <button type="button" class="btn btn-danger" @onclick="FunctionCallShowModal">Quitar</button>
+        }
+        
         <div class="row mb-3">
             <div class="col-md-4">
                 <label class="form-label">Tipo</label>

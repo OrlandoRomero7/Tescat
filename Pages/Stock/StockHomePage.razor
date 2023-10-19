@@ -1,0 +1,79 @@
+﻿@page "/stock"
+
+@using Tescat.Services.Cpus
+@inject ICpuService CpuService
+@inject IStorageService StorageService
+@inject NavigationManager NavigationManager
+
+@if (cpus is null || storages is null)
+{
+
+    <p>Cargando Componentes...</p>
+
+}
+else
+{
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Id Componente</th>
+                        <th scope="col">Tipo de Componente</th>
+                        <th scope="col">Modelo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var cpu in cpus)
+                    {
+                        <tr>
+                            @{
+                                string firstEightCharacters = @cpu.IdCpu.ToString().Substring(0, 8);
+                            }
+                            <th scope="row">@firstEightCharacters</th>
+                            <td>CPU</td>
+                            <td>@cpu.Model</td>
+                        </tr>
+                    }
+                    @foreach (var s in storages)
+                    {
+                        <tr>
+                            @{
+                                string firstEightCharacters = s.IdStorage.ToString().Substring(0, 8);
+                            }
+                            <th scope="row">@firstEightCharacters</th>
+                            <td>Storage</td>
+                            <td>@s.Model</td>
+                            <td><button type="button" class="btn btn-info">Ver</button></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+
+@code {
+    private List<Cpu> cpus { get; set; }
+    private List<Storage> storages { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            cpus = await CpuService.GetCpusWithoutIdPC();
+            storages = await StorageService.GetStoragesWithoutIdPC();
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Hubo un problema al cargar la informacion de los equipos{ex.Message}");
+        }
+    }
+    private void navigateToPcDetails(Guid IdComponent,string nameComponent)
+    {
+        NavigationManager.NavigateTo("/stock/" + IdComponent);
+    }
+
+}

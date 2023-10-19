@@ -1,7 +1,10 @@
 ﻿
 <FormSection Title="Procesador">
     <EditForm Model="@cpu">
-        <button type="button" class="btn btn-danger" @onclick="FunctionCallShowModal">Quitar</button>
+        @if (cpu.IdCpu != Guid.Empty)
+        {
+            <button type="button" class="btn btn-danger" @onclick="FunctionCallShowModal">Quitar</button>
+        }
         <div class="row mb-3">
             <div class="col-md-4">
                 <label class="form-label">Tipo</label>
@@ -39,4 +42,4 @@
         confirmationModalChild?.Invoke();
     }
 }
-}
+

@@ -17,9 +17,10 @@ namespace Tescat.Services.Storages
             throw new NotImplementedException();
         }
 
-        public Task<List<Storage>> GetAllStorages()
+        public async Task<List<Storage>> GetStoragesWithoutIdPC()
         {
-            throw new NotImplementedException();
+            using var context = _contextFactory.CreateDbContext();
+            return await context.Storages.Where(s => s.IdPc == null).ToListAsync();
         }
 
         public async Task<Storage> GetStorageWithPcId(Guid guid)

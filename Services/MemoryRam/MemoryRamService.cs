@@ -48,7 +48,7 @@ namespace Tescat.Services.MemoryRams
         public async Task<MemoryRam> UpdateMemoryRam(MemoryRam memory, Guid IdPc)
         {
             using var context = _contextFactory.CreateDbContext();
-            bool ramExists = context.Motherboards.Any(c => c.IdPc == IdPc);
+            bool ramExists = context.MemoryRams.Any(c => c.IdPc == IdPc);
             if (ramExists)
             {
                 context.Entry(memory).State = EntityState.Modified;

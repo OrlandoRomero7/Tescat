@@ -51,7 +51,7 @@
     {
         <MemoryRamCard memoryRam="memoryRam" confirmationModalChild="@( () => ShowModalComponents("Memoria RAM") )"></MemoryRamCard>
     }
-    @if (selectedOptions.Contains("CPU") && cpu.IdCpu != Guid.Empty)
+    @if (selectedOptions.Contains("CPU") ||  cpu.IdCpu != Guid.Empty)
     {
         <CpuCard cpu="cpu" confirmationModalChild="@( () => ShowModalComponents("CPU") )"></CpuCard>
     }
@@ -313,27 +313,47 @@
             case "Almacenamiento":
                 var IdPcSto = storage.IdPc.Value; 
                 storage.IdPc = null;
-                storage = await StorageService.UpdateStorage(storage, IdPcSto);
+                await StorageService.UpdateStorage(storage, IdPcSto);
+                storage = new Storage();
+                selectedOptions.Remove("Almacenamiento");
+                nullComponents.Add("Almacenamiento", true);
+                _storage = true;
                 break;
             case "Memoria RAM":
                 var IdPcRam = memoryRam.IdPc.Value;
                 memoryRam.IdPc = null;
-                memoryRam = await MemoryRamService.UpdateMemoryRam(memoryRam, IdPcRam);
+                await MemoryRamService.UpdateMemoryRam(memoryRam, IdPcRam);
+                memoryRam = new MemoryRam();
+                selectedOptions.Remove("Memoria RAM");
+                nullComponents.Add("Memoria RAM", true);
+                _memoryRam = true;
                 break;
             case "CPU":
                 var IdPcCPU = cpu.IdPc.Value;
                 cpu.IdPc = null;
-                cpu = await CpuService.UpdateCpu(cpu, IdPcCPU);
+                await CpuService.UpdateCpu(cpu, IdPcCPU);
+                cpu = new Cpu();
+                selectedOptions.Remove("CPU");
+                nullComponents.Add("CPU", true);
+                _cpu = true;
                 break;
             case "Tarjeta Madre":
                 var IdPcMother = motherboard.IdPc.Value;
                 motherboard.IdPc = null;
-                motherboard = await MotherboardService.UpdateMotherboard(motherboard, IdPcMother);
+                await MotherboardService.UpdateMotherboard(motherboard, IdPcMother);
+                motherboard = new Motherboard();
+                selectedOptions.Remove("Tarjeta Madre");
+                nullComponents.Add("Tarjeta Madre", true);
+                _motherboard = true;
                 break;
             case "Fuente de Poder":
                 var IdPcPSU = powerSupply.IdPc.Value;
                 powerSupply.IdPc = null;
-                powerSupply = await PowerSupplyService.UpdatePowerSupply(powerSupply, IdPcPSU);
+                await PowerSupplyService.UpdatePowerSupply(powerSupply, IdPcPSU);
+                powerSupply = new PowerSupply();
+                selectedOptions.Remove("Fuente de Poder");
+                nullComponents.Add("Fuente de Poder", true);
+                _powerSupply = true;
                 break;
         }
         
