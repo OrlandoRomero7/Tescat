@@ -66,5 +66,19 @@
     <!-- This is the glue between Blazor and Chart.js -->
     <script src="_content/ChartJs.Blazor.Fork/ChartJsBlazorInterop.js"></script>
 
+    @*Script para manejar Desplazamiento*@
+    <script>
+        function scrollToCard(cardId) {
+            var element = document.getElementById(cardId);
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+
+    @*Script para Radzen*@
+    <link rel="stylesheet" href="_content/Radzen.Blazor/css/material-base.css">
+    <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
+
+    
+
 </body>
 </html>

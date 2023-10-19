@@ -8,6 +8,7 @@
 @inject ICpuService CpuService
 @inject IMotherboardService MotherboardService
 @inject IPowerSupplyService PowerSupplyService
+@inject IJSRuntime JSRuntime
 
 @if (pc is null)
 {
@@ -33,7 +34,9 @@ else
                         if (option.Value)
                         {
                             <option>@option.Key</option>
+                           
                         }
+                       
                     }
                 </InputSelect>
             </div>
@@ -58,10 +61,16 @@ else
     {
         <MotherboardCard motherboard="motherboard"></MotherboardCard>
     }
+    
     @if (selectedOptions.Contains("Fuente de Poder") || powerSupply is not null)
     {
-        <PowerSupplyCard powerSupply="powerSupply"></PowerSupplyCard>
+
+        <div id="fuente-de-poder">
+            <PowerSupplyCard powerSupply="powerSupply"></PowerSupplyCard>
+        </div>
     }
+        
+    
     
 }
 
@@ -147,6 +156,8 @@ else
         {
             _selectedOption = value;
             HandleSelectionChange();
+            //OptionSelected(_selectedOption);
+           
         }
     }
 
@@ -161,7 +172,7 @@ else
         _selectedOption = "default"; // Restablecer a la opción por defecto
     }
 
-    private async void updatePc()
+    private async Task updatePc()
     {
         pc = await PcService.UpdatePc(pc);
         if(!_storage) storage = await StorageService.UpdateStorage(storage);
@@ -169,5 +180,16 @@ else
         if (!_motherboard) motherboard = await MotherboardService.UpdateMotherboard(motherboard);
         if (!_cpu) cpu = await CpuService.UpdateCpu(cpu);
         if (!_powerSupply) powerSupply = await PowerSupplyService.UpdatePowerSupply(powerSupply);
+    }
+
+    private async void OptionSelected(string a)
+    {
+        if (a == "Fuente de Poder")
+        {
+            await JSRuntime.InvokeVoidAsync("scrollToCard", "fuente-de-poder");
+            // Llamada a la función de desplazamiento o cualquier otra lógica que desees ejecutar.
+        }
+         _selectedOption = "default"; // Restablecer a la opción por defecto
+        
     }
 }

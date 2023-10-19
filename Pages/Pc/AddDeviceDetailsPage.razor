@@ -1,0 +1,28 @@
+﻿@page "/addDevice/{idUser:int}"
+
+@inject IUserService UserService
+@inject IPcService PcService
+
+@if(user is not null)
+{
+    <BasicPcInformation pc="pc" name="@user.Name"></BasicPcInformation>
+}
+
+
+@code {
+    [Parameter]
+    public int idUser { get; set; } = default!;
+
+    public Pc pc { get; set; } = new Pc();
+
+    public User user { get; set; }
+
+    public Pc dbPc { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        user = await UserService.GetUserId(idUser);
+        //dbPc = await PcService.GetPcWithIdUSer(idUser);
+    }
+    
+}
