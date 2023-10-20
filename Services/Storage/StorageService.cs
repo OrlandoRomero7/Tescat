@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Tescat.Models;
 
 namespace Tescat.Services.Storages
@@ -12,9 +13,13 @@ namespace Tescat.Services.Storages
         {
             _contextFactory = dbContextFactory;
         }
-        public Task<Storage> DeleteStorage(Guid storageGuid)
+        public async Task<Storage> DeleteStorage(Guid storageGuid)
         {
-            throw new NotImplementedException();
+            using var context = _contextFactory.CreateDbContext();
+            var storage = await context.Storages.FindAsync(storageGuid);
+            context.Storages.Remove(storage);
+            await context.SaveChangesAsync();
+            return storage;
         }
 
         public async Task<List<Storage>> GetStoragesWithoutIdPC()

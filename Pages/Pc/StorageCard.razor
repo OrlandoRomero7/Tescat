@@ -2,9 +2,13 @@
 
 <FormSection Title="Almacenamiento">
     <EditForm Model="@storage">
-        @if (storage.IdStorage != Guid.Empty)
+        @if (storage.IdStorage != Guid.Empty && !stockComponent)
         {
             <button type="button" class="btn btn-danger" @onclick="FunctionCallShowModal">Quitar</button>
+        }
+        @if (storage.IdStorage != Guid.Empty && stockComponent)
+        {
+            <button type="button" class="btn btn-danger" @onclick="callConfirmationModalDelete">Eliminar</button>
         }
         <div class="row mb-3">
             <div class="col-md-3">
@@ -70,6 +74,12 @@
     [Parameter]
     public Action confirmationModalChild { get; set; }
 
+    [Parameter]
+    public Action confirmationModalDelete { get; set; }
+
+    [Parameter]
+    public bool stockComponent { get; set; } = false;
+
     private PieConfig _pieConfiguration;
 
     public int? total, usado, disponible;
@@ -127,5 +137,10 @@
     public void FunctionCallShowModal()
     {
         confirmationModalChild?.Invoke();
+    }
+
+    public void callConfirmationModalDelete()
+    {
+        confirmationModalDelete.Invoke();
     }
 }

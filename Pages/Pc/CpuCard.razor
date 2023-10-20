@@ -1,9 +1,13 @@
 ﻿
 <FormSection Title="Procesador">
     <EditForm Model="@cpu">
-        @if (cpu.IdCpu != Guid.Empty)
+        @if (cpu.IdCpu != Guid.Empty && !stockComponent)
         {
             <button type="button" class="btn btn-danger" @onclick="FunctionCallShowModal">Quitar</button>
+        }
+        @if (cpu.IdCpu != Guid.Empty && stockComponent)
+        {
+            <button type="button" class="btn btn-danger" @onclick="callConfirmationModalDelete">Eliminar</button>
         }
         <div class="row mb-3">
             <div class="col-md-4">
@@ -31,6 +35,12 @@
     [Parameter]
     public Action confirmationModalChild { get; set; }
 
+    [Parameter]
+    public bool stockComponent { get; set; } = false;
+
+    [Parameter]
+    public Action confirmationModalDelete { get; set; }
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -40,6 +50,11 @@
     public void FunctionCallShowModal()
     {
         confirmationModalChild?.Invoke();
+    }
+
+    public void callConfirmationModalDelete()
+    {
+        confirmationModalDelete.Invoke();
     }
 }
 

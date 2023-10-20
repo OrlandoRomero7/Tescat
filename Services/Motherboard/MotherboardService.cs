@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
+using System;
 using Tescat.Models;
 
 namespace Tescat.Services.Motherboards
@@ -12,9 +13,13 @@ namespace Tescat.Services.Motherboards
         {
             _contextFactory = dbContextFactory;
         }
-        public Task<Motherboard> DeleteMotherboard(Guid cpuGuid)
+        public async Task<Motherboard> DeleteMotherboard(Guid guid)
         {
-            throw new NotImplementedException();
+            using var context = _contextFactory.CreateDbContext();
+            var motherboardDb = await context.Motherboards.FindAsync(guid);
+            context.Motherboards.Remove(motherboardDb);
+            await context.SaveChangesAsync();
+            return motherboardDb;
         }
 
         public Task<List<Motherboard>> GetAllMotherboards()

@@ -4,7 +4,6 @@ namespace Tescat.Services.PowerSupplys
 {
     public interface IPowerSupplyService
     {
-        public Task<List<PowerSupply>> GetAllMotherboards();
         public Task<PowerSupply> GetPowerSupplyWithPcId(Guid guid);
 
         public Task<List<PowerSupply>> GetPowerSuppliesWithoutIdPC();
@@ -15,6 +14,6 @@ namespace Tescat.Services.PowerSupplys
 
         public Task<PowerSupply> UpdatePowerSupply(PowerSupply powerSupply, Guid IdPc);
 
-        public Task<PowerSupply> DeletePowerSupplyd(Guid cpuGuid);
+        public Task<PowerSupply> DeletePowerSupply(Guid cpuGuid);
     }
 }

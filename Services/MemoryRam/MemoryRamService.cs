@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
+using System;
 using Tescat.Models;
 
 namespace Tescat.Services.MemoryRams
@@ -12,9 +13,13 @@ namespace Tescat.Services.MemoryRams
         {
             _contextFactory = dbContextFactory;
         }
-        public Task<MemoryRam> DeleteMemoryRam(Guid storageGuid)
+        public async Task<MemoryRam> DeleteMemoryRam(Guid storageGuid)
         {
-            throw new NotImplementedException();
+            using var context = _contextFactory.CreateDbContext();
+            var memoryRamDb = await context.MemoryRams.FindAsync(storageGuid);
+            context.MemoryRams.Remove(memoryRamDb);
+            await context.SaveChangesAsync();
+            return memoryRamDb;
         }
 
         public Task<List<MemoryRam>> GetAllMemoryRams()

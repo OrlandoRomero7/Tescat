@@ -1,9 +1,13 @@
 ﻿
 <FormSection Title="Tarjeta Madre">
     <EditForm Model="@motherboard">
-        @if (motherboard.IdMotherboard != Guid.Empty)
+        @if (motherboard.IdMotherboard != Guid.Empty && !stockComponent)
         {
             <button type="button" class="btn btn-danger" @onclick="FunctionCallShowModal">Quitar</button>
+        }
+        @if (motherboard.IdMotherboard != Guid.Empty && stockComponent)
+        {
+            <button type="button" class="btn btn-danger" @onclick="callConfirmationModalDelete">Eliminar</button>
         }
         <div class="row mb-3">
             <div class="col-md-3">
@@ -51,10 +55,20 @@
     [Parameter]
     public Action confirmationModalChild { get; set; }
 
+    [Parameter]
+    public bool stockComponent { get; set; } = false;
+
+    [Parameter]
+    public Action confirmationModalDelete { get; set; }
+
     public void FunctionCallShowModal()
     {
         confirmationModalChild?.Invoke();
         
+    }
+    public void callConfirmationModalDelete()
+    {
+        confirmationModalDelete.Invoke();
     }
 
 }

@@ -7,29 +7,49 @@
 @inject ICpuService CpuService
 @inject IMotherboardService MotherboardService
 @inject IPowerSupplyService PowerSupplyService 
+@inject NavigationManager NavigationManager
 
 @if (nameComponent == "storage" && storage is not null)
 {
-    <StorageCard storage="storage"></StorageCard>
+    <StorageCard storage="storage" stockComponent="stockComponent" confirmationModalDelete="@( () => ShowModalComponents("Almacenamiento") )"></StorageCard>
 }
 @if (nameComponent == "CPU" && cpu is not null)
 {
-    <CpuCard cpu="cpu"></CpuCard>
+    <CpuCard cpu="cpu" stockComponent="stockComponent" confirmationModalDelete="@( () => ShowModalComponents("CPU") )"></CpuCard>
 }
 @if (nameComponent == "RAM" && memoryRam is not null)
 {
-    <MemoryRamCard memoryRam="memoryRam"></MemoryRamCard>
+    <MemoryRamCard memoryRam="memoryRam" stockComponent="stockComponent" confirmationModalDelete="@( () => ShowModalComponents("Memoria RAM") )"></MemoryRamCard>
 }
 @if (nameComponent == "Motherboard" && motherboard is not null)
 {
-    <MotherboardCard motherboard="motherboard"></MotherboardCard>
+    <MotherboardCard motherboard="motherboard" stockComponent="stockComponent" confirmationModalDelete="@( () => ShowModalComponents("Tarjeta Madre") )"></MotherboardCard>
 }
 @if (nameComponent == "PowerSupply" && powerSupply is not null)
 {
-    <PowerSupplyCard powerSupply="powerSupply"></PowerSupplyCard>
+    <PowerSupplyCard powerSupply="powerSupply" stockComponent="stockComponent" confirmationModalDelete="@( () => ShowModalComponents("Fuente de Poder") )"></PowerSupplyCard>
 }
 
-
+<!-- Modal Eliminar Componente-->
+<div class="modal" tabindex="-1" role="dialog" style="display: @modalComponentsDisplay">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Eliminar @componentName</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar" @onclick="CloseModalComponents">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que quieres eliminar este componente?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="CloseModalComponents">Cancelar</button>
+                <button type="button" class="btn btn-danger" @onclick="ConfirmDeleteModalComponents">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @code {
     [Parameter]
@@ -48,6 +68,11 @@
 
     public PowerSupply powerSupply { get; set; }
 
+    public bool stockComponent = true;
+
+    private string modalComponentsDisplay = "none";
+
+    private string componentName { get; set; } = "";
 
 
     protected override async Task OnInitializedAsync()
@@ -72,5 +97,62 @@
         }
         
     }
+    private void ShowModalComponents(string component)
+    {
+        switch (component)
+        {
+            case "Almacenamiento":
+                componentName = component;
+                break;
+            case "Memoria RAM":
+                componentName = component;
+                break;
+            case "CPU":
+                componentName = component;
+                break;
+            case "Tarjeta Madre":
+                componentName = component;
+                break;
+            case "Fuente de Poder":
+                componentName = component;
+                break;
+
+                // ... otros casos
+        }
+        modalComponentsDisplay = "block"; // Mostrar el modal
+        StateHasChanged(); // Esto podría ser necesario
+    }
+
+    private void CloseModalComponents()
+    {
+        modalComponentsDisplay = "none"; // Ocultar el modal
+    }
+
+    private async Task ConfirmDeleteModalComponents()
+    {
+        switch (componentName)
+        {
+            case "Almacenamiento":
+                await StorageService.DeleteStorage(storage.IdStorage);
+                break;
+            case "Memoria RAM":
+                await MemoryRamService.DeleteMemoryRam(memoryRam.IdRam);
+                break;
+            case "CPU":
+                await CpuService.DeleteCpu(cpu.IdCpu);
+                break;
+            case "Tarjeta Madre":
+                await MotherboardService.DeleteMotherboard(motherboard.IdMotherboard);
+                break;
+            case "Fuente de Poder":
+                await PowerSupplyService.DeletePowerSupply(powerSupply.IdPsu);
+                break;
+        }
+        NavigationManager.NavigateTo("/stock");
+        CloseModalComponents(); // Cerrar el modal después de la confirmación
+        StateHasChanged();
+    }
+
+    
 
 }

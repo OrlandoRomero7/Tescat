@@ -15,7 +15,7 @@ namespace Tescat.Services.Pcs
         public async Task<List<Pc>> GetAllPc()
         {
             using var context = _contextFactory.CreateDbContext();
-            return await context.Pcs.Where(pc => pc.IdUser != null).ToListAsync();
+            return await context.Pcs.ToListAsync();
         }
 
         public async Task<Pc> GetPcId(Guid IdPc)

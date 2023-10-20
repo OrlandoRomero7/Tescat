@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
+using System.Net.NetworkInformation;
 using Tescat.Models;
 
 namespace Tescat.Services.PowerSupplys
@@ -12,15 +13,18 @@ namespace Tescat.Services.PowerSupplys
         {
             _contextFactory = dbContextFactory;
         }
-        public Task<PowerSupply> DeletePowerSupplyd(Guid cpuGuid)
+        public async Task<PowerSupply> DeletePowerSupply(Guid guid)
         {
-            throw new NotImplementedException();
+            using var context = _contextFactory.CreateDbContext();
+            var powerSupply = await context.PowerSupplies.FindAsync(guid);
+            context.PowerSupplies.Remove(powerSupply);
+            await context.SaveChangesAsync();
+
+            return powerSupply;
+
+
         }
 
-        public Task<List<PowerSupply>> GetAllMotherboards()
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<PowerSupply> GetPowerSupplyWithPcId(Guid guid)
         {
