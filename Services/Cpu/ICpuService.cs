@@ -14,5 +14,7 @@ namespace Tescat.Services.Cpus
         public Task<Cpu> UpdateCpu(Cpu cpu, Guid IdPc);
 
         public Task<Cpu> DeleteCpu(Guid cpuGuid);
+
+        public Task<Cpu> UpdateCpuForStock(Cpu cpu);
     }
 }

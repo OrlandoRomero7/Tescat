@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Tescat.Models;
 
-public partial class Cpu
+public partial class Cpu 
 {
     public Guid IdCpu { get; set; }
 

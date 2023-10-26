@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Tescat.Models;
 
-public partial class Storage
+public partial class Storage 
 {
     public Guid IdStorage { get; set; }
 

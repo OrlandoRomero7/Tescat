@@ -19,5 +19,8 @@ namespace Tescat.Services.Pcs
         public Task<Pc> GetPcWithIdUSer(int IdUSer);
 
         public Task<List<Pc>> GetNumberPc(int IdUser);
+
+        public Task<Guid> GetPcForAssingComponent(int IdUser);
+
     }
 }

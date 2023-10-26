@@ -10,141 +10,98 @@
 @inject IPowerSupplyService PowerSupplyService
 @inject NavigationManager NavigationManager
 
+@if (cpus == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
 
-<div class="card">
-    <div class="card-body">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th scope="col">Id Componente</th>
-                    <th scope="col">Tipo de Componente</th>
-                    <th scope="col">Modelo</th>
-                    <th scope="col">Acción</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (cpus is not null)
-                {
-                    @foreach (var cpu in cpus)
-                    {
-                        <tr>
-                            @{
-                                string firstEightCharacters = @cpu.IdCpu.ToString().Substring(0, 8);
-                            }
-                            <th scope="row">@firstEightCharacters</th>
-                            <td>CPU</td>
-                            <td>@cpu.Model</td>
-                            <td>
-                                <button type="button" class="btn btn-info" @onclick='() => NavigateToComponent(cpu.IdCpu, "CPU")'>Ver</button>
-
-                            </td>
-                        </tr>
-                    }
-                }
-                @if (storages is not null)
-                {
-                    @foreach (var s in storages)
-                    {
-                        <tr>
-                            @{
-                                string firstEightCharacters = s.IdStorage.ToString().Substring(0, 8);
-                            }
-                            <th scope="row">@firstEightCharacters</th>
-                            <td>Almacenamiento</td>
-                            <td>@s.Model</td>
-                            <td>
-                                <button type="button" class="btn btn-info" @onclick='() => NavigateToComponent(s.IdStorage, "storage")'>Ver</button>
-
-                            </td>
-                        </tr>
-                    }
-                }
-                @if (memoryRams is not null)
-                {
-                    @foreach (var m in memoryRams)
-                    {
-                        <tr>
-                            @{
-                                string firstEightCharacters = m.IdRam.ToString().Substring(0, 8);
-                            }
-                            <th scope="row">@firstEightCharacters</th>
-                            <td>Memoria RAM</td>
-                            <td>@m.Model</td>
-                            <td>
-                                <button type="button" class="btn btn-info" @onclick='() => NavigateToComponent(m.IdRam, "RAM")'>Ver</button>
-                            </td>
-                        </tr>
-                    }
-                }
-                @if (motherboards is not null)
-                {
-                    @foreach (var m in motherboards)
-                    {
-                        <tr>
-                            @{
-                                string firstEightCharacters = m.IdMotherboard.ToString().Substring(0, 8);
-                            }
-                            <th scope="row">@firstEightCharacters</th>
-                            <td>Tarjeta Madre</td>
-                            <td>@m.Model</td>
-                            <td>
-                                <button type="button" class="btn btn-info" @onclick='() => NavigateToComponent(m.IdMotherboard, "Motherboard")'>Ver</button>
-                            </td>
-                        </tr>
-                    }
-                }
-                @if (powerSupplies is not null)
-                {
-                    @foreach (var m in powerSupplies)
-                    {
-                        <tr>
-                            @{
-                                string firstEightCharacters = m.IdPsu.ToString().Substring(0, 8);
-                            }
-                            <th scope="row">@firstEightCharacters</th>
-                            <td>Fuente de Poder</td>
-                            <td>@m.Model</td>
-                            <td>
-                                <button type="button" class="btn btn-info" @onclick='() => NavigateToComponent(m.IdPsu, "PowerSupply")'>Ver</button>
-                            </td>
-                        </tr>
-                    }
-                }
-
-            </tbody>
-        </table>
-    </div>
-</div>
+    <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true"
+                    FilterMode="FilterMode.Simple" PageSize="5" AllowPaging="true" AllowSorting="true" Data="@commonData" ColumnWidth="150px"
+                    FilterCaseSensitivity="@filterCaseSensitivity" LogicalFilterOperator="@logicalFilterOperator">
+        <Columns>
+            <RadzenDataGridColumn TItem="CommonPropertiesViewModel" Property="Id" Title="ID" Filterable="false"></RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="CommonPropertiesViewModel" Property="Model" Title="Modelo"></RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="CommonPropertiesViewModel" Property="Type" Title="Tipo"></RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="CommonPropertiesViewModel" Title="Acción">
+                <Template Context="item">
+                    <button type="button" class="btn btn-info" @onclick="() => NavigateToComponent(item.Id, item.Type)">Ver</button>
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
 
 
+}
 
 @code {
+    RadzenDataGrid<Cpu> grid;
     private List<Cpu> cpus { get; set; }
     private List<Storage> storages { get; set; }
     private List<MemoryRam> memoryRams { get; set; }
     private List<Motherboard> motherboards { get; set; }
     private List<PowerSupply> powerSupplies { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            cpus = await CpuService.GetCpusWithoutIdPC();
-            storages = await StorageService.GetStoragesWithoutIdPC();
-            memoryRams = await MemoryRamService.GetMemoryRamsWithoutIdPC();
-            motherboards = await MotherboardService.GetMotherboardsWithoutIdPC();
-            powerSupplies = await PowerSupplyService.GetPowerSuppliesWithoutIdPC();
+    LogicalFilterOperator logicalFilterOperator = LogicalFilterOperator.And;
+    FilterCaseSensitivity filterCaseSensitivity = FilterCaseSensitivity.CaseInsensitive;
 
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Hubo un problema al cargar la informacion de los equipos{ex.Message}");
-        }
+    List<CommonPropertiesViewModel> commonData = new List<CommonPropertiesViewModel>();
+
+    private async Task LoadData()
+    {
+        commonData = cpus.Select(cpu => new CommonPropertiesViewModel
+            {
+                Id = cpu.IdCpu, 
+                Model = cpu.Model,
+                Type = "CPU"
+            }).ToList();
+
+        commonData.AddRange(storages.Select(storage => new CommonPropertiesViewModel
+            {
+                Id = storage.IdStorage, 
+                Model = storage.Model,
+                Type = "storage"
+            }));
+        commonData.AddRange(memoryRams.Select(memoryRam => new CommonPropertiesViewModel
+            {
+                Id = memoryRam.IdRam, 
+                Model = memoryRam.Model,
+                Type = "RAM"
+            }));
+        commonData.AddRange(motherboards.Select(motherboard => new CommonPropertiesViewModel
+            {
+                Id = motherboard.IdMotherboard, 
+                Model = motherboard.Model,
+                Type = "Motherboard"
+            }));
+        commonData.AddRange(powerSupplies.Select(psu => new CommonPropertiesViewModel
+            {
+                Id = psu.IdPsu, 
+                Model = psu.Model,
+                Type = "PowerSupply"
+            }));
     }
+
     public void NavigateToComponent(Guid IdComponent, string nameComponent)
     {
         var url = $"/stock/{Uri.EscapeDataString(nameComponent)}/{IdComponent}";
         NavigationManager.NavigateTo(url);
     }
+    public void NavigateToAssingComponent(Guid IdComponent, string nameComponent)
+    {
+        var url = $"/stock/assing/{Uri.EscapeDataString(nameComponent)}/{IdComponent}";
+        NavigationManager.NavigateTo(url);
+    }
 
+    protected override async Task OnInitializedAsync()
+    {
+        cpus = await CpuService.GetCpusWithoutIdPC();
+        storages = await StorageService.GetStoragesWithoutIdPC();
+        memoryRams = await MemoryRamService.GetMemoryRamsWithoutIdPC();
+        motherboards = await MotherboardService.GetMotherboardsWithoutIdPC();
+        powerSupplies = await PowerSupplyService.GetPowerSuppliesWithoutIdPC();
+        await LoadData();
+
+    }
 }

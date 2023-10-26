@@ -12,9 +12,13 @@ namespace Tescat.Services.Cpus
         {
             _contextFactory = dbContextFactory;
         }
-        public Task<Cpu> DeleteCpu(Guid cpuGuid)
+        public async Task<Cpu> DeleteCpu(Guid cpuGuid)
         {
-            throw new NotImplementedException();
+            using var context = _contextFactory.CreateDbContext();
+            var cpudDb = await context.Cpus.FindAsync(cpuGuid);
+            context.Cpus.Remove(cpudDb);
+            await context.SaveChangesAsync();
+            return cpudDb;
         }
 
         public async Task<List<Cpu>> GetCpusWithoutIdPC()
@@ -75,9 +79,16 @@ namespace Tescat.Services.Cpus
                 cpu.IdPc = IdPc;
                 return await InsertCpu(cpu);
             }
+        }
+        public async Task<Cpu> UpdateCpuForStock(Cpu cpu)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            context.Entry(cpu).State = EntityState.Modified;
+            await context.SaveChangesAsync();
+            return cpu;
 
 
-                
+
         }
     }
 }

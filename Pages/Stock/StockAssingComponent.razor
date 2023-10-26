@@ -1,0 +1,14 @@
+﻿@page "/stock/assing/{nameComponent}/{IdComponent:guid}"
+
+
+<h3>StockAssingComponent</h3>
+
+@code {
+    [Parameter]
+    public string nameComponent { get; set; }
+
+    [Parameter]
+    public Guid IdComponent { get; set; }
+
+
+}

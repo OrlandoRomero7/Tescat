@@ -5,10 +5,6 @@
         {
             <button type="button" class="btn btn-danger" @onclick="FunctionCallShowModal">Quitar</button>
         }
-        @if (cpu.IdCpu != Guid.Empty && stockComponent)
-        {
-            <button type="button" class="btn btn-danger" @onclick="callConfirmationModalDelete">Eliminar</button>
-        }
         <div class="row mb-3">
             <div class="col-md-4">
                 <label class="form-label">Tipo</label>
@@ -52,9 +48,5 @@
         confirmationModalChild?.Invoke();
     }
 
-    public void callConfirmationModalDelete()
-    {
-        confirmationModalDelete.Invoke();
-    }
 }
 

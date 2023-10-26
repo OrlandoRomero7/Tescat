@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Diagnostics.Tracing;
 using Tescat.Models;
 
 namespace Tescat.Services.Pcs
@@ -18,6 +19,10 @@ namespace Tescat.Services.Pcs
             return await context.Pcs.ToListAsync();
         }
 
+        
+
+
+
         public async Task<Pc> GetPcId(Guid IdPc)
         {
             using var context = _contextFactory.CreateDbContext();
@@ -31,10 +36,25 @@ namespace Tescat.Services.Pcs
                 return null;
             }
         }
+
+        public async Task<Guid> GetPcForAssingComponent(int IdUser)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            var pcDb = await context.Pcs.Where(c => c.IdUser == IdUser).FirstAsync();
+            if (pcDb != null)
+            {
+                return pcDb.IdPc;
+            }
+            else
+            {
+                return Guid.Empty;
+            }
+
+        }
         //private List<Pc> pcDb = new List<Pc>();
         public async Task<List<Pc>> GetNumberPc(int IdUser)
         {
-            
+
             using var context = _contextFactory.CreateDbContext();
             var pcDb = await context.Pcs.Where(pc => pc.IdUser == IdUser).ToListAsync();
             return pcDb.Count > 0 ? pcDb : new List<Pc>();
@@ -62,7 +82,7 @@ namespace Tescat.Services.Pcs
             await context.SaveChangesAsync();
             return pc;
         }
-        
+
         public async Task<Pc> UpdatePc(Pc pc)
         {
             using var context = _contextFactory.CreateDbContext();

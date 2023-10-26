@@ -8,27 +8,63 @@
 @inject IMotherboardService MotherboardService
 @inject IPowerSupplyService PowerSupplyService 
 @inject NavigationManager NavigationManager
+@inject IUserService userService
+
+
 
 @if (nameComponent == "storage" && storage is not null)
 {
-    <StorageCard storage="storage" stockComponent="stockComponent" confirmationModalDelete="@( () => ShowModalComponents("Almacenamiento") )"></StorageCard>
+    <button type="button" class="btn btn-danger" @onclick="@( () => ShowModalComponents("Almacenamiento") )">Eliminar</button>
+    <StorageCard storage="storage" stockComponent="stockComponent"></StorageCard>
 }
 @if (nameComponent == "CPU" && cpu is not null)
 {
-    <CpuCard cpu="cpu" stockComponent="stockComponent" confirmationModalDelete="@( () => ShowModalComponents("CPU") )"></CpuCard>
+    <button type="button" class="btn btn-danger" @onclick="@( () => ShowModalComponents("CPU") )">Eliminar</button>
+    <CpuCard cpu="cpu" stockComponent="stockComponent"></CpuCard>
 }
 @if (nameComponent == "RAM" && memoryRam is not null)
 {
-    <MemoryRamCard memoryRam="memoryRam" stockComponent="stockComponent" confirmationModalDelete="@( () => ShowModalComponents("Memoria RAM") )"></MemoryRamCard>
+    <button type="button" class="btn btn-danger" @onclick="@( () => ShowModalComponents("Memoria RAM") )">Eliminar</button>
+    <MemoryRamCard memoryRam="memoryRam" stockComponent="stockComponent"></MemoryRamCard>
 }
 @if (nameComponent == "Motherboard" && motherboard is not null)
 {
-    <MotherboardCard motherboard="motherboard" stockComponent="stockComponent" confirmationModalDelete="@( () => ShowModalComponents("Tarjeta Madre") )"></MotherboardCard>
+    <button type="button" class="btn btn-danger" @onclick="@( () => ShowModalComponents("Tarjeta Madre") )">Eliminar</button>
+    <MotherboardCard motherboard="motherboard" stockComponent="stockComponent"></MotherboardCard>
 }
 @if (nameComponent == "PowerSupply" && powerSupply is not null)
 {
-    <PowerSupplyCard powerSupply="powerSupply" stockComponent="stockComponent" confirmationModalDelete="@( () => ShowModalComponents("Fuente de Poder") )"></PowerSupplyCard>
+    <button type="button" class="btn btn-danger" @onclick="@( () => ShowModalComponents("Fuente de Poder") )">Eliminar</button>
+    <PowerSupplyCard powerSupply="powerSupply" stockComponent="stockComponent"></PowerSupplyCard>
 }
+@if (showDropDown)
+{
+    <FormSection Title="">
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <h5>Asignar a Pc de usuario:</h5>
+            </div>
+            <RadzenDropDown @bind-Value=IdPc AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                            Data=@combine ValueProperty="IdPc" TextProperty="UserName" Style="width: 100%; max-width: 400px;">
+                <Template>
+                    @($"Nombre: {context.UserName}, Equipo: {context.PcName}")
+                </Template>
+            </RadzenDropDown>
+            <div class="col-md-3">
+                @if (IdPc != Guid.Empty)
+                {
+                    <button type="button" class="btn btn-info" @onclick='() => assingComponent(IdComponent, nameComponent)'>Asignar</button>
+                }
+            </div>
+        </div>
+    </FormSection>
+}
+
+@if (existsComponent)
+{
+    <div class="alert alert-primary ">El equipo de este usuario ya contiene este componente</div>
+}
+
 
 <!-- Modal Eliminar Componente-->
 <div class="modal" tabindex="-1" role="dialog" style="display: @modalComponentsDisplay">
@@ -74,28 +110,47 @@
 
     private string componentName { get; set; } = "";
 
+    private bool showDropDown = false;
+
+    //int idUser;
+
+    IEnumerable<User> users;
+    IEnumerable<Pc> pcs;
+
+    Guid IdPc;
+
 
     protected override async Task OnInitializedAsync()
     {
-        switch (nameComponent)
+        users = await userService.GetAllUsers();
+        pcs = await PcService.GetAllPc();
+        await LoadData();
+        if (nameComponent != null)
         {
-            case "storage":
-                storage = await StorageService.GetStorage(IdComponent);
-                break;
-            case "CPU":
-                cpu = await CpuService.GetCpu(IdComponent);
-                break;
-            case "RAM":
-                memoryRam = await MemoryRamService.GetMemoryRam(IdComponent);
-                break;
-            case "Motherboard":
-                motherboard = await MotherboardService.GetMotherboard(IdComponent);
-                break;
-            case "PowerSupply":
-                powerSupply = await PowerSupplyService.GetPowerSupply(IdComponent);
-                break;
+            switch (nameComponent)
+            {
+                case "storage":
+                    storage = await StorageService.GetStorage(IdComponent);
+                    break;
+                case "CPU":
+                    cpu = await CpuService.GetCpu(IdComponent);
+                    break;
+                case "RAM":
+                    memoryRam = await MemoryRamService.GetMemoryRam(IdComponent);
+                    break;
+                case "Motherboard":
+                    motherboard = await MotherboardService.GetMotherboard(IdComponent);
+                    break;
+                case "PowerSupply":
+                    powerSupply = await PowerSupplyService.GetPowerSupply(IdComponent);
+                    break;
+                    
+            }
+            showDropDown = true;
         }
         
+
+
     }
     private void ShowModalComponents(string component)
     {
@@ -152,6 +207,75 @@
         CloseModalComponents(); // Cerrar el modal después de la confirmación
         StateHasChanged();
     }
+
+    public void NavigateToAssingComponent(Guid IdComponent, string nameComponent)
+    {
+        var url = $"/stock/assing/{Uri.EscapeDataString(nameComponent)}/{IdComponent}";
+        NavigationManager.NavigateTo(url);
+    }
+    private bool existsComponent = false;
+
+    public async Task assingComponent(Guid IdComponent, string component)
+    {
+        //var IdPc = await PcService.GetPcForAssingComponent(idUser);
+        switch (component)
+        {
+            case "storage":
+                storage.IdPc = IdPc;
+                storage = await StorageService.UpdateStorage(storage, IdComponent);
+                break;
+            case "CPU":
+                var checkPC = await CpuService.GetCpuWithPcId(IdPc);
+                if(checkPC.IdPc == null)
+                {
+                    cpu.IdPc = IdPc;
+                    cpu = await CpuService.UpdateCpuForStock(cpu);
+                    NavigateToPC(IdPc);
+                }
+                else
+                {
+                    existsComponent = true;
+                }
+                break;
+            case "RAM":
+                memoryRam = await MemoryRamService.GetMemoryRam(IdComponent);
+                break;
+            case "Motherboard":
+                motherboard = await MotherboardService.GetMotherboard(IdComponent);
+                break;
+            case "PowerSupply":
+                powerSupply = await PowerSupplyService.GetPowerSupply(IdComponent);
+                break;
+        }
+
+    }
+    public void NavigateToPC(Guid IdPc)
+    {
+        NavigationManager.NavigateTo("/pcDetails/" + IdPc);
+    }
+
+    List<PcsAndUsers> combine = new List<PcsAndUsers>();
+
+    private async Task LoadData()
+    {
+        combine = new List<PcsAndUsers>();
+
+        foreach (var pc in pcs)
+        {
+            var user = users.FirstOrDefault(u => u.IdUser == pc.IdUser);
+
+            if (user != null)
+            {
+                combine.Add(new PcsAndUsers
+                    {
+                        IdPc = pc.IdPc,
+                        PcName = pc.PcName,
+                        UserName = user.Name
+                    });
+            }
+        }
+    }
+
 
     
 
