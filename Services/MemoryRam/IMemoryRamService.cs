@@ -15,5 +15,7 @@ namespace Tescat.Services.MemoryRams
         public Task<MemoryRam> UpdateMemoryRam(MemoryRam memory,Guid IdPC);
 
         public Task<MemoryRam> DeleteMemoryRam(Guid memoryGuid);
+
+        public Task<MemoryRam> UpdateMemoryRamForStock(MemoryRam memory);
     }
 }

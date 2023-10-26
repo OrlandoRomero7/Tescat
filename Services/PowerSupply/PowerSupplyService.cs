@@ -86,5 +86,13 @@ namespace Tescat.Services.PowerSupplys
             }    
             
         }
+
+        public async Task<PowerSupply> UpdatePowerSupplyForStock(PowerSupply powerSupply)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            context.Entry(powerSupply).State = EntityState.Modified;
+            await context.SaveChangesAsync();
+            return powerSupply;
+        }
     }
 }

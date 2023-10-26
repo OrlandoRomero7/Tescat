@@ -88,5 +88,12 @@ namespace Tescat.Services.Motherboards
             }
             
         }
+        public async Task<Motherboard> UpdateMotherboardForStock(Motherboard motherboard)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            context.Entry(motherboard).State = EntityState.Modified;
+            await context.SaveChangesAsync();
+            return motherboard;
+        }
     }
 }

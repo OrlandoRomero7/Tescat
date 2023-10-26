@@ -14,5 +14,7 @@ namespace Tescat.Services.Storages
         public Task<Storage> UpdateStorage(Storage storage, Guid IdPc);
 
         public Task<Storage> DeleteStorage(Guid storageGuid);
+
+        public Task<Storage> UpdateStorageForStock(Storage storage);
     }
 }

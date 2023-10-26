@@ -82,5 +82,13 @@ namespace Tescat.Services.Storages
             }
             
         }
+
+        public async Task<Storage> UpdateStorageForStock(Storage storage)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            context.Entry(storage).State = EntityState.Modified;
+            await context.SaveChangesAsync();
+            return storage;
+        }
     }
 }

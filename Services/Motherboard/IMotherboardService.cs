@@ -16,5 +16,7 @@ namespace Tescat.Services.Motherboards
         public Task<Motherboard> UpdateMotherboard(Motherboard motherboard, Guid IdPc);
 
         public Task<Motherboard> DeleteMotherboard(Guid cpuGuid);
+
+        public Task<Motherboard> UpdateMotherboardForStock(Motherboard motherboard);
     }
 }

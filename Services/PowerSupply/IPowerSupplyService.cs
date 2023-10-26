@@ -15,5 +15,7 @@ namespace Tescat.Services.PowerSupplys
         public Task<PowerSupply> UpdatePowerSupply(PowerSupply powerSupply, Guid IdPc);
 
         public Task<PowerSupply> DeletePowerSupply(Guid cpuGuid);
+
+        public Task<PowerSupply> UpdatePowerSupplyForStock(PowerSupply powerSupply);
     }
 }

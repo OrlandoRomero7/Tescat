@@ -88,5 +88,12 @@ namespace Tescat.Services.MemoryRams
             }
             
         }
+        public async Task<MemoryRam> UpdateMemoryRamForStock(MemoryRam memory)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            context.Entry(memory).State = EntityState.Modified;
+            await context.SaveChangesAsync();
+            return memory;
+        }
     }
 }
