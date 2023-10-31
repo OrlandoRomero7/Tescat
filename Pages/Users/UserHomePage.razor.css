@@ -56,14 +56,14 @@
     position: absolute;
     border-radius: 0.5rem;
     right: 130px;
-    transition: right 1s ease, width 1s ease;
+    transition: right 500ms ease, width 500ms ease;
 }
 
 
 .indicator-active {
     right: 80px;
     /* Agregar transición para suavizar el movimiento, si se desea */
-    transition: right 1s ease, width 1s ease;
+    transition: right 500ms ease, width 500ms ease;
     /*   width:180px;*/
 }
 
@@ -81,7 +81,7 @@
     transform: translate(-50%, -50%);
     pointer-events: none;
     border-radius: 50%;
-    animation: animate 1s linear infinite;
+    animation: animate 500ms linear infinite;
 }
 
 @keyframes animate {
@@ -95,5 +95,13 @@
         width: 500px;
         height: 500px;
         opacity: 0;
+    }
+}
+
+
+@media screen and (min-width: 2000px) {
+    .cards.container {
+        /*        background: red;*/
+        max-width: 1680px;
     }
 }

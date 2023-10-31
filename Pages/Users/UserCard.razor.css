@@ -44,7 +44,15 @@ small.text-details {
     }
 
 
+.user-card img {
+    height: 15rem;
+}
 
+@media screen and (min-width: 2000px) {
+    .user-card img {
+        height: 20rem;
+    }
+}
 
 .user-card:nth-child(3n-2) {
     padding-left: 0px;

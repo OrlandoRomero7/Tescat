@@ -8,7 +8,7 @@
 
 
 @*<div class="container" style="position: sticky; top: 0; right: 0; display:flex; justify-content:flex-end; padding-right:1.3%; margin-bottom:2%; z-index:9;">*@
-<div class="container" style=" display:flex; justify-content:flex-end; padding-right:1.3%; margin-bottom:2%;">
+<div class="container" style="display: flex; justify-content: flex-end; padding-right: 12.3%; margin-bottom: 2%; max-width: 100%; ">
     <div class="user-buttons-box">
 
         <button type="button" class="btn btn-primary" style="margin-right:.5rem;" @onclick="@(e => CombinedClickHandler(e, RippleType.Add))">
@@ -40,7 +40,7 @@
 
 
 
-<div class="container">
+<div class="cards container">
     <div style="row-gap:4rem; justify-content:center; display:grid; grid-template-columns: 1fr 1fr 1fr">
 
         @if (Users == null)
@@ -139,7 +139,7 @@
 
         try
         {
-            await Task.Delay(1000, ctsDictionary[rippleType].Token); // Espera 1 segundo
+            await Task.Delay(500, ctsDictionary[rippleType].Token); // Espera 1 segundo
 
             showIndicator = true;
 

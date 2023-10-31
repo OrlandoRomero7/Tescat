@@ -1,9 +1,10 @@
 ﻿@inject IUserService UserService
 @inject NavigationManager NavigationManager
+@inject IConfiguration Configuration
 
 
 
-<div class="user-card" style=" flex-basis: calc(33.3333% - 20px); margin: 10px; ">
+<div class="user-card" style=" margin: 10px;">
     <div class="card shadow" style=" border-radius: 12px; border:0px; overflow:hidden; height:100%">
         <div class="card-body" style="padding: 0px;">
             <center class="m-t-30">
@@ -13,11 +14,11 @@
 
                     @if (User.IMAGE_NAME is not null)
                     {
-                        <img src="/Images/@User.IMAGE_NAME" alt="user image" style="width: 100%;  height:15rem; object-fit: cover;">
+                        <img src="/Images/@User.IMAGE_NAME" alt="user image" style="width: 100%; object-fit: cover; object-position: 0 33%;">
                     }
                     else
                     {
-                        <img src="/Images/default.svg" alt="user image" style="width: 80%;  height:15rem; object-fit: cover;">
+                        <img src="/Images/default.svg" alt="user image" style="width: 80%;  object-fit: cover; object-position: 0 33%;">
                     }
 
 
@@ -55,7 +56,7 @@
 
         <div style="text-align:left" class="card-body">
 
-           
+
             <button class="btn btn-primary bi bi-binoculars me-2" @onclick="() => UserDetails(User.IdUser)">
             </button>
 

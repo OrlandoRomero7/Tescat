@@ -14,7 +14,7 @@
     width: 30px;
     /*    cursor: pointer;*/
     z-index: 2;
-    transition: width 1000ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
+    transition: width 500ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
 }
 
     /*.searchbox:hover {
@@ -31,7 +31,7 @@
         /*box-shadow: rgb(221, 221, 221) 0rem 0.0625rem 0.3125rem 0.0625rem;*/
         /*background: var(--brand-white);*/
         width: 15rem;
-        transition: width 1000ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
+        transition: width 500ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
     }
 
         .searchbox:focus-within input {
@@ -40,12 +40,12 @@
 
     .searchbox i {
         margin-right: -2.5px;
-        transition: margin-right 1000ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
+        transition: margin-right 500ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
     }
 
     .searchbox:focus-within i {
         margin-right: 220px;
-        transition: margin-right 1000ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
+        transition: margin-right 500ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
     }
 
 
