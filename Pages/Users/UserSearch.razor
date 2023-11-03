@@ -1,24 +1,36 @@
 ﻿<div class="searchbox">
     <i class="material-symbols-outlined search-icon">search</i>
-    <input type="text" placeholder="" @bind="inputText" @onblur="HandleDivClick" @onfocus="HandleInputFocus">
+    <input type="text"
+           @onkeydown="SearchForUser"
+           @bind="_searchTerm"
+           @bind:event="oninput"
+           @onblur="HandleDivClick"
+           @onfocus="HandleInputFocus">
 </div>
 
-
-
 @code {
-    [Parameter] public EventCallback OnDivClicked { get; set; }
+    [Parameter] public EventCallback<string> OnDivClicked { get; set; }
     [Parameter] public EventCallback<FocusEventArgs> OnInputFocus { get; set; }
-    private string inputText = string.Empty;
+    private string _searchTerm = string.Empty;
 
     private async Task HandleDivClick()
     {
-        await OnDivClicked.InvokeAsync(null);
-        inputText = string.Empty;
+        await OnDivClicked.InvokeAsync(_searchTerm); // Pass _searchTerm as the parameter
+        _searchTerm = string.Empty;
     }
 
     private void HandleInputFocus(FocusEventArgs e)
     {
         OnInputFocus.InvokeAsync(e);
-   
+    }
+
+    private void SearchForUser(KeyboardEventArgs args)
+    {
+        if (args.Key != "Enter") return;
+
+        if (!string.IsNullOrEmpty(_searchTerm))
+        {
+            Console.WriteLine(_searchTerm);
+        }
     }
 }
