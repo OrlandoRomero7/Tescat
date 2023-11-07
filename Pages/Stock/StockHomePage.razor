@@ -97,7 +97,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         cpus = await CpuService.GetCpusWithoutIdPC();
-        storages = await StorageService.GetStoragesWithoutIdPC();
+        storages = await StorageService.GetListStoragesWithoutIdPC();
         memoryRams = await MemoryRamService.GetMemoryRamsWithoutIdPC();
         motherboards = await MotherboardService.GetMotherboardsWithoutIdPC();
         powerSupplies = await PowerSupplyService.GetPowerSuppliesWithoutIdPC();
