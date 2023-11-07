@@ -10,12 +10,13 @@
 
 @code {
     [Parameter] public EventCallback<string> OnDivClicked { get; set; }
+    [Parameter] public EventCallback<string> OnSearch { get; set; }
     [Parameter] public EventCallback<FocusEventArgs> OnInputFocus { get; set; }
     private string _searchTerm = string.Empty;
 
     private async Task HandleDivClick()
     {
-        await OnDivClicked.InvokeAsync(_searchTerm); // Pass _searchTerm as the parameter
+        await OnDivClicked.InvokeAsync(); // Pass _searchTerm as the parameter
         _searchTerm = string.Empty;
     }
 
@@ -24,12 +25,13 @@
         OnInputFocus.InvokeAsync(e);
     }
 
-    private void SearchForUser(KeyboardEventArgs args)
+    private async Task SearchForUser(KeyboardEventArgs args)
     {
         if (args.Key != "Enter") return;
 
         if (!string.IsNullOrEmpty(_searchTerm))
         {
+            await OnSearch.InvokeAsync(_searchTerm);
             Console.WriteLine(_searchTerm);
         }
     }

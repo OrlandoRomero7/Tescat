@@ -16,7 +16,7 @@
 
         <button type="button" class="btn btn-primary">
 
-            <UserSearch OnDivClicked="HandleDivClickInChildComponent" OnInputFocus="OnSearchInputFocus"></UserSearch>
+            <UserSearch OnDivClicked="HandleDivClickInChildComponent" OnInputFocus="OnSearchInputFocus" OnSearch="HandleUserSearch"></UserSearch>
 
             <span style="left: @(xPos)px; top: @(yPos)px;" class="@(showRippleSearch ? "ripple" : "")"></span>
 
@@ -41,6 +41,11 @@
     string indicatorWidth = "50.8px";
 
     string? searchTermFromUserSearch;
+
+
+
+    [Parameter] public EventCallback<string> OnControlsSearch { get; set; }
+
 
 
 
@@ -133,19 +138,35 @@
                                             //CreateNewUser();
     }
 
+
+
     private async Task OnSearchInputFocus(FocusEventArgs e)
     {
         await ClickHandler(new MouseEventArgs(), RippleType.Search);
     }
 
-    private void HandleDivClickInChildComponent(string searchTerm)
-    {
-        searchTermFromUserSearch = searchTerm;
 
-        Console.WriteLine("Search Term from UserSearch: " + searchTermFromUserSearch);
+
+    private void HandleDivClickInChildComponent()
+    {
+
+
 
         ResetIndicatorWidth();
     }
+
+
+
+    private async Task HandleUserSearch(string searchTerm)
+    {
+        searchTermFromUserSearch = searchTerm;
+        await OnControlsSearch.InvokeAsync(searchTermFromUserSearch);
+        Console.WriteLine("Search Term from UserSearch: " + searchTermFromUserSearch);
+    }
+
+
+
+
     private void ResetIndicatorWidth()
     {
 
