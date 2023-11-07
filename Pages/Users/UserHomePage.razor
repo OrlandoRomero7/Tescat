@@ -1,15 +1,12 @@
 ﻿@page "/users"
+@page "/users/{SearchTerm}"
 @inject IUserService UserService
 @inject OtherServices OtherServices
 @inject TescatDbContext Context
-@inject NavigationManager NavigationManager
 @using System.Reflection;
+@inject NavigationManager NavigationManager
+@layout UserHomePageLayout
 
-
-
-
-
-<UserHomePageControls OnControlsSearch="HandleUserSearch"></UserHomePageControls>
 
 
 
@@ -22,9 +19,19 @@
         }
         else
         {
-            @foreach (var user in Users)
+            @if (_searchResults == null)
             {
-                <UserCard User="user"></UserCard>
+                @foreach (var user in Users)
+                {
+                    <UserCard User="user"></UserCard>
+                }
+            }
+            else
+            {
+                @foreach (var user in _searchResults)
+                {
+                    <UserCard User="user"></UserCard>
+                }
             }
         }
     </div>
@@ -46,6 +53,7 @@
 @code
 {
     private List<User>? Users { get; set; }
+    private User[]? _searchResults { get; set; }
     public string? localMessage;
     private bool showAlert = false;
 
@@ -53,19 +61,46 @@
     string? searchTermFromUserControls;
 
 
+    [Parameter]
+    public string
+    SearchTerm
+    { get; set; } = default!;
+
+
+
     protected override async
        Task OnInitializedAsync()
     {
+       
+
         try
         {
             Users = await UserService.GetAllUsers();
 
             localMessage = OtherServices.Message;
             if (localMessage != null) await ShowAndHideAlert();
+
+            UpdateSearchResults();
+
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Hubo un problema al cargar la informacion de los usuarios{ex.Message}");
+        }
+    }
+
+    private void UpdateSearchResults()
+    {
+        if (SearchTerm != null) { 
+        var searchTermLower = SearchTerm.ToLower();
+        var query = Context.Users
+            .Where(x => x.Name.ToLower().Contains(searchTermLower));
+
+        _searchResults = query.ToArray();
+        }
+        else
+        {
+            _searchResults = null;
         }
     }
 
@@ -95,13 +130,10 @@
     }
 
 
-    private void HandleUserSearch(string searchTerm)
-    {
-        searchTermFromUserControls = searchTerm;
-        Console.WriteLine("Search Term from Controls: " + searchTermFromUserControls);
-    }
 
 
-
+    protected override void
+     OnParametersSet()
+     => UpdateSearchResults();
 
 }
