@@ -7,40 +7,13 @@
 
 
 
-@*<div class="container" style="position: sticky; top: 0; right: 0; display:flex; justify-content:flex-end; padding-right:1.3%; margin-bottom:2%; z-index:9;">*@
-<div class="container" style=" display:flex; justify-content:flex-end; padding-right:1.3%; margin-bottom:2%;">
-    <div class="user-buttons-box">
 
-        <button type="button" class="btn btn-primary" style="margin-right:.5rem;" @onclick="@(e => CombinedClickHandler(e, RippleType.Add))">
-            <i class="bi bi-plus" style="padding-top:2px;"></i>
-            <span style="left: @(xPos)px; top: @(yPos)px;" class="@(showRippleAdd ? "ripple" : "")"></span>
-        </button>
 
-        <button type="button" class="btn btn-primary" style="margin-right:.5rem;" @onclick="@(e => ClickHandler(e, RippleType.Filter))">
-            <i class="bi bi-filter" style="padding-top:2px"></i>
-            <span style="left: @(xPos)px; top: @(yPos)px;" class="@(showRippleFilter ? "ripple" : "")"></span>
-        </button>
+<UserHomePageControls OnControlsSearch="HandleUserSearch"></UserHomePageControls>
 
 
 
-        <button type="button" class="btn btn-primary">
-
-            <UserSearch OnDivClicked="HandleDivClickInChildComponent" OnInputFocus="OnSearchInputFocus"></UserSearch>
-            <span style="left: @(xPos)px; top: @(yPos)px;" class="@(showRippleSearch ? "ripple" : "")"></span>
-
-        </button>
-
-
-        <span class="user-buttons-box-indicator @(showIndicator ? "indicator-active" : "")" style="right: @indicatorRight; width:@indicatorWidth;"></span>
-
-
-    </div>
-</div>
-
-
-
-
-<div class="container">
+<div class="cards container">
     <div style="row-gap:4rem; justify-content:center; display:grid; grid-template-columns: 1fr 1fr 1fr">
 
         @if (Users == null)
@@ -75,96 +48,9 @@
     private List<User>? Users { get; set; }
     public string? localMessage;
     private bool showAlert = false;
-    double xPos = 0;
-    double yPos = 0;
-    bool showRippleAdd = false;
-    bool showRippleFilter = false;
-    bool showRippleSearch = false;
-    bool showIndicator = false;
-    string indicatorRight = "125px";
-    string indicatorWidth = "50.8px";
-
-    public enum RippleType
-    {
-        Add,
-        Filter,
-        Search
-    }
-
-    private Dictionary<RippleType, CancellationTokenSource> ctsDictionary = new Dictionary<RippleType, CancellationTokenSource>
-{
-    { RippleType.Add, new CancellationTokenSource() },
-    { RippleType.Filter, new CancellationTokenSource() },
-    { RippleType.Search, new CancellationTokenSource() }
-};
-
-    private async Task ClickHandler(MouseEventArgs e, RippleType rippleType)
-    {
-        // Cancelar cualquier tarea pendiente para este tipo de botón
-        if (ctsDictionary.ContainsKey(rippleType))
-        {
-            ctsDictionary[rippleType].Cancel();
-            ctsDictionary[rippleType] = new CancellationTokenSource();
-        }
-
-        xPos = e.OffsetX;
-        yPos = e.OffsetY;
-
-        await Task.Delay(1);
-        showIndicator = true;
 
 
-        switch (rippleType)
-        {
-            case RippleType.Add:
-                indicatorRight = "125px";
-                indicatorWidth = "50.8px";
-                showRippleAdd = true;
-                break;
-
-            case RippleType.Filter:
-                indicatorRight = "64px";
-                indicatorWidth = "50.8px";
-                showRippleFilter = true;
-                break;
-
-            case RippleType.Search:
-                indicatorRight = "2px";
-                indicatorWidth = "262.8px";
-                showRippleSearch = true;
-                break;
-        }
-
-        StateHasChanged();
-
-        try
-        {
-            await Task.Delay(1000, ctsDictionary[rippleType].Token); // Espera 1 segundo
-
-            showIndicator = true;
-
-
-            switch (rippleType)
-            {
-                case RippleType.Add:
-                    showRippleAdd = false;
-                    break;
-                case RippleType.Filter:
-                    showRippleFilter = false;
-                    break;
-
-                case RippleType.Search:
-                    showRippleSearch = false;
-                    break;
-            }
-            StateHasChanged();
-        }
-        catch (TaskCanceledException)
-        {
-
-        }
-
-    }
+    string? searchTermFromUserControls;
 
 
     protected override async
@@ -209,28 +95,13 @@
     }
 
 
-    private async Task CombinedClickHandler(MouseEventArgs e, RippleType rippleType)
+    private void HandleUserSearch(string searchTerm)
     {
-        await ClickHandler(e, rippleType);  // Ejecuta la lógica actual de ClickHandler
-        CreateNewUser();
+        searchTermFromUserControls = searchTerm;
+        Console.WriteLine("Search Term from Controls: " + searchTermFromUserControls);
     }
 
-    private async Task OnSearchInputFocus(FocusEventArgs e)
-    {
-        await ClickHandler(new MouseEventArgs(), RippleType.Search);
-    }
 
-    private void HandleDivClickInChildComponent()
-    {
-        ResetIndicatorWidth();
-    }
-    private void ResetIndicatorWidth()
-    {
 
-        indicatorRight = "125px";
-        indicatorWidth = "50.8px";
-        StateHasChanged();
-
-    }
 
 }
