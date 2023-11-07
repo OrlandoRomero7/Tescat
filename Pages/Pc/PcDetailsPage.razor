@@ -43,13 +43,15 @@
 
     <BasicPcInformation pc="pc" user="user"></BasicPcInformation>
 
-    @if (selectedOptions.Contains("Almacenamiento") || storage.IdStorage != Guid.Empty)
+    @if (selectedOptions.Contains("Almacenamiento") || storage.Count != 0 )
     {
-        <StorageCard storage="storage" confirmationModalChild="@( () => ShowModalComponents("Almacenamiento") )"></StorageCard>
+        
+        <StorageCardList storage="storage" confirmationModalChild="@( () => ShowModalComponents("Almacenamiento") )" OnGuidChanged="guidComponent" numeroLista="numeroLista"></StorageCardList>
+        //EjecutarFuncionEnStorageCard();
     }
     @if (selectedOptions.Contains("Memoria RAM") || memoryRam.IdRam != Guid.Empty)
     {
-        <MemoryRamCard memoryRam="memoryRam" confirmationModalChild="@( () => ShowModalComponents("Memoria RAM") )"></MemoryRamCard>
+        <MemoryRamCard memoryRam="memoryRam" confirmationModalChild="@( () => ShowModalComponents("Memoria RAM"))"></MemoryRamCard>
     }
     @if (selectedOptions.Contains("CPU") ||  cpu.IdCpu != Guid.Empty)
     {
@@ -121,7 +123,7 @@
 
     public User user { get; set; }
 
-    public Storage storage { get; set; }
+    public List<Storage> storage { get; set; }
 
     public MemoryRam memoryRam { get; set; }
 
@@ -131,7 +133,7 @@
 
     public PowerSupply powerSupply { get; set; }
 
-    public Guid kk;
+    public Guid IdPcComponent;
 
     //List<string> nullComponents = new List<string>();
     private Dictionary<string, bool> nullComponents = new Dictionary<string, bool>();
@@ -139,6 +141,11 @@
     private List<string> selectedOptions = new List<string>();
 
     private bool _storage, _memoryRam, _cpu, _motherboard, _powerSupply;
+
+    //public StorageCard variableStorageCard = new StorageCard();
+
+    public int numeroLista = 0;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -157,7 +164,7 @@
                 powerSupply = await PowerSupplyService.GetPowerSupplyWithPcId(pc.IdPc);
 
                 //if (user == null) nullComponents.Add("User",true);
-                if (storage.IdStorage == Guid.Empty)
+                if (storage.Count < 3)
                 {
                     nullComponents.Add("Almacenamiento", true);
                     _storage = true;
@@ -197,9 +204,13 @@
         {
             _selectedOption = value;
             HandleSelectionChange();
-            //OptionSelected(_selectedOption);
+            //if (_selectedOption == "Almacenamiento")
+            //{
+            //    variableStorageCard.updateStorageForFilter();
+            //}
         }
     }
+
 
     private void HandleSelectionChange()
     {
@@ -210,36 +221,71 @@
         switch (_selectedOption)
         {
             case "Almacenamiento":
-                _storage = false;
+                //EjecutarFuncionEnStorageCard();
+                if(storage.Count>=3)
+                {
+                    _storage = false;
+                    nullComponents.Remove(_selectedOption);
+                    selectedOptions.Add(_selectedOption);
+                    _selectedOption = "default";
+                }
+                else
+                {
+                    if (storage.Count == 0) storage.Add(new Storage());
+                    else if (storage.Count == 1) storage.Add(new Storage());
+                    else if (storage.Count == 2) storage.Add(new Storage());
+                    //Console.WriteLine("---------" + storage.Count);
+                    selectedOptions.Add(_selectedOption);
+                    _selectedOption = "default";
+
+                    //StateHasChanged();
+                    //variableStorageCard.updateStorageForFilter();
+                }
+
                 break;
             case "Memoria RAM":
                 _memoryRam = false;
+                nullComponents.Remove(_selectedOption);
+                selectedOptions.Add(_selectedOption);
+                _selectedOption = "default";
                 break;
             case "CPU":
                 _cpu = false;
+                nullComponents.Remove(_selectedOption);
+                selectedOptions.Add(_selectedOption);
+                _selectedOption = "default";
                 break;
             case "Tarjeta Madre":
                 _motherboard = false;
+                nullComponents.Remove(_selectedOption);
+                selectedOptions.Add(_selectedOption);
+                _selectedOption = "default";
                 break;
             case "Fuente de Poder":
                 _powerSupply = false;
+                nullComponents.Remove(_selectedOption);
+                selectedOptions.Add(_selectedOption);
+                _selectedOption = "default";
                 break;
         }
-        nullComponents.Remove(_selectedOption);
-        selectedOptions.Add(_selectedOption);
-        _selectedOption = "default"; // Restablecer a la opción por defecto
+
     }
 
     private async Task updatePc()
     {
         pc = await PcService.UpdatePc(pc);
         var IdPc = pc.IdPc;
-        if (!_storage) storage = await StorageService.UpdateStorage(storage, IdPc);
+        storage = await StorageService.UpdateStorages(storage, IdPc);
         if (!_memoryRam) memoryRam = await MemoryRamService.UpdateMemoryRam(memoryRam, IdPc);
         if (!_motherboard) motherboard = await MotherboardService.UpdateMotherboard(motherboard, IdPc);
         if (!_cpu) cpu = await CpuService.UpdateCpu(cpu, IdPc);
         if (!_powerSupply) powerSupply = await PowerSupplyService.UpdatePowerSupply(powerSupply, IdPc);
     }
+    private void guidComponent(Guid newValue)
+    {
+        IdPcComponent = newValue;
+    }
+
     private async Task QuitPC()
     {
         if (pc.IdUser != 0)
@@ -311,10 +357,12 @@
         switch (componentName)
         {
             case "Almacenamiento":
-                var IdPcSto = storage.IdPc.Value; 
-                storage.IdPc = null;
-                await StorageService.UpdateStorage(storage, IdPcSto);
-                storage = new Storage();
+                var IdPcSto = storage[numeroLista].IdPc.Value;
+                //Storage newStorage = storage.FirstOrDefault(s => s.IdPc == IdPcSto);
+                //newStorage.IdPc = null;
+                storage[numeroLista].IdPc = null;
+                storage = await StorageService.UpdateStorages(storage, IdPcSto);
+                //storage = new List<Storage>();
                 selectedOptions.Remove("Almacenamiento");
                 nullComponents.Add("Almacenamiento", true);
                 _storage = true;

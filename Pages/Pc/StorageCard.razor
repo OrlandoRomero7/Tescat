@@ -1,15 +1,7 @@
-﻿@using ChartJs.Blazor.PieChart
+﻿
 
 <FormSection Title="Almacenamiento">
     <EditForm Model="@storage">
-        @if (storage.IdStorage != Guid.Empty && !stockComponent)
-        {
-            <button type="button" class="btn btn-danger" @onclick="FunctionCallShowModal">Quitar</button>
-        }
-        @*@if (storage.IdStorage != Guid.Empty && stockComponent)
-        {
-            <button type="button" class="btn btn-danger" @onclick="callConfirmationModalDelete">Eliminar</button>
-        }*@
         <div class="row mb-3">
             <div class="col-md-3">
                 <label class="form-label">Tipo</label>
@@ -19,9 +11,6 @@
             <div class="col-md-3">
                 <label class="form-label">Modelo</label>
                 <InputText class="form-control" @bind-Value="storage.Model" />
-            </div>
-            <div class="col">
-                <Chart Config="_pieConfiguration"> </Chart>
             </div>
         </div>
         <div class="row mb-3">
@@ -45,7 +34,7 @@
                 <label class="form-label">Disponible</label>
                 <InputNumber class="form-control" @bind-Value="storage.AvailableStrge" />
             </div>
-            
+
         </div>
         <div class="row mb-3">
             <div class="col-md-3">
@@ -60,87 +49,13 @@
                 <label class="form-label">Velocidad de lectura</label>
                 <InputNumber class="form-control" @bind-Value="storage.ReadSpeed" />
             </div>
-            
-            
         </div>
-        
     </EditForm>
+
 </FormSection>
 
 @code {
     [Parameter]
     public Storage storage { get; set; }
 
-    [Parameter]
-    public Action confirmationModalChild { get; set; }
-
-    [Parameter]
-    public Action confirmationModalDelete { get; set; }
-
-    [Parameter]
-    public bool stockComponent { get; set; } = false;
-
-    private PieConfig _pieConfiguration;
-
-    public int? total, usado, disponible;
-
-    //public int kk = 1;
-
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        //if (storage is null) storage = new Storage();
-        if (storage != null && storage.TotalStrge!=null)
-        {
-            //total = 4;
-            total = storage.TotalStrge;
-            usado = storage.UsedStrge;
-            disponible = storage.AvailableStrge;
-        }
-        StartPieChart();
-
-    }
-
-    public void StartPieChart()
-    {
-        _pieConfiguration = new PieConfig();
-        _pieConfiguration.Options = new PieOptions
-            {
-                Responsive = true,
-                Title = new OptionsTitle
-                {
-                    Display = true,
-                    Text = "Grafica"
-                }
-            };
-        int nonNullableTotal = total ?? 0;
-        int nonNullableUsado = usado ?? 0;
-        int nonNullableDisponible = disponible ?? 0;
-        foreach (string item in new[] { "Total", "Usado", "Disponible" })
-        {
-            _pieConfiguration.Data.Labels.Add(item);
-        }
-        PieDataset<int> dataset = new PieDataset<int>(new[] { nonNullableTotal, nonNullableUsado, nonNullableDisponible })
-    {
-                BackgroundColor = new[]
-            {
-            ColorUtil.ColorHexString(255, 99, 132),
-            ColorUtil.ColorHexString(255, 205, 86), 
-            ColorUtil.ColorHexString(75, 192, 192), 
-            ColorUtil.ColorHexString(54, 162, 235), 
-        }
-            };
-        _pieConfiguration.Data.Datasets.Add(dataset);
-    }
-
-    public void FunctionCallShowModal()
-    {
-        confirmationModalChild?.Invoke();
-    }
-
-    //public void callConfirmationModalDelete()
-    //{
-    //    confirmationModalDelete.Invoke();
-    //}
 }

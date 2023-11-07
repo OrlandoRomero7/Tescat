@@ -36,7 +36,7 @@
 @if (nameComponent == "storage" && storage is not null)
 {
     <button type="button" class="btn btn-danger" @onclick="@( () => ShowModalComponents("Almacenamiento") )">Eliminar</button>
-    <StorageCard storage="storage" stockComponent="stockComponent"></StorageCard>
+    <StorageCard storage="storage"></StorageCard>
 }
 @if (nameComponent == "CPU" && cpu is not null)
 {
@@ -219,11 +219,13 @@
         switch (component)
         {
             case "storage":
-                var storagePc = await StorageService.GetStorageWithPcId(IdComponent);
-                if (storagePc.IdStorage == Guid.Empty)
+                var storagePc = await StorageService.GetStorageWithPcId(IdPc);
+                Console.WriteLine(storagePc.Count());
+                if (storagePc.Count()<3)
                 {
                     storage.IdPc = IdPc;
                     storage = await StorageService.UpdateStorageForStock(storage);
+                    NavigateToPC(IdPc);
                 }
                 else
                 {
