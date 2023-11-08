@@ -1,0 +1,11 @@
+﻿div.visible-transition {
+    opacity: 1;
+    filter: none;
+    transition: opacity 250ms, filter 250ms ease;
+}
+
+div.hidden-transition {
+    opacity: 0;
+    filter: blur(10px);
+    transition: filter 250ms ease-out;
+}

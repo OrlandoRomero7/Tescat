@@ -33,18 +33,7 @@
     public string? PageTransition { get; set; }
     private bool firstRender = true;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            // Wait a little to ensure that the hidden-transition is applied
-            await Task.Delay(255);
 
-            PageTransition = "visible-transition";
-            StateHasChanged();
-
-        }
-    }
 
     public void ToggleActiveSideBarStyles()
     {
@@ -63,11 +52,28 @@
 
 
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Wait a little to ensure that the hidden-transition is applied
+            await Task.Delay(255);
+
+            PageTransition = "visible-transition";
+            StateHasChanged();
+
+        }
+    }
+
+
     protected override void OnInitialized()
     {
         PageTransition = "hidden-transition";
         NavigationManager.LocationChanged += HandleLocationChanged;
     }
+
+
+   
 
     private async void HandleLocationChanged(object? sender, LocationChangedEventArgs e)
     {

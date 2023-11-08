@@ -11,6 +11,13 @@
 
 
 <div class="cards container">
+
+    @if (Users != null && _searchResults != null)
+    {
+        <div class="container"><h5>Resultados Para: "@SearchTerm"</h5></div>
+    }
+
+
     <div style="row-gap:4rem; justify-content:center; display:grid; grid-template-columns: 1fr 1fr 1fr">
 
         @if (Users == null)
@@ -28,6 +35,8 @@
             }
             else
             {
+
+
                 @foreach (var user in _searchResults)
                 {
                     <UserCard User="user"></UserCard>
@@ -71,7 +80,7 @@
     protected override async
        Task OnInitializedAsync()
     {
-       
+
 
         try
         {
@@ -91,12 +100,13 @@
 
     private void UpdateSearchResults()
     {
-        if (SearchTerm != null) { 
-        var searchTermLower = SearchTerm.ToLower();
-        var query = Context.Users
-            .Where(x => x.Name.ToLower().Contains(searchTermLower));
+        if (SearchTerm != null)
+        {
+            var searchTermLower = SearchTerm.ToLower();
+            var query = Context.Users
+                .Where(x => x.Name.ToLower().Contains(searchTermLower));
 
-        _searchResults = query.ToArray();
+            _searchResults = query.ToArray();
         }
         else
         {
