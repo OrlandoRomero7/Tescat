@@ -1,11 +1,4 @@
-﻿.overlay-alert {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 10;
-}
-
-.user-buttons-box {
+﻿.user-buttons-box {
     background: #fff;
     /*  padding: 0.25rem;*/
     border-radius: 0.75rem;
@@ -98,10 +91,13 @@
     }
 }
 
+.controls-container {
+    padding-right: 6.5%;
+}
 
 @media screen and (min-width: 2000px) {
-    .cards.container {
-        /*        background: red;*/
-        max-width: 1680px;
+
+    .controls-container {
+        padding-right: 10%;
     }
 }
