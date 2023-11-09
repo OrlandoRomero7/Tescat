@@ -1,0 +1,74 @@
+﻿@page "/stock/add/{nameComponent}"
+@using Tescat.Pages.Pc
+@inject NavigationManager NavigationManager
+@inject IStorageService StorageService
+@inject ICpuService CpuService
+@inject IPowerSupplyService PowerSupply
+
+<button type="button" class="btn btn-info" @onclick="saveComponet">Guardar</button>
+
+@switch (nameComponent)
+{
+    case ("motherboard"):
+        <MotherboardCard motherboard="motherboard"></MotherboardCard>
+        break;
+    case ("cpu"):
+        <CpuCard cpu="cpu"></CpuCard>
+        break;
+    case ("ram"):
+        @*<MemoryRamCard memoryRam="memoryRam" stockComponent="stockComponent"></MemoryRamCard>*@
+        break;
+    case ("storage"):
+        <StorageCard storage="storage"></StorageCard>
+        break;
+    case ("powerSupply"):
+        <PowerSupplyCard powerSupply="powerSupply"></PowerSupplyCard>
+        break;
+        
+}
+
+@code {
+    [Parameter]
+    public string nameComponent { get; set; }
+
+    public Motherboard motherboard { get; set; } = new Motherboard();
+
+    public Cpu cpu { get; set; } = new Cpu();
+
+    public MemoryRam memoryRam { get; set; } = new MemoryRam();
+
+    public Storage storage { get; set; } = new Storage();
+
+    public PowerSupply powerSupply { get; set; } = new PowerSupply();
+
+    public void NavigateToStockHomePage()
+    {
+        NavigationManager.NavigateTo("/stock");
+    }
+
+    public async Task saveComponet()
+    {
+        switch (nameComponent)
+        {
+            case ("motherboard"):
+                await StorageService.InsertStorage(storage);
+                NavigateToStockHomePage();
+                break;
+            case ("cpu"):
+                await CpuService.InsertCpu(cpu);
+                NavigateToStockHomePage();
+                break;
+            case ("ram"):
+                //NavigateToStockHomePage();
+                break;
+            case ("storage"):
+                await StorageService.InsertStorage(storage);
+                NavigateToStockHomePage();
+                break;
+            case ("powerSupply"):
+                await PowerSupply.InsertPowerSupply(powerSupply);
+                NavigateToStockHomePage();
+                break;
+        }
+    }
+}

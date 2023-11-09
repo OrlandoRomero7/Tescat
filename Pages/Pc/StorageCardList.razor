@@ -21,7 +21,7 @@
     @* Por alguna razon dentro del FormSection el valor de i cambia a 1, cuando se supone que deberia valer 0*@
     <FormSection Title="Almacenamiento">
         <EditForm Model="@storage">
-            @if (storage.Count > 0 && !stockComponent)
+            @if (storage[num].IdStorage != Guid.Empty)
             {
                 <button type="button" class="btn btn-danger" @onclick="FunctionCallShowModal">Quitar</button>
             }

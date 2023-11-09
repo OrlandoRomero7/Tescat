@@ -1,36 +1,97 @@
-﻿
-<FormSection Title="Memoria RAM">
-    <EditForm Model="@memoryRam">
-        @if (memoryRam.IdRam != Guid.Empty && !stockComponent)
+﻿@for (int i = (paginaActual - 1) * elementosPorPagina; i < Math.Min(paginaActual * elementosPorPagina, memoryRam.Count); i++)
+{
+    var m = memoryRam[i];
+    num = i;
+    <FormSection Title="Memoria RAM">
+        <EditForm Model="@memoryRam">
+            @if (memoryRam[num].IdRam != Guid.Empty && !stockComponent)
+            {
+                <button type="button" class="btn btn-danger" @onclick="FunctionCallShowModal">Quitar</button>
+            }
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Tipo</label>
+                    <InputText class="form-control" @bind-Value="m.TypeRam" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Modelo</label>
+                    <InputText class="form-control" @bind-Value="m.Model" />
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Capacidad</label>
+                    <InputText class="form-control" @bind-Value="m.Size" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Velocidad</label>
+                    <InputText class="form-control" @bind-Value="m.Speed " />
+                </div>
+            </div>
+        </EditForm>
+        @if (memoryRam.Count > elementosPorPagina)
         {
-            <button type="button" class="btn btn-danger" @onclick="FunctionCallShowModal">Quitar</button>
+            <div class="row">
+                <div class="col">
+                    <button class="btn btn-primary" @onclick="MostrarPaginaAnterior">Anterior</button>
+                </div>
+                <div class="col text-center">
+                    Página @paginaActual de @Math.Ceiling((double)memoryRam.Count / elementosPorPagina)
+                </div>
+                <div class="col text-end">
+                    <button class="btn btn-primary" @onclick="MostrarPaginaSiguiente">Siguiente</button>
+                </div>
+            </div>
         }
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <label class="form-label">Tipo</label>
-                <InputText class="form-control" @bind-Value="memoryRam.TypeRam" />
-            </div>
-            <div class="col-md-4">
-                <label class="form-label">Modelo</label>
-                <InputText class="form-control" @bind-Value="memoryRam.Model" />
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <label class="form-label">Capacidad</label>
-                <InputText class="form-control" @bind-Value="memoryRam.Size" />
-            </div>
-            <div class="col-md-4">
-                <label class="form-label">Velocidad</label>
-                <InputText class="form-control" @bind-Value="memoryRam.Speed " />
-            </div>
-        </div>
-    </EditForm>
-</FormSection>
+    </FormSection>
+}
+
+
+
+
+
+@*<FormSection Title="Memoria RAM">
+    <RadzenDataList WrapItems="true" AllowPaging="false" Data="@memoryRamsForFilter" TItem="MemoryRam">
+        <Template Context="ram">
+            <EditForm Model="@memoryRam">
+                @if (ram.IdRam != Guid.Empty)
+                {
+                    <button type="button" class="btn btn-danger" @onclick="FunctionCallShowModal">Quitar</button>
+                } 
+
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Tipo</label>
+                        <InputText class="form-control" @bind-Value="ram.TypeRam" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Modelo</label>
+                        <InputText class="form-control" @bind-Value="ram.Model" />
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Capacidad</label>
+                        <InputText class="form-control" @bind-Value="ram.Size" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Velocidad</label>
+                        <InputText class="form-control" @bind-Value="ram.Speed " />
+                    </div>
+                </div>
+            </EditForm>
+        </Template>
+    </RadzenDataList>
+    <RadzenPager Density="@Density" Count="count" PageSize="@pageSize" PageNumbersCount="2" PageChanged="@PageChanged" />
+</FormSection>*@
+
+
 
 @code {
     [Parameter]
-    public MemoryRam memoryRam { get; set; }
+    public List<MemoryRam> memoryRam { get; set; }
+
+    private List<MemoryRam> oldMemoryRam;
 
     [Parameter]
     public Action confirmationModalChild { get; set; }
@@ -41,14 +102,67 @@
     [Parameter]
     public Action confirmationModalDelete { get; set; }
 
+    [Parameter]
+    public int numeroLista { get; set; }
+
+    //Density Density = Density.Compact;
+    //int pageSize = 1;
+    //int count;
+    int num = 0;
+    int paginaActual = 1;
+    int totalItems = 0;
+    int elementosPorPagina = 1;
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        if (memoryRam is null) memoryRam = new MemoryRam();
+        oldMemoryRam = new List<MemoryRam>(memoryRam.ToList());
+        totalItems = memoryRam.Count();
+        //memoryRamsForFilter = new List<MemoryRam>(memoryRam);
+        //memoryRamsForFilter = GetMemoryRam(0, pageSize);
+    }
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (memoryRam.Count() > oldMemoryRam.Count())
+        {
+            int totalPaginas = (int)Math.Ceiling((double)memoryRam.Count / elementosPorPagina);
+            if (paginaActual < totalPaginas)
+            {
+                paginaActual = memoryRam.Count();
+            }
+        }
+    }
+    //void PageChanged(PagerEventArgs args)
+    //{
+    //    memoryRamsForFilter = GetMemoryRam(args.Skip, args.Top);
+    //}
+
+    //List<MemoryRam> GetMemoryRam(int skip, int take)
+    //{
+    //    return memoryRam.Skip(skip).Take(take).ToList();
+    //}
+    void MostrarPaginaAnterior()
+    {
+        if (paginaActual > 1)
+        {
+            paginaActual--;
+        }
+    }
+
+    void MostrarPaginaSiguiente()
+    {
+        int totalPaginas = (int)Math.Ceiling((double)memoryRam.Count / elementosPorPagina);
+        if (paginaActual < totalPaginas)
+        {
+            paginaActual++;
+        }
     }
 
     public void FunctionCallShowModal()
     {
+        Console.WriteLine(num);
+        numeroLista = num;
         confirmationModalChild?.Invoke();
     }
 

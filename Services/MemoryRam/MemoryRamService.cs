@@ -43,20 +43,29 @@ namespace Tescat.Services.MemoryRams
             }
         }
 
-        public async Task<MemoryRam> GetMemoryRamWithPcId(Guid guid)
+        //public async Task<MemoryRam> GetMemoryRamWithPcId(Guid guid)
+        //{
+        //    using var context = _contextFactory.CreateDbContext();
+        //    var memoryDb = await context.MemoryRams
+        //                         .FirstOrDefaultAsync(memory => memory.IdPc == guid);
+        //    if (memoryDb != null)
+        //    {
+        //        return memoryDb;
+        //    }
+        //    else
+        //    {
+        //        return new MemoryRam();
+        //    }
+        //}
+        public async Task<List<MemoryRam>> GetMemoryRamWithPcId(Guid guid)
         {
             using var context = _contextFactory.CreateDbContext();
-            var memoryDb = await context.MemoryRams
-                                 .FirstOrDefaultAsync(memory => memory.IdPc == guid);
-            if (memoryDb != null)
-            {
-                return memoryDb;
-            }
-            else
-            {
-                return new MemoryRam();
-            }
+            var ramDbList = await context.MemoryRams
+                                 .Where(ram => ram.IdPc == guid).ToListAsync();
+            return ramDbList;
         }
+
+
         public async Task<List<MemoryRam>> GetMemoryRamsWithoutIdPC()
         {
             using var context = _contextFactory.CreateDbContext();
@@ -71,23 +80,47 @@ namespace Tescat.Services.MemoryRams
             return memory;
         }
 
-        public async Task<MemoryRam> UpdateMemoryRam(MemoryRam memory, Guid IdPc)
+        //public async Task<MemoryRam> UpdateMemoryRam(MemoryRam memory, Guid IdPc)
+        //{
+        //    using var context = _contextFactory.CreateDbContext();
+        //    bool ramExists = context.MemoryRams.Any(c => c.IdPc == IdPc);
+        //    if (ramExists)
+        //    {
+        //        context.Entry(memory).State = EntityState.Modified;
+        //        await context.SaveChangesAsync();
+        //        return memory;
+        //    }
+        //    else
+        //    {
+        //        memory.IdPc = IdPc;
+        //        return await InsertMemoryRam(memory);
+        //    }
+
+        //}
+        public async Task<List<MemoryRam>> UpdateMemoryRam(List<MemoryRam> updatedRams, Guid IdPc)
         {
             using var context = _contextFactory.CreateDbContext();
-            bool ramExists = context.MemoryRams.Any(c => c.IdPc == IdPc);
-            if (ramExists)
+
+            foreach (var updatedRam in updatedRams)
             {
-                context.Entry(memory).State = EntityState.Modified;
-                await context.SaveChangesAsync();
-                return memory;
+                if (updatedRam.IdRam != Guid.Empty)
+                {
+
+                    context.Entry(updatedRam).State = EntityState.Modified;
+                }
+                else
+                {
+                    updatedRam.IdPc = IdPc;
+                    context.MemoryRams.Add(updatedRam);
+                    // context.Entry(updatedStorage).State = EntityState.Added;
+                }
+
             }
-            else
-            {
-                memory.IdPc = IdPc;
-                return await InsertMemoryRam(memory);
-            }
-            
+            await context.SaveChangesAsync();
+
+            return updatedRams;
         }
+
         public async Task<MemoryRam> UpdateMemoryRamForStock(MemoryRam memory)
         {
             using var context = _contextFactory.CreateDbContext();
@@ -95,5 +128,7 @@ namespace Tescat.Services.MemoryRams
             await context.SaveChangesAsync();
             return memory;
         }
+
+       
     }
 }

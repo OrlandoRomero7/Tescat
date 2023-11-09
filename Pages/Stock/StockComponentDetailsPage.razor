@@ -1,4 +1,6 @@
-﻿@page "/stock/{nameComponent}/{IdComponent:guid}"
+﻿
+@page "/stock/{nameComponent}/{IdComponent:guid}"
+
 @using Tescat.Pages.Pc
 @inject IPcService PcService
 @inject IStorageService StorageService
@@ -46,7 +48,7 @@
 @if (nameComponent == "RAM" && memoryRam is not null)
 {
     <button type="button" class="btn btn-danger" @onclick="@( () => ShowModalComponents("Memoria RAM") )">Eliminar</button>
-    <MemoryRamCard memoryRam="memoryRam" stockComponent="stockComponent"></MemoryRamCard>
+    @*<MemoryRamCard memoryRam="memoryRam" stockComponent="stockComponent"></MemoryRamCard>*@
 }
 @if (nameComponent == "Motherboard" && motherboard is not null)
 {
@@ -245,6 +247,7 @@
                     existsComponent = true;
                 }
                 break;
+                /*
             case "RAM":
                 var ramPc = await MemoryRamService.GetMemoryRamWithPcId(IdPc);
                 if (ramPc.IdRam == Guid.Empty)
@@ -259,6 +262,7 @@
                 }
 
                 break;
+                */
             case "Motherboard":
                 var motherboardPc = await MotherboardService.GetMotherboardWithPcId(IdPc);
                 if (motherboardPc.IdMotherboard == Guid.Empty)

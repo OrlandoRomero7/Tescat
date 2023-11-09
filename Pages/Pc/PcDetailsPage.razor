@@ -49,9 +49,9 @@
         <StorageCardList storage="storage" confirmationModalChild="@( () => ShowModalComponents("Almacenamiento") )" OnGuidChanged="guidComponent" numeroLista="numeroLista"></StorageCardList>
         //EjecutarFuncionEnStorageCard();
     }
-    @if (selectedOptions.Contains("Memoria RAM") || memoryRam.IdRam != Guid.Empty)
+    @if (selectedOptions.Contains("Memoria RAM") || memoryRam.Count != 0)
     {
-        <MemoryRamCard memoryRam="memoryRam" confirmationModalChild="@( () => ShowModalComponents("Memoria RAM"))"></MemoryRamCard>
+        <MemoryRamCard memoryRam="memoryRam" confirmationModalChild="@( () => ShowModalComponents("Memoria RAM"))" numeroLista="numeroListaRam"></MemoryRamCard>
     }
     @if (selectedOptions.Contains("CPU") ||  cpu.IdCpu != Guid.Empty)
     {
@@ -125,7 +125,7 @@
 
     public List<Storage> storage { get; set; }
 
-    public MemoryRam memoryRam { get; set; }
+    public List<MemoryRam> memoryRam { get; set; }
 
     public Cpu cpu { get; set; }
     //public Cpu bdCpu { get; set; }
@@ -145,6 +145,7 @@
     //public StorageCard variableStorageCard = new StorageCard();
 
     public int numeroLista = 0;
+    public int numeroListaRam = 0;
 
 
     protected override async Task OnInitializedAsync()
@@ -169,7 +170,7 @@
                     nullComponents.Add("Almacenamiento", true);
                     _storage = true;
                 }
-                if (memoryRam.IdRam == Guid.Empty)
+                if (memoryRam.Count < 2)
                 {
                     nullComponents.Add("Memoria RAM", true);
                     _memoryRam = true;
@@ -204,10 +205,7 @@
         {
             _selectedOption = value;
             HandleSelectionChange();
-            //if (_selectedOption == "Almacenamiento")
-            //{
-            //    variableStorageCard.updateStorageForFilter();
-            //}
+            //_selectedOption = "default";
         }
     }
 
@@ -218,16 +216,22 @@
         {
             return;
         }
+        /*
+        nullComponents.Remove(_selectedOption);
+        selectedOptions.Add(_selectedOption);
+        _selectedOption = "default";
+        */
+
         switch (_selectedOption)
         {
             case "Almacenamiento":
                 //EjecutarFuncionEnStorageCard();
-                if(storage.Count>=3)
+                if(storage.Count==3)
                 {
                     _storage = false;
                     nullComponents.Remove(_selectedOption);
-                    selectedOptions.Add(_selectedOption);
-                    _selectedOption = "default";
+                    //selectedOptions.Add(_selectedOption);
+                    //_selectedOption = "default";
                 }
                 else
                 {
@@ -236,7 +240,7 @@
                     else if (storage.Count == 2) storage.Add(new Storage());
                     //Console.WriteLine("---------" + storage.Count);
                     selectedOptions.Add(_selectedOption);
-                    _selectedOption = "default";
+                    //_selectedOption = "default";
 
                     //StateHasChanged();
                     //variableStorageCard.updateStorageForFilter();
@@ -244,10 +248,21 @@
 
                 break;
             case "Memoria RAM":
-                _memoryRam = false;
-                nullComponents.Remove(_selectedOption);
-                selectedOptions.Add(_selectedOption);
-                _selectedOption = "default";
+                Console.WriteLine(memoryRam.Count());
+                if (memoryRam.Count == 2)
+                {
+                    _memoryRam = false;
+                    nullComponents.Remove("Memoria RAM");
+                    //selectedOptions.Add(_selectedOption);
+                    //_selectedOption = "default";
+                }
+                else
+                {
+                    if (memoryRam.Count == 0) memoryRam.Add(new MemoryRam());
+                    else if (memoryRam.Count == 1) memoryRam.Add(new MemoryRam());
+                }
+
+                //_selectedOption = "default";
                 break;
             case "CPU":
                 _cpu = false;
@@ -267,7 +282,10 @@
                 selectedOptions.Add(_selectedOption);
                 _selectedOption = "default";
                 break;
+
         }
+
+
 
     }
 
@@ -276,7 +294,8 @@
         pc = await PcService.UpdatePc(pc);
         var IdPc = pc.IdPc;
         storage = await StorageService.UpdateStorages(storage, IdPc);
-        if (!_memoryRam) memoryRam = await MemoryRamService.UpdateMemoryRam(memoryRam, IdPc);
+        memoryRam = await MemoryRamService.UpdateMemoryRam(memoryRam, IdPc);
+        //revisar para que sirven estos if
         if (!_motherboard) motherboard = await MotherboardService.UpdateMotherboard(motherboard, IdPc);
         if (!_cpu) cpu = await CpuService.UpdateCpu(cpu, IdPc);
         if (!_powerSupply) powerSupply = await PowerSupplyService.UpdatePowerSupply(powerSupply, IdPc);
@@ -351,7 +370,7 @@
     {
         modalComponentsDisplay = "none"; // Ocultar el modal
     }
-
+    /*Revisar que pasa con  selectedOptions y nullComponents Storage Y memoryRam*/
     private async Task ConfirmQuitModalComponents()
     {
         switch (componentName)
@@ -363,17 +382,26 @@
                 storage[numeroLista].IdPc = null;
                 storage = await StorageService.UpdateStorages(storage, IdPcSto);
                 //storage = new List<Storage>();
-                selectedOptions.Remove("Almacenamiento");
-                nullComponents.Add("Almacenamiento", true);
+                if (storage.Count == 0)
+                {
+                    selectedOptions.Remove("Almacenamiento");
+                    nullComponents.Add("Almacenamiento", true);
+                }
+
                 _storage = true;
                 break;
             case "Memoria RAM":
-                var IdPcRam = memoryRam.IdPc.Value;
-                memoryRam.IdPc = null;
-                await MemoryRamService.UpdateMemoryRam(memoryRam, IdPcRam);
-                memoryRam = new MemoryRam();
-                selectedOptions.Remove("Memoria RAM");
-                nullComponents.Add("Memoria RAM", true);
+                Console.WriteLine(numeroListaRam);
+                var IdPcRam = memoryRam[numeroListaRam].IdPc.Value;
+                memoryRam[numeroLista].IdPc = null;
+                memoryRam = await MemoryRamService.UpdateMemoryRam(memoryRam, IdPcRam);
+                //StateHasChanged();
+                //memoryRam = new MemoryRam();
+                if(storage.Count == 0)
+                {
+                    selectedOptions.Remove("Memoria RAM");
+                    nullComponents.Add("Memoria RAM", true);
+                }
                 _memoryRam = true;
                 break;
             case "CPU":

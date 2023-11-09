@@ -10,6 +10,21 @@
 @inject IPowerSupplyService PowerSupplyService
 @inject NavigationManager NavigationManager
 
+<h5>Agregar Componente</h5>
+<div class="row mb-3">
+    <div class="col-md-4">
+        <InputSelect class="form-select" @bind-Value="selectedOption">
+            <option value="default">Seleccione una opción</option>
+            @foreach (var option in components)
+            {
+
+                <option>@option</option>
+            }
+        </InputSelect>
+    </div>
+</div>
+
+
 @if (cpus == null)
 {
     <p><em>Loading...</em></p>
@@ -21,10 +36,10 @@ else
                     FilterMode="FilterMode.Simple" PageSize="5" AllowPaging="true" AllowSorting="true" Data="@commonData" ColumnWidth="150px"
                     FilterCaseSensitivity="@filterCaseSensitivity" LogicalFilterOperator="@logicalFilterOperator">
         <Columns>
-            <RadzenDataGridColumn TItem="CommonPropertiesViewModel" Property="Id" Title="ID" Filterable="false"></RadzenDataGridColumn>
+            @*<RadzenDataGridColumn TItem="CommonPropertiesViewModel" Property="Id" Title="ID" Filterable="false"></RadzenDataGridColumn>*@
             <RadzenDataGridColumn TItem="CommonPropertiesViewModel" Property="Model" Title="Modelo"></RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="CommonPropertiesViewModel" Property="Type" Title="Tipo"></RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="CommonPropertiesViewModel" Title="Acción">
+            <RadzenDataGridColumn TItem="CommonPropertiesViewModel" Title="Acción" Sortable="false">
                 <Template Context="item">
                     <button type="button" class="btn btn-info" @onclick="() => NavigateToComponent(item.Id, item.Type)">Ver</button>
                 </Template>
@@ -42,42 +57,63 @@ else
     private List<MemoryRam> memoryRams { get; set; }
     private List<Motherboard> motherboards { get; set; }
     private List<PowerSupply> powerSupplies { get; set; }
+    private List<string> components = new List<string>{
+        "Tarjeta Madre",
+        "Procesador",
+        "Memoria Ram",
+        "Almacenamiento",
+        "Fuente de Poder",
+
+    };
 
     LogicalFilterOperator logicalFilterOperator = LogicalFilterOperator.And;
     FilterCaseSensitivity filterCaseSensitivity = FilterCaseSensitivity.CaseInsensitive;
 
     List<CommonPropertiesViewModel> commonData = new List<CommonPropertiesViewModel>();
 
+    private string _selectedOption = "default";
+
+    public string selectedOption
+    {
+        get => _selectedOption;
+        set
+        {
+            _selectedOption = value;
+            HandleSelectionChange();
+
+        }
+    }
+
     private async Task LoadData()
     {
         commonData = cpus.Select(cpu => new CommonPropertiesViewModel
             {
-                Id = cpu.IdCpu, 
+                Id = cpu.IdCpu,
                 Model = cpu.Model,
                 Type = "CPU"
             }).ToList();
 
         commonData.AddRange(storages.Select(storage => new CommonPropertiesViewModel
             {
-                Id = storage.IdStorage, 
+                Id = storage.IdStorage,
                 Model = storage.Model,
                 Type = "storage"
             }));
         commonData.AddRange(memoryRams.Select(memoryRam => new CommonPropertiesViewModel
             {
-                Id = memoryRam.IdRam, 
+                Id = memoryRam.IdRam,
                 Model = memoryRam.Model,
                 Type = "RAM"
             }));
         commonData.AddRange(motherboards.Select(motherboard => new CommonPropertiesViewModel
             {
-                Id = motherboard.IdMotherboard, 
+                Id = motherboard.IdMotherboard,
                 Model = motherboard.Model,
                 Type = "Motherboard"
             }));
         commonData.AddRange(powerSupplies.Select(psu => new CommonPropertiesViewModel
             {
-                Id = psu.IdPsu, 
+                Id = psu.IdPsu,
                 Model = psu.Model,
                 Type = "PowerSupply"
             }));
@@ -88,10 +124,14 @@ else
         var url = $"/stock/{Uri.EscapeDataString(nameComponent)}/{IdComponent}";
         NavigationManager.NavigateTo(url);
     }
-    public void NavigateToAssingComponent(Guid IdComponent, string nameComponent)
+    //public void NavigateToAssingComponent(Guid IdComponent, string nameComponent)
+    //{
+    //    var url = $"/stock/assing/{Uri.EscapeDataString(nameComponent)}/{IdComponent}";
+    //    NavigationManager.NavigateTo(url);
+    //}
+    public void NavigateToAddComponent(string nameComponent)
     {
-        var url = $"/stock/assing/{Uri.EscapeDataString(nameComponent)}/{IdComponent}";
-        NavigationManager.NavigateTo(url);
+        NavigationManager.NavigateTo("/stock/add/" + nameComponent);
     }
 
     protected override async Task OnInitializedAsync()
@@ -103,5 +143,32 @@ else
         powerSupplies = await PowerSupplyService.GetPowerSuppliesWithoutIdPC();
         await LoadData();
 
+    }
+
+    private void HandleSelectionChange()
+    {
+        switch (_selectedOption)
+        {
+            case ("Tarjeta Madre"):
+                NavigateToAddComponent("motherboard");
+                break;
+            case ("Procesador"):
+                NavigateToAddComponent("cpu");
+                break;
+            case ("Memoria Ram"):
+                NavigateToAddComponent("ram");
+                break;
+            case ("Almacenamiento"):
+                NavigateToAddComponent("storage");
+                break;
+            case ("Fuente de Poder"):
+                NavigateToAddComponent("powerSupply");
+                break;
+        }
+        /*
+        nullComponents.Remove(_selectedOption);
+        selectedOptions.Add(_selectedOption);
+        _selectedOption = "default";
+        */
     }
 }
