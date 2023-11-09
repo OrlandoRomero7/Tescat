@@ -14,11 +14,17 @@
 
     @if (Users != null && _searchResults != null)
     {
-        <div class="container"><h5>Resultados Para: "@SearchTerm"</h5></div>
+        <div class="container" style="max-width:100%">
+            <NavLink href="users" Match="NavLinkMatch.All">
+                <i class="bi bi-arrow-left" style="font-size:2rem; margin-top:-1rem"></i>
+            </NavLink>
+
+            <h4 style="margin-top: 1%;">Resultados Para: <i style="color: var(--brand); font-weight:700; font-size:1.75rem; margin-left: 4px; "> @SearchTerm</i></h4>
+        </div>
     }
 
 
-    <div style="row-gap:4rem; justify-content:center; display:grid; grid-template-columns: 1fr 1fr 1fr">
+    <div style="row-gap: 4rem; justify-content: center; display: grid; grid-template-columns: 1fr 1fr 1fr; margin-top:2.5rem">
 
         @if (Users == null)
         {
@@ -26,11 +32,14 @@
         }
         else
         {
+
             @if (_searchResults == null)
             {
                 @foreach (var user in Users)
                 {
+
                     <UserCard User="user"></UserCard>
+
                 }
             }
             else
@@ -39,7 +48,9 @@
 
                 @foreach (var user in _searchResults)
                 {
+
                     <UserCard User="user"></UserCard>
+
                 }
             }
         }
@@ -104,7 +115,23 @@
         {
             var searchTermLower = SearchTerm.ToLower();
             var query = Context.Users
-                .Where(x => x.Name.ToLower().Contains(searchTermLower));
+                .Where
+                (
+
+                x =>
+
+                x.Name.ToLower().Contains(searchTermLower) ||
+
+                x.Dept.ToLower().Contains(searchTermLower) ||
+
+                x.Tel.ToString().Contains(searchTermLower) ||
+
+                x.Cel.ToLower().Contains(searchTermLower) ||
+
+                x.Position.ToLower().Contains(searchTermLower)
+
+
+                );
 
             _searchResults = query.ToArray();
         }

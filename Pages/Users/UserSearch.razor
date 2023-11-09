@@ -1,11 +1,13 @@
 ﻿<div class="searchbox">
     <i class="material-symbols-outlined search-icon">search</i>
     <input type="text"
+           placeholder="Nombre, Ciudad, Puesto..."
            @onkeydown="SearchForUser"
            @bind="_searchTerm"
            @bind:event="oninput"
            @onblur="HandleDivClick"
-           @onfocus="HandleInputFocus">
+           @onfocus="HandleInputFocus"
+           @ref="inputElement">
 </div>
 
 @code {
@@ -13,10 +15,11 @@
     [Parameter] public EventCallback<string> OnSearch { get; set; }
     [Parameter] public EventCallback<FocusEventArgs> OnInputFocus { get; set; }
     private string _searchTerm = string.Empty;
+    private ElementReference inputElement;
 
     private async Task HandleDivClick()
     {
-        await OnDivClicked.InvokeAsync(); // Pass _searchTerm as the parameter
+        await OnDivClicked.InvokeAsync();
         _searchTerm = string.Empty;
     }
 
@@ -35,4 +38,5 @@
             Console.WriteLine(_searchTerm);
         }
     }
+
 }

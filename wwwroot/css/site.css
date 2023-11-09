@@ -5,7 +5,8 @@
     --brand: #1181CD;
     --brand-hover: #245D82;
     --brand-text: #06151F;
-    --brand-white: #F9F9F9
+    --brand-white: #F9F9F9;
+    overflow-y: scroll;
 }
 
 html, body {
@@ -76,18 +77,6 @@ span.nav-link-tab {
 
 /********/
 
-
-/*a, .btn-link {
-    color: #0071c1;
-}*/
-/*.btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
-}*/
-/*.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}*/
 .content {
     padding-top: 1.1rem;
 }
@@ -148,3 +137,45 @@ input[type="number"] {
     }
 
 
+
+/****SCROLLBAR****/
+
+
+
+/* For WebKit browsers like Chrome and Safari */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgb(6 21 31 / 20%);
+    border-radius: 8px;
+    box-shadow: rgb(221, 221, 221) 0rem 0.0625rem 0.3125rem 0.0625rem;
+}
+
+::-webkit-scrollbar-track {
+    background-color: white;
+    box-shadow: rgb(221, 221, 221) 0rem 0.0625rem 0.3125rem 0.0625rem;
+}
+
+}
+
+/* For Firefox */
+{
+    scrollbar-color: white transparent;
+    scrollbar-width: thin;
+}
+
+/* For Edge and IE */
+*::-ms-scrollbar {
+    color: white;
+}
+
+*::-ms-scrollbar-thumb {
+    background-color: white;
+    border-radius: 10px;
+}
+
+*::-ms-scrollbar-track {
+    background-color: transparent;
+}

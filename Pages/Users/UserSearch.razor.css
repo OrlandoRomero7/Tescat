@@ -65,6 +65,19 @@ input {
         cursor: text;
     }
 
+        input:focus::placeholder {
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+
+    input::placeholder {
+        font-size: 1rem;
+        font-style: italic;
+        color: rgb(6 21 31 / 50%);
+        opacity: 0;
+    }
+
 i .search-icon {
     font-size: 1.75rem;
     font-size: 26px;

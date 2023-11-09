@@ -14,11 +14,11 @@
 
                     @if (User.IMAGE_NAME is not null)
                     {
-                        <img src="/Images/@User.IMAGE_NAME" alt="user image" style="width: 100%; object-fit: cover; object-position: 0 33%;">
+                        <img src="/Images/@User.IMAGE_NAME" alt="@User.Name" style="width: 100%; object-fit: cover; object-position: 0 33%;">
                     }
                     else
                     {
-                        <img src="/Images/default.svg" alt="user image" style="width: 80%;  object-fit: cover; object-position: 0 33%;">
+                        <img src="/Images/default.svg" alt="user image" style="width: 90%;  object-fit: cover; object-position: center 26%;">
                     }
 
 
