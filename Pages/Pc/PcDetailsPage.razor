@@ -14,27 +14,24 @@
 
 @if (pc is not null)
 {
-    <button type="button" class="btn btn-primary" @onclick="updatePc">Actulizar</button>
-    <button type="button" class="btn btn-danger" @onclick="ShowConfirmationModal">Quitar</button>
+    @*<button type="button" class="btn btn-danger" @onclick="ShowConfirmationModal">Quitar</button>*@
 }
 
 @if (pc != null && user != null)
 {
-    @if (nullComponents.Any(o => o.Value))
+    @if (options.Any(o => o.Value))
     {
         <div class="row mb-3">
             <div class="col-md-4">
-                <label class="form-label">Agregar Componente</label>
+                <label class="form-label">Agregar Cuenta</label>
                 <InputSelect class="form-select" @bind-Value="selectedOption">
                     <option value="default">Seleccione una opción</option>
-                    @foreach (var option in nullComponents)
+                    @foreach (var option in options)
                     {
                         if (option.Value)
                         {
                             <option>@option.Key</option>
-
                         }
-
                     }
                 </InputSelect>
             </div>
@@ -42,24 +39,23 @@
     }
 
     <BasicPcInformation pc="pc" user="user"></BasicPcInformation>
-
-    @if (selectedOptions.Contains("Almacenamiento") || storage.Count != 0 )
-    {
-        
-        <StorageCardList storage="storage" confirmationModalChild="@( () => ShowModalComponents("Almacenamiento") )" OnGuidChanged="guidComponent" numeroLista="numeroLista"></StorageCardList>
-        //EjecutarFuncionEnStorageCard();
-    }
-    @if (selectedOptions.Contains("Memoria RAM") || memoryRam.Count != 0)
-    {
-        <MemoryRamCard memoryRam="memoryRam" confirmationModalChild="@( () => ShowModalComponents("Memoria RAM"))" numeroLista="numeroListaRam"></MemoryRamCard>
-    }
-    @if (selectedOptions.Contains("CPU") ||  cpu.IdCpu != Guid.Empty)
-    {
-        <CpuCard cpu="cpu" confirmationModalChild="@( () => ShowModalComponents("CPU") )"></CpuCard>
-    }
     @if (selectedOptions.Contains("Tarjeta Madre") || motherboard.IdMotherboard != Guid.Empty)
     {
         <MotherboardCard motherboard="motherboard" confirmationModalChild="@( () => ShowModalComponents("Tarjeta Madre") )"></MotherboardCard>
+    }
+    @if (selectedOptions.Contains("CPU") || cpu.IdCpu != Guid.Empty)
+    {
+        <CpuCard cpu="cpu" confirmationModalChild="@( () => ShowModalComponents("CPU") )"></CpuCard>
+    }
+    @if (selectedOptions.Contains("Memoria RAM") || memoryRam.Count != 0)
+    {
+        <MemoryRamCard memoryRam="memoryRam" confirmationModalChild="@( () => ShowModalComponents("Memoria RAM"))" OnNumListChanged="ListenNumListRam"></MemoryRamCard>
+    }
+    @if (selectedOptions.Contains("Almacenamiento") || storage.Count != 0 )
+    {
+
+        <StorageCardList storage="storage" confirmationModalChild="@( () => ShowModalComponents("Almacenamiento") )" OnNumListStoChanged="ListenNumListSto" numeroLista="numeroListaSto"></StorageCardList>
+        //EjecutarFuncionEnStorageCard();
     }
     @if (selectedOptions.Contains("Fuente de Poder") || powerSupply.IdPsu != Guid.Empty)
     {
@@ -136,15 +132,15 @@
     public Guid IdPcComponent;
 
     //List<string> nullComponents = new List<string>();
-    private Dictionary<string, bool> nullComponents = new Dictionary<string, bool>();
+    private Dictionary<string, bool> options = new Dictionary<string, bool>();
 
     private List<string> selectedOptions = new List<string>();
 
-    private bool _storage, _memoryRam, _cpu, _motherboard, _powerSupply;
+    //private bool _storage, _memoryRam, _cpu, _motherboard, _powerSupply = true;
 
     //public StorageCard variableStorageCard = new StorageCard();
 
-    public int numeroLista = 0;
+    public int numeroListaSto = 0;
     public int numeroListaRam = 0;
 
 
@@ -167,30 +163,30 @@
                 //if (user == null) nullComponents.Add("User",true);
                 if (storage.Count < 3)
                 {
-                    nullComponents.Add("Almacenamiento", true);
-                    _storage = true;
+                    options.Add("Almacenamiento", true);
+                    //_storage = true;
                 }
                 if (memoryRam.Count < 2)
                 {
-                    nullComponents.Add("Memoria RAM", true);
-                    _memoryRam = true;
+                    options.Add("Memoria RAM", true);
+                    //_memoryRam = true;
                 }
                 if (cpu.IdCpu == Guid.Empty)
                 {
-                    nullComponents.Add("CPU", true);
-                    _cpu = true;
+                    options.Add("CPU", true);
+                    //_cpu = true;
                 }
 
                 if (motherboard.IdMotherboard == Guid.Empty)
                 {
-                    nullComponents.Add("Tarjeta Madre", true);
-                    _motherboard = true;
+                    options.Add("Tarjeta Madre", true);
+                    //_motherboard = true;
                 }
 
                 if (powerSupply.IdPsu == Guid.Empty)
                 {
-                    nullComponents.Add("Fuente de Poder", true);
-                    _powerSupply = true;
+                    options.Add("Fuente de Poder", true);
+                    //_powerSupply = true;
                 }
             }
         }
@@ -205,7 +201,6 @@
         {
             _selectedOption = value;
             HandleSelectionChange();
-            //_selectedOption = "default";
         }
     }
 
@@ -216,94 +211,80 @@
         {
             return;
         }
-        /*
-        nullComponents.Remove(_selectedOption);
+        options.Remove(_selectedOption);
         selectedOptions.Add(_selectedOption);
-        _selectedOption = "default";
-        */
+        _selectedOption = "default"; // Restablecer a la opción por defecto
 
-        switch (_selectedOption)
-        {
-            case "Almacenamiento":
-                //EjecutarFuncionEnStorageCard();
-                if(storage.Count==3)
-                {
-                    _storage = false;
-                    nullComponents.Remove(_selectedOption);
-                    //selectedOptions.Add(_selectedOption);
-                    //_selectedOption = "default";
-                }
-                else
-                {
-                    if (storage.Count == 0) storage.Add(new Storage());
-                    else if (storage.Count == 1) storage.Add(new Storage());
-                    else if (storage.Count == 2) storage.Add(new Storage());
-                    //Console.WriteLine("---------" + storage.Count);
-                    selectedOptions.Add(_selectedOption);
-                    //_selectedOption = "default";
-
-                    //StateHasChanged();
-                    //variableStorageCard.updateStorageForFilter();
-                }
-
-                break;
-            case "Memoria RAM":
-                Console.WriteLine(memoryRam.Count());
-                if (memoryRam.Count == 2)
-                {
-                    _memoryRam = false;
-                    nullComponents.Remove("Memoria RAM");
-                    //selectedOptions.Add(_selectedOption);
-                    //_selectedOption = "default";
-                }
-                else
-                {
-                    if (memoryRam.Count == 0) memoryRam.Add(new MemoryRam());
-                    else if (memoryRam.Count == 1) memoryRam.Add(new MemoryRam());
-                }
-
-                //_selectedOption = "default";
-                break;
-            case "CPU":
-                _cpu = false;
-                nullComponents.Remove(_selectedOption);
-                selectedOptions.Add(_selectedOption);
-                _selectedOption = "default";
-                break;
-            case "Tarjeta Madre":
-                _motherboard = false;
-                nullComponents.Remove(_selectedOption);
-                selectedOptions.Add(_selectedOption);
-                _selectedOption = "default";
-                break;
-            case "Fuente de Poder":
-                _powerSupply = false;
-                nullComponents.Remove(_selectedOption);
-                selectedOptions.Add(_selectedOption);
-                _selectedOption = "default";
-                break;
-
-        }
-
-
+  
+        //switch (_selectedOption)
+        //{
+        //    case "Almacenamiento":
+        //        if (storage.Count == 0) storage.Add(new Storage());
+        //        else if (storage.Count == 1) storage.Add(new Storage());
+        //        else if (storage.Count == 2)
+        //        {
+        //            storage.Add(new Storage());
+        //            _storage = false;
+        //            nullComponents.Remove(_selectedOption);
+        //            selectedOptions.Add(_selectedOption);
+        //            _selectedOption = "default";
+        //        }
+        //        break;
+        //    case "Memoria RAM":
+        //        Console.WriteLine(memoryRam.Count());
+        //        if (memoryRam.Count == 0) memoryRam.Add(new MemoryRam());
+        //        else if (memoryRam.Count == 1) 
+        //        {
+        //            memoryRam.Add(new MemoryRam());
+        //            _memoryRam = false;
+        //            nullComponents.Remove("Memoria RAM");
+        //            selectedOptions.Add(_selectedOption);
+        //            _selectedOption = "default";
+        //        }
+        //        break;
+        //    case "CPU":
+        //        _cpu = false;
+        //        nullComponents.Remove(_selectedOption);
+        //        selectedOptions.Add(_selectedOption);
+        //        _selectedOption = "default";
+        //        break;
+        //    case "Tarjeta Madre":
+        //        _motherboard = false;
+        //        nullComponents.Remove(_selectedOption);
+        //        selectedOptions.Add(_selectedOption);
+        //        _selectedOption = "default";
+        //        break;
+        //    case "Fuente de Poder":
+        //        _powerSupply = false;
+        //        nullComponents.Remove(_selectedOption);
+        //        selectedOptions.Add(_selectedOption);
+        //        _selectedOption = "default";
+        //        break;
+        //}
 
     }
-
-    private async Task updatePc()
+    private void ListenNumListSto(int newValue)
     {
-        pc = await PcService.UpdatePc(pc);
-        var IdPc = pc.IdPc;
-        storage = await StorageService.UpdateStorages(storage, IdPc);
-        memoryRam = await MemoryRamService.UpdateMemoryRam(memoryRam, IdPc);
-        //revisar para que sirven estos if
-        if (!_motherboard) motherboard = await MotherboardService.UpdateMotherboard(motherboard, IdPc);
-        if (!_cpu) cpu = await CpuService.UpdateCpu(cpu, IdPc);
-        if (!_powerSupply) powerSupply = await PowerSupplyService.UpdatePowerSupply(powerSupply, IdPc);
+        numeroListaSto = newValue;
     }
-    private void guidComponent(Guid newValue)
+
+
+    private void ListenNumListRam(int newValue)
     {
-        IdPcComponent = newValue;
+        numeroListaRam = newValue;
     }
+
+    //private async Task updatePc()
+    //{
+    //    pc = await PcService.UpdatePc(pc);
+    //    var IdPc = pc.IdPc;
+    //    storage = await StorageService.UpdateStorages(storage, IdPc);
+    //    memoryRam = await MemoryRamService.UpdateMemoryRam(memoryRam, IdPc);
+    //    //revisar para que sirven estos if
+    //    if (!_motherboard) motherboard = await MotherboardService.UpdateMotherboard(motherboard, IdPc);
+    //    if (!_cpu) cpu = await CpuService.UpdateCpu(cpu, IdPc);
+    //    if (!_powerSupply) powerSupply = await PowerSupplyService.UpdatePowerSupply(powerSupply, IdPc);
+    //}
 
     private async Task QuitPC()
     {
@@ -376,33 +357,30 @@
         switch (componentName)
         {
             case "Almacenamiento":
-                var IdPcSto = storage[numeroLista].IdPc.Value;
+                var IdPcSto = storage[numeroListaSto].IdPc.Value;
                 //Storage newStorage = storage.FirstOrDefault(s => s.IdPc == IdPcSto);
                 //newStorage.IdPc = null;
-                storage[numeroLista].IdPc = null;
-                storage = await StorageService.UpdateStorages(storage, IdPcSto);
-                //storage = new List<Storage>();
+                storage[numeroListaSto].IdPc = null;
+                await StorageService.UpdateStorages(storage, IdPcSto);
+                storage = await StorageService.GetStorageWithPcId(pc.IdPc);
                 if (storage.Count == 0)
                 {
                     selectedOptions.Remove("Almacenamiento");
-                    nullComponents.Add("Almacenamiento", true);
+                    options.Add("Almacenamiento", true);
                 }
-
-                _storage = true;
+                //_storage = true;
                 break;
             case "Memoria RAM":
-                Console.WriteLine(numeroListaRam);
                 var IdPcRam = memoryRam[numeroListaRam].IdPc.Value;
-                memoryRam[numeroLista].IdPc = null;
-                memoryRam = await MemoryRamService.UpdateMemoryRam(memoryRam, IdPcRam);
-                //StateHasChanged();
-                //memoryRam = new MemoryRam();
+                memoryRam[numeroListaRam].IdPc = null;
+                await MemoryRamService.UpdateMemoryRam(memoryRam, IdPcRam);
+                memoryRam = await MemoryRamService.GetMemoryRamWithPcId(pc.IdPc);
                 if(storage.Count == 0)
                 {
                     selectedOptions.Remove("Memoria RAM");
-                    nullComponents.Add("Memoria RAM", true);
+                    options.Add("Memoria RAM", true);
                 }
-                _memoryRam = true;
+                //_memoryRam = true;
                 break;
             case "CPU":
                 var IdPcCPU = cpu.IdPc.Value;
@@ -410,8 +388,8 @@
                 await CpuService.UpdateCpu(cpu, IdPcCPU);
                 cpu = new Cpu();
                 selectedOptions.Remove("CPU");
-                nullComponents.Add("CPU", true);
-                _cpu = true;
+                options.Add("CPU", true);
+                //_cpu = true;
                 break;
             case "Tarjeta Madre":
                 var IdPcMother = motherboard.IdPc.Value;
@@ -419,8 +397,8 @@
                 await MotherboardService.UpdateMotherboard(motherboard, IdPcMother);
                 motherboard = new Motherboard();
                 selectedOptions.Remove("Tarjeta Madre");
-                nullComponents.Add("Tarjeta Madre", true);
-                _motherboard = true;
+                options.Add("Tarjeta Madre", true);
+                //_motherboard = true;
                 break;
             case "Fuente de Poder":
                 var IdPcPSU = powerSupply.IdPc.Value;
@@ -428,13 +406,13 @@
                 await PowerSupplyService.UpdatePowerSupply(powerSupply, IdPcPSU);
                 powerSupply = new PowerSupply();
                 selectedOptions.Remove("Fuente de Poder");
-                nullComponents.Add("Fuente de Poder", true);
-                _powerSupply = true;
+                options.Add("Fuente de Poder", true);
+                //_powerSupply = true;
                 break;
         }
         
         CloseModalComponents(); // Cerrar el modal después de la confirmación
-        StateHasChanged();
+        //StateHasChanged();
     }
 
     @*

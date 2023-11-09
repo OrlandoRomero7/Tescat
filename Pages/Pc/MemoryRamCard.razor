@@ -28,6 +28,7 @@
                     <InputText class="form-control" @bind-Value="m.Speed " />
                 </div>
             </div>
+            
         </EditForm>
         @if (memoryRam.Count > elementosPorPagina)
         {
@@ -102,8 +103,11 @@
     [Parameter]
     public Action confirmationModalDelete { get; set; }
 
+    //[Parameter]
+    //public int numeroLista { get; set; }
+
     [Parameter]
-    public int numeroLista { get; set; }
+    public EventCallback<int> OnNumListChanged { get; set; }
 
     //Density Density = Density.Compact;
     //int pageSize = 1;
@@ -161,8 +165,8 @@
 
     public void FunctionCallShowModal()
     {
-        Console.WriteLine(num);
-        numeroLista = num;
+        
+        OnNumListChanged.InvokeAsync(num);
         confirmationModalChild?.Invoke();
     }
 

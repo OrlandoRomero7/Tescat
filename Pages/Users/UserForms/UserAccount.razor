@@ -2,7 +2,7 @@
 
 <FormSection Title="Cuentas de Usuario">
     <EditForm Model="@userCredential">
-        @if (options.Any(o => !o.Value))
+        @if (options.Any(o => o.Value))
         {
             <div class="row mb-3">
                 <div class="col-md-4">
@@ -11,7 +11,7 @@
                         <option value="default">Seleccione una opción</option>
                         @foreach (var option in options)
                         {
-                            if (!option.Value)
+                            if (option.Value)
                             {
                                 <option>@option.Key</option>
                             }
@@ -20,9 +20,6 @@
                 </div>
             </div>
         }
-        
-            
-        
         
         @if (selectedOptions.Contains("portal") || !string.IsNullOrEmpty(userCredential.PortalUser))
         {
@@ -120,37 +117,27 @@
 </FormSection>
 
 
-
-
-
 @code {
     /**/
     [Parameter]
     public UserCredential? userCredential { get; set; } = default!;
 
-    public bool portal = false;
-    public bool casa = false;
-    public bool mozart = false;
-    public bool darwin = false;
-    public bool vpn = false;
+    public bool portal, casa, mozart, darwin, vpn;
 
     private Dictionary<string, bool> options = new Dictionary<string, bool>();
 
     private List<string> selectedOptions = new List<string>();
 
-
-
-
     protected override void OnInitialized()
     {
         if (userCredential != null)
         {
-            portal = !string.IsNullOrEmpty(userCredential.PortalUser);
-            casa = !string.IsNullOrEmpty(userCredential.CasaUser);
-            mozart = !string.IsNullOrEmpty(userCredential.MozartUser);
-            darwin = !string.IsNullOrEmpty(userCredential.DarwinUser);
-            vpn = !string.IsNullOrEmpty(userCredential.VpnUser);
-
+            portal = string.IsNullOrEmpty(userCredential.PortalUser);
+            casa = string.IsNullOrEmpty(userCredential.CasaUser);
+            mozart = string.IsNullOrEmpty(userCredential.MozartUser);
+            darwin = string.IsNullOrEmpty(userCredential.DarwinUser);
+            vpn = string.IsNullOrEmpty(userCredential.VpnUser);
+            //Si es nulo regresara true
             options.Add("portal", portal);
             options.Add("casa", casa);
             options.Add("mozart", mozart);
@@ -186,31 +173,31 @@
         switch(account)
         {
             case 1:
-                options["portal"] = false; // Hacer que "portal" vuelva a estar disponible en el <select>.
+                options["portal"] = true; // Hacer que "portal" vuelva a estar disponible en el <select>.
                 userCredential.PortalUser = string.Empty; // Limpiar el valor en userCredential.
                 userCredential.PortalPass = string.Empty;
                 selectedOptions.Remove("portal"); // Eliminar "portal" de las opciones seleccionadas.
                 break;
             case 2:
-                options["casa"] = false; 
+                options["casa"] = true;
                 userCredential.CasaUser = string.Empty; 
                 userCredential.CasaPass = string.Empty;
                 selectedOptions.Remove("casa");
                 break;
             case 3:
-                options["mozart"] = false;
+                options["mozart"] = true;
                 userCredential.MozartUser = string.Empty;
                 userCredential.MozartPass = string.Empty;
                 selectedOptions.Remove("mozart");
                 break;
             case 4:
-                options["darwin"] = false;
+                options["darwin"] = true;
                 userCredential.DarwinUser = string.Empty;
                 userCredential.DarwinPass = string.Empty;
                 selectedOptions.Remove("darwin");
                 break;
             case 5:
-                options["vpn"] = false;
+                options["vpn"] = true;
                 userCredential.VpnUser = string.Empty;
                 userCredential.VpnPass = string.Empty;
                 selectedOptions.Remove("vpn");

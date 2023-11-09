@@ -128,7 +128,7 @@
     public Guid IdComponent;
 
     [Parameter]
-    public EventCallback<Guid> OnGuidChanged { get; set; }
+    public EventCallback<int> OnNumListStoChanged { get; set; }
 
     [Parameter]
     public bool stockComponent { get; set; } = false;
@@ -260,18 +260,10 @@
 
     public void FunctionCallShowModal()
     {
-        numeroLista = num;
+        OnNumListStoChanged.InvokeAsync(num);
         confirmationModalChild?.Invoke();
-        ChangeValue();
+        
     }
 
-    private void ChangeValue()
-    {
-        //Guid? nullableIdComponent = storageForFilter[0].IdPc;
-        Guid? nullableIdComponent = storage[0].IdPc;
-        //Console.WriteLine(nullableIdComponent);
-        IdComponent = nullableIdComponent ?? Guid.Empty; // Usa un valor predeterminado si es nulo.
-        OnGuidChanged.InvokeAsync(IdComponent);
-    }
 
 }
