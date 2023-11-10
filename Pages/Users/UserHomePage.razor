@@ -1,12 +1,14 @@
 ﻿@page "/users"
 @page "/users/{SearchTerm}"
+@page "/users/{SearchTerm}/office/{UserOffice}/entrydate/{UserLength:int}"
+
+
 @inject IUserService UserService
 @inject OtherServices OtherServices
 @inject TescatDbContext Context
 @using System.Reflection;
 @inject NavigationManager NavigationManager
 @layout UserHomePageLayout
-
 
 
 
@@ -74,17 +76,29 @@
 {
     private List<User>? Users { get; set; }
     private User[]? _searchResults { get; set; }
+    private User[]? _cachedSearchResults { get; set; } = Array.Empty<User>();
     public string? localMessage;
     private bool showAlert = false;
 
 
-    string? searchTermFromUserControls;
+    [Parameter, SupplyParameterFromQuery]
+    public string?
+    UserOffice
+    { get; set; }
+
+    [Parameter, SupplyParameterFromQuery]
+    public int?
+    UserLength
+    { get; set; }
+
+
 
 
     [Parameter]
     public string
     SearchTerm
     { get; set; } = default!;
+
 
 
 
@@ -100,18 +114,24 @@
             localMessage = OtherServices.Message;
             if (localMessage != null) await ShowAndHideAlert();
 
+            _cachedSearchResults = Users.ToArray();
             UpdateSearchResults();
+            UpdateFilters();
+
+
 
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Hubo un problema al cargar la informacion de los usuarios{ex.Message}");
         }
+
+        Console.WriteLine($"UserOffice:{UserOffice}");
     }
 
     private void UpdateSearchResults()
     {
-        if (SearchTerm != null)
+        if (!string.IsNullOrEmpty(SearchTerm)) //aqui solo se comprueba el valor de SearchTerm para actualizar
         {
             var searchTermLower = SearchTerm.ToLower();
             var query = Context.Users
@@ -134,12 +154,51 @@
                 );
 
             _searchResults = query.ToArray();
+            _cachedSearchResults = _searchResults;
         }
         else
         {
             _searchResults = null;
         }
     }
+
+
+    private void UpdateFilters()
+    {
+        var filters = new List<Func<User, bool>>();
+
+        if (!string.IsNullOrEmpty(UserOffice))
+        {
+            filters.Add(x =>
+                x.Office?.Contains(UserOffice, StringComparison.CurrentCultureIgnoreCase) == true);
+        }
+
+        if (UserLength.HasValue)
+        {
+            var currentDate = DateTime.Now;
+
+            if (UserLength.Value >= 0)
+            {
+                filters.Add(x =>
+                    (currentDate - x.EntryDate)?.TotalDays / 365.25 > UserLength.Value);
+            }
+            else
+            {
+                filters.Add(x =>
+            (currentDate - x.EntryDate)?.TotalDays / 365.25 < Math.Abs(UserLength.Value));
+            }
+        }
+
+        if (filters.Any())
+        {
+            _searchResults = _cachedSearchResults?.Where(user => filters.All(filter => filter(user))).ToArray();
+        }
+
+
+        StateHasChanged();
+    }
+
+    /* */
 
 
     protected void CreateNewUser()
@@ -167,10 +226,12 @@
     }
 
 
+    protected override void OnParametersSet()
+    {
+        UpdateSearchResults();
+        UpdateFilters(); // Actualiza los resultados basados en los filtros
 
+    }
 
-    protected override void
-     OnParametersSet()
-     => UpdateSearchResults();
 
 }
