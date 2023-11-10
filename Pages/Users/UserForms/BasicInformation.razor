@@ -78,7 +78,7 @@
 
 
             </div>
-            
+
 
             <div class="row g-3">
                 <div class="col-md-3">
@@ -150,18 +150,15 @@
     { get; set; }
 
     public List<String> Oficina = new List<string>
-    {
-        "Ensenada","Tijuana","Mexicali"
+{
+        "Ensenada","Tijuana","San Diego"
     };
     public string? officeSelected { get; set; }
 
 
     [Parameter]
     public int id { get; set; }
-    /*
-    [Parameter]
-    public string? tempName { get; set; }
-    */
+
     [Parameter]
     public string[]? areas { get; set; } = default!;
 
