@@ -138,6 +138,10 @@
             darwin = string.IsNullOrEmpty(userCredential.DarwinUser);
             vpn = string.IsNullOrEmpty(userCredential.VpnUser);
             //Si es nulo regresara true
+            
+            mozart = true;
+            darwin = true;
+            vpn = true;
             options.Add("portal", portal);
             options.Add("casa", casa);
             options.Add("mozart", mozart);
