@@ -1,72 +1,52 @@
-﻿
-@inherits LayoutComponentBase
+﻿@inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
-@inject SidebarStateService SideBarStateService
-
 <PageTitle>Tescat</PageTitle>
-
 <div class="page">
-
-    <span class="@SidebarStateService.ActiveSideBarStyles  active-sidebar-toggle material-symbols-outlined ms-3" @onclick="ToggleActiveSideBarStyles">
-        @SidebarStateService.SideBarIcon
+    <span class="@ActiveSideBarStyles active-sidebar-toggle material-symbols-outlined ms-3" @onclick="ToggleActiveSideBarStyles">
+        @SideBarIcon
     </span>
-
-    <div class="@SidebarStateService.ActiveSideBarStyles sidebar" @onmouseover="ApplyActiveSideBarStyles " @onmouseout="ApplyActiveSideBarStyles ">
-
-
-        <NavMenu ActiveSideBarStyles="@SidebarStateService.ActiveSideBarStyles" />
-
+    <div class="@ActiveSideBarStyles sidebar" @onmouseover="ApplyActiveSideBarStyles " @onmouseout="ApplyActiveSideBarStyles ">
+        <NavMenu ActiveSideBarStyles="@ActiveSideBarStyles" />
     </div>
 
     @*   <MainHeader />*@
+
 
     <main class="container mb-5 @PageTransition" style="max-width:100%; margin-top:5.5rem">
 
         @Body
 
     </main>
-
 </div>
-
 @code {
-
+    public string ActiveSideBarStyles { get; private set; } = "sidebar-active";
+    public bool ActiveToggle { get; private set; } = true;
+    public string SideBarIcon { get; private set; } = "menu_open";
     public string? PageTransition { get; set; }
     private bool firstRender = true;
-
-
-
-
     public void ToggleActiveSideBarStyles()
     {
-        SidebarStateService.ActiveToggle = !SidebarStateService.ActiveToggle;
-        SidebarStateService.ActiveSideBarStyles = SidebarStateService.ActiveToggle ? "sidebar-active" : "";
-        SidebarStateService.SideBarIcon = SidebarStateService.ActiveToggle ? "menu_open" : "menu";
+        ActiveToggle = !ActiveToggle;
+        ActiveSideBarStyles = ActiveToggle ? "sidebar-active" : "";
+        SideBarIcon = ActiveToggle ? "menu_open" : "menu";
     }
-
     public void ApplyActiveSideBarStyles()
     {
-        if (!SidebarStateService.ActiveToggle)
+        if (!ActiveToggle)
         {
-            SidebarStateService.ActiveSideBarStyles = string.IsNullOrEmpty(SidebarStateService.ActiveSideBarStyles) ? "sidebar-active" : "";
+            ActiveSideBarStyles = string.IsNullOrEmpty(ActiveSideBarStyles) ? "sidebar-active" : "";
         }
     }
-
-
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             // Wait a little to ensure that the hidden-transition is applied
             await Task.Delay(255);
-
             PageTransition = "visible-transition";
             StateHasChanged();
-
         }
     }
-
-
     protected override void OnInitialized()
     {
         PageTransition = "hidden-transition";
@@ -74,6 +54,7 @@
     }
 
 
+   
 
 
     private async void HandleLocationChanged(object? sender, LocationChangedEventArgs e)
@@ -81,15 +62,12 @@
         // Apply hidden-transition first
         PageTransition = "hidden-transition";
         StateHasChanged();  // Force re-render
-
         // Wait for the transition to complete (assuming 255ms based on your CSS)
         await Task.Delay(250);
-
         // Then apply visible-transition
         PageTransition = "visible-transition";
         StateHasChanged();  // Force re-render again
     }
-
     public void Dispose()
     {
         NavigationManager.LocationChanged -= HandleLocationChanged; // Unsubscribe to avoid memory leaks

@@ -1,38 +1,42 @@
 ﻿@inherits LayoutComponentBase
 
-<div style="position: absolute; right: 0; margin-top: 3rem;  width: calc(100% - 250px);" class="@PageTransition">
+<div style="position: absolute; right: 0; width: 100%; margin-top: -2.5%;">
     <UserHomePageControls></UserHomePageControls>
 </div>
 
 
-<LayoutView Layout="typeof(MainLayout)">
-    <div>
-        @Body
-    </div>
-</LayoutView>
+
+<div>
+        @ChildContent
+</div>
+
 
 @code {
-    public string? PageTransition { get; set; }
-    private bool firstRender = true;
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            // Wait a little to ensure that the hidden-transition is applied
-            await Task.Delay(255);
-
-            PageTransition = "visible-transition";
-            StateHasChanged();
-
-        }
-    }
+    //public string? PageTransition { get; set; }
+    //private bool firstRender = true;
 
 
-    protected override void OnInitialized()
-    {
-        PageTransition = "hidden-transition";
-    }
+    [Parameter, EditorRequired]
+    public RenderFragment ChildContent { get; set; } = default!;
+
+    //protected override async Task OnAfterRenderAsync(bool firstRender)
+    //{
+    //    if (firstRender)
+    //    {
+    //        // Wait a little to ensure that the hidden-transition is applied
+    //        await Task.Delay(255);
+
+    //        PageTransition = "visible-transition";
+    //        StateHasChanged();
+
+    //    }
+    //}
+
+
+    //protected override void OnInitialized()
+    //{
+    //    PageTransition = "hidden-transition";
+    //}
 
 
 
