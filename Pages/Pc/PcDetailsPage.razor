@@ -51,6 +51,22 @@
 
 @if (pc != null && user != null)
 {
+    @*@if (nullComponents.Count != 0)
+    {
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <h5>Agrega un Componente</h5>
+                <InputSelect class="form-select" @bind-Value="opcionSeleccionada" @oninput="@( async (args) => { await EliminarOpcionSeleccionada(args); OtraFuncion(); } )">
+                    <option value="@opcionSeleccionada">Selecciona una opción</option>
+                    @foreach (var opcion in nullComponents.ToList())
+                    {
+                        <option value="@opcion">@opcion</option>
+                    }
+                </InputSelect>
+            </div>
+        </div>
+
+    }*@
     @if (nullComponents.Count != 0)
     {
         <div class="row mb-3">
@@ -67,7 +83,7 @@
         </div>
 
     }
-    
+    <button @onclick="@( () => NavigateToSection("powerSupply") )">Ir a la sección 1</button>
 
     <BasicPcInformation pc="pc" user="user"></BasicPcInformation>
     @if (selectedOptions.Contains("Tarjeta Madre") || motherboard.IdMotherboard != Guid.Empty)
@@ -76,7 +92,9 @@
     }
     @if (selectedOptions.Contains("CPU") || cpu.IdCpu != Guid.Empty)
     {
-        <CpuCard cpu="cpu" confirmationModalChild="@( () => ShowModalComponents("CPU") )"></CpuCard>
+        <div id="cpu">
+            <CpuCard cpu="cpu" confirmationModalChild="@( () => ShowModalComponents("CPU") )"></CpuCard>
+        </div>
     }
     @if (selectedOptions.Contains("Memoria RAM") || memoryRam.Count != 0)
     {
@@ -84,12 +102,18 @@
     }
     @if (selectedOptions.Contains("Almacenamiento") || storage.Count != 0)
     {
-        <StorageCardList storage="storage" confirmationModalChild="@( () => ShowModalComponents("Almacenamiento") )" OnNumListStoChanged="ListenNumListSto" numeroLista="numeroListaSto"></StorageCardList>
+        <div id="storage">
+            <StorageCardList storage="storage" confirmationModalChild="@( () => ShowModalComponents("Almacenamiento") )" OnNumListStoChanged="ListenNumListSto" numeroLista="numeroListaSto"></StorageCardList>
+        </div>
+        
     }
     
     @if (selectedOptions.Contains("Fuente de Poder") || powerSupply.IdPsu != Guid.Empty)
     {
-        <PowerSupplyCard powerSupply="powerSupply" confirmationModalChild="@( () => ShowModalComponents("Fuente de Poder") )"></PowerSupplyCard>
+        <div id="powerSupply">
+            <PowerSupplyCard powerSupply="powerSupply" confirmationModalChild="@( () => ShowModalComponents("Fuente de Poder") )"></PowerSupplyCard>
+        </div>
+        
     }
 
 }
@@ -191,6 +215,11 @@
     //List<string> opciones = new List<string>();
 
     public bool _storage, _memoryRam, _cpu, _motherboard, _powerSupply;
+
+    private async Task NavigateToSection(string sectionId)
+    {
+        await JSRuntime.InvokeVoidAsync("scrollIntoView", sectionId);
+    }
 
 
     protected override async Task OnInitializedAsync()
@@ -294,6 +323,7 @@
     void EliminarOpcionSeleccionada(ChangeEventArgs args)
     {
         string valorSeleccionado = args.Value?.ToString();
+        //string valorSeleccionado = opcionSeleccionada;
 
         if (!string.IsNullOrEmpty(valorSeleccionado))
         {
@@ -302,7 +332,6 @@
             //nullComponents.Remove(valorSeleccionado);
             opcionSeleccionada = "default";
 
-            //StateHasChanged();
         }
     }
     //private void HandleSelectionChange(ChangeEventArgs e)
@@ -356,6 +385,7 @@
                     //selectedOptions.Add(valorSeleccionado);
                     //_selectedOption = "default";
                 }
+                
                 break;
             case "Memoria RAM":
                 Console.WriteLine(memoryRam.Count());
@@ -374,6 +404,7 @@
                 nullComponents.Remove(valorSeleccionado);
                 selectedOptions.Add(valorSeleccionado);
                 //_selectedOption = "default";
+                
                 break;
             case "Tarjeta Madre":
                 _motherboard = true;

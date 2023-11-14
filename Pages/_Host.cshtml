@@ -72,6 +72,13 @@
     @*Script para Radzen*@
     <link rel="stylesheet" href="_content/Radzen.Blazor/css/material-base.css">
     <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
+    @*Script para navegar en html*@
+    <script>
+        window.scrollIntoView = function (elementId) {
+            var section = document.getElementById(elementId);
+            section.scrollIntoView({ behavior: 'smooth' });
+        };
+    </script>
 
 
 
