@@ -17,19 +17,8 @@
     transition: width 500ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
 }
 
-    /*.searchbox:hover {
-        transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-        box-shadow: rgba(0, 0, 0, 0.1) 0rem 0.25rem 0.375rem -0.0625rem, rgba(0, 0, 0, 0.06) 0rem 0.125rem 0.25rem -0.0625rem;*/
-    /*box-shadow: rgb(221, 221, 221) 0rem 0.0625rem 0.3125rem 0.0625rem;*/
-    /*background: var(--brand-white);
-    }*/
-
-
 
     .searchbox:focus-within {
-        /*  box-shadow: rgba(0, 0, 0, 0.1) 0rem 0.25rem 0.375rem -0.0625rem, rgba(0, 0, 0, 0.06) 0rem 0.125rem 0.25rem -0.0625rem;*/
-        /*box-shadow: rgb(221, 221, 221) 0rem 0.0625rem 0.3125rem 0.0625rem;*/
-        /*background: var(--brand-white);*/
         width: 15rem;
         transition: width 500ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
     }
@@ -67,15 +56,16 @@ input {
 
         input:focus::placeholder {
             opacity: 1;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.5s, color 0.5s, ease;
+            color: rgb(6 21 31 / 50%);
         }
 
 
     input::placeholder {
         font-size: 1rem;
         font-style: italic;
-        color: rgb(6 21 31 / 50%);
         opacity: 0;
+        color: transparent;
     }
 
 i .search-icon {

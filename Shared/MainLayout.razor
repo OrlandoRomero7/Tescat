@@ -1,18 +1,20 @@
-﻿@inherits LayoutComponentBase
+﻿
+@inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
+@inject SidebarStateService SideBarStateService
 
 <PageTitle>Tescat</PageTitle>
 
 <div class="page">
 
-    <span class="@ActiveSideBarStyles active-sidebar-toggle material-symbols-outlined ms-3" @onclick="ToggleActiveSideBarStyles">
-        @SideBarIcon
+    <span class="@SidebarStateService.ActiveSideBarStyles  active-sidebar-toggle material-symbols-outlined ms-3" @onclick="ToggleActiveSideBarStyles">
+        @SidebarStateService.SideBarIcon
     </span>
 
-    <div class="@ActiveSideBarStyles sidebar" @onmouseover="ApplyActiveSideBarStyles " @onmouseout="ApplyActiveSideBarStyles ">
+    <div class="@SidebarStateService.ActiveSideBarStyles sidebar" @onmouseover="ApplyActiveSideBarStyles " @onmouseout="ApplyActiveSideBarStyles ">
 
 
-        <NavMenu ActiveSideBarStyles="@ActiveSideBarStyles" />
+        <NavMenu ActiveSideBarStyles="@SidebarStateService.ActiveSideBarStyles" />
 
     </div>
 
@@ -27,26 +29,25 @@
 </div>
 
 @code {
-    public string ActiveSideBarStyles { get; private set; } = "sidebar-active";
-    public bool ActiveToggle { get; private set; } = true;
-    public string SideBarIcon { get; private set; } = "menu_open";
+
     public string? PageTransition { get; set; }
     private bool firstRender = true;
 
 
 
+
     public void ToggleActiveSideBarStyles()
     {
-        ActiveToggle = !ActiveToggle;
-        ActiveSideBarStyles = ActiveToggle ? "sidebar-active" : "";
-        SideBarIcon = ActiveToggle ? "menu_open" : "menu";
+        SidebarStateService.ActiveToggle = !SidebarStateService.ActiveToggle;
+        SidebarStateService.ActiveSideBarStyles = SidebarStateService.ActiveToggle ? "sidebar-active" : "";
+        SidebarStateService.SideBarIcon = SidebarStateService.ActiveToggle ? "menu_open" : "menu";
     }
 
     public void ApplyActiveSideBarStyles()
     {
-        if (!ActiveToggle)
+        if (!SidebarStateService.ActiveToggle)
         {
-            ActiveSideBarStyles = string.IsNullOrEmpty(ActiveSideBarStyles) ? "sidebar-active" : "";
+            SidebarStateService.ActiveSideBarStyles = string.IsNullOrEmpty(SidebarStateService.ActiveSideBarStyles) ? "sidebar-active" : "";
         }
     }
 

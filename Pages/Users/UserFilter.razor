@@ -1,0 +1,240 @@
+﻿@inject NavigationManager NavManager
+
+<label style="width: 100%; padding: 0.32rem 1rem; font-size: 1.1rem; line-height: 1.5; letter-spacing: 0.02857em;">Filtrar busqueda:</label>
+<div class="filters" style="display: flex; width: 100%; padding: 0.32rem 1rem; ">
+
+
+
+    <div class="dropdown">
+
+        <button class="btn btn-outline-primary dropdown-toggle"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+
+            @if (!string.IsNullOrEmpty(_userOffice))
+            {
+                <span class="bi bi-buildings-fill"><span class="ms-2">@_userOffice</span></span>
+            }
+
+            else
+            {
+                <span class="bi bi-buildings-fill"> <span class="ms-2">Oficina</span></span>
+            }
+
+        </button>
+
+        <ul class="dropdown-menu">
+            <li><span class="dropdown-item" @onclick='() => SelectOfficeFilter("Ensenada")'>Ensenada</span></li>
+            <li><span class="dropdown-item" @onclick='() => SelectOfficeFilter("Tijuana")'>Tijuana</span></li>
+            <li><span class="dropdown-item" @onclick='() => SelectOfficeFilter("San Diego")'>San Diego</span></li>
+        </ul>
+
+    </div>
+
+
+    <div class="dropdown">
+
+        <button class="btn btn-outline-primary dropdown-toggle
+                user-length-filter
+                @_userLengthFilterSelectorStyles"
+                type="button"
+                data-bs-toggle="dropdown"
+                data-bs-auto-close="outside"
+                aria-expanded="false">
+
+            @if (_userLength.HasValue && !string.IsNullOrEmpty(_userLengthFilterSelectorStyles))
+            {
+                <span class="bi bi-calendar-week-fill me-1">
+                    <span class="ms-2">
+                        @_userLengthFilterSelector a @_userLength añ..
+                    </span>
+                </span>
+            }
+
+            else
+            {
+                <span class="bi bi-calendar-week-fill me-1"><span class="ms-2">Fecha de Ingreso</span></span>
+            }
+
+        </button>
+
+        <div class="dropdown-menu user-length-filter @_closeLengthFilter">
+
+
+            <div class="px-3 py-1">
+                <div>
+
+                    <button class="btn btn-outline-secondary
+                                dropdown-toggle user-length-filter"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                            data-bs-auto-close="outside"
+                            aria-expanded="false">
+
+
+
+                        <span>@_userLengthFilterSelector</span>
+
+
+
+
+
+
+
+                    </button>
+
+                    <ul class="dropdown-menu">
+                        <li><span class="dropdown-item" @onclick='() => SelectLengthFilter("Mayor")'>Mayor</span></li>
+                        <li><span class="dropdown-item" @onclick='() => SelectLengthFilter("Menor")'>Menor</span></li>
+                    </ul>
+
+
+
+                    <label>a</label>
+
+
+
+                    <input class="form-control"
+                           id="DropdownInputLength"
+                           type="number"
+                           @bind="_userLength" /><label>años</label>
+
+                    <button class="btn btn-secondary user-length-filter" @onclick='() => LengthFilterButton(_userLength ?? 0)'>
+                        Filtrar
+                    </button>
+
+                </div>
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+    @*<button class="btn btn-outline-secondary"
+                @onclick="ClearSearchFilter">
+            Limpiar
+        </button>*@
+
+</div>
+
+
+
+
+@code {
+    private string? _userOffice;
+    private int? _userLength;
+
+    private string? _userLengthFilterSelector;
+    private string? _userLengthFilterSelectorStyles;
+
+    private string? _closeLengthFilter;
+
+
+    public string?
+    UserOffice
+    { get; set; }
+
+    public int?
+    UserLength
+    { get; set; }
+
+    [Parameter]
+    public EventCallback<(string, int?)> FilterData { get; set; }
+
+
+    protected override void
+   OnInitialized()
+    {
+        @*we retrieve the values from UsersHomePage to set the values contained in the query string when loading the page directly*@
+        _userOffice = UserOffice ?? "";
+
+        _userLength = UserLength >= 0 ? UserLength : -UserLength;
+
+        if (!UserLength.HasValue || UserLength >= 0)
+        { _userLengthFilterSelector = "Mayor"; }
+        else
+        { _userLengthFilterSelector = "Menor"; }
+
+
+        if (!UserLength.HasValue || string.IsNullOrEmpty(_userLengthFilterSelector))
+        { _userLengthFilterSelectorStyles = ""; }
+        else
+        { _userLengthFilterSelectorStyles = "applied"; }
+    }
+
+
+    private async Task
+SelectOfficeFilter(string officeSelection)
+    {
+        _userOffice = officeSelection;
+
+        await FilterSearchResults();
+    }
+
+
+    private void
+    SelectLengthFilter(string LengthFilterSelection)
+    {
+        _userLengthFilterSelector = LengthFilterSelection;
+    }
+
+
+    private async Task
+    LengthFilterButton(int LengthValue)
+    {
+        if (_userLengthFilterSelector == "Menor")
+        {
+            _userLength = -LengthValue;
+
+        }
+        else
+        {
+            _userLength = LengthValue;
+            _userLengthFilterSelector = "Mayor";
+            @*setting "Mayor" as _userLenght default value *@
+
+        }
+
+
+        await FilterSearchResults();
+
+        @*we set the value of _userLenght to be positive once the filter has been applied*@
+        _userLength = LengthValue;
+
+
+        _userLengthFilterSelectorStyles = "applied";
+        @*_closeLengthFilter = "close"; *@
+
+
+    }
+
+
+    private async Task FilterSearchResults()
+    {
+        await FilterData.InvokeAsync((_userOffice, _userLength));
+    }
+
+    /*
+      private void
+      ClearSearchFilter()
+      {
+          _userOffice = "";
+          _userLength = null;
+          _userLengthFilterSelector = "Mayor";
+
+          _userLengthFilterSelectorStyles = "";
+          @*_closeLengthFilter = "close"; *@
+
+
+
+
+          NavManager
+          .NavigateTo
+          ($"/search/{SearchTerm}");
+      }
+   */
+}

@@ -9,10 +9,32 @@
             <span style="left: @(xPos)px; top: @(yPos)px;" class="@(showRippleAdd ? "ripple" : "")"></span>
         </button>
 
-        <button type="button" class="btn btn-primary" style="margin-right:.5rem;" @onclick="@(e => ClickHandler(e, RippleType.Filter))">
-            <i class="bi bi-filter" style="padding-top:2px"></i>
-            <span style="left: @(xPos)px; top: @(yPos)px;" class="@(showRippleFilter ? "ripple" : "")"></span>
-        </button>
+        <div class="dropdown" style="height:100%"
+             @onclick="@(e => ClickHandler(e, RippleType.Filter))">
+
+            <button type="button"
+                    class="btn btn-primary dropdown-toggle"
+                    style="margin-right:.5rem;"
+                    data-bs-toggle="dropdown"
+                    data-bs-auto-close="outside"
+                    aria-expanded="false">
+
+                <i class="bi bi-filter" style="padding-top:2px"></i>
+
+                <span style="left: @(xPos)px; top: @(yPos)px;" class="@(showRippleFilter ? "ripple" : "")"></span>
+
+            </button>
+
+
+            <div class="dropdown-menu shadow" style="padding: 0.824rem 0.824rem; min-width: 29rem; border-radius: 0.5rem; border: none;">
+
+                <div style="width:100%">
+                    <UserFilter FilterData="@(tuple => HandleFiltering(tuple.Item1, tuple.Item2))"></UserFilter>
+                </div>
+
+            </div>
+
+        </div>
 
 
 
@@ -24,12 +46,12 @@
 
         </button>
 
-
         <span class="user-buttons-box-indicator @(showIndicator ? "indicator-active" : "")" style="right: @indicatorRight; width:@indicatorWidth;"></span>
 
 
     </div>
 </div>
+
 
 @code
 {
@@ -43,10 +65,12 @@
     string indicatorWidth = "50.8px";
 
     string? searchTermFromUserSearch;
+    string? userOfficeFromUserFilter;
+    int? userLengthFromUserFilter;
 
 
 
-    [Parameter] public EventCallback<string> OnControlsSearch { get; set; }
+
 
 
 
@@ -156,16 +180,31 @@
 
 
 
-    private async Task HandleUserSearch(string searchTerm)
+    private void HandleUserSearch(string searchTerm)
     {
         searchTermFromUserSearch = searchTerm;
-        await OnControlsSearch.InvokeAsync(searchTermFromUserSearch);
-        Console.WriteLine("Search Term from UserSearch: " + searchTermFromUserSearch);
+
+        Console.WriteLine("Search Term from Controls: " + searchTermFromUserSearch);
         NavigationManager.NavigateTo($"/users/{searchTermFromUserSearch}");
     }
 
+    private void HandleFiltering(string userOffice, int? userLength)
+    {
 
+        var queryParameters = new Dictionary<string, object?>()
+        {
+            [nameof(UserHomePage.UserOffice)] = string.IsNullOrEmpty(userOffice) ? null : userOffice,
+        };
 
+        if (userLength.HasValue)
+        {
+            queryParameters.Add(nameof(UserHomePage.UserLength), userLength);
+        }
+
+        var uriWithQuerystring = NavigationManager.GetUriWithQueryParameters(queryParameters);
+
+        NavigationManager.NavigateTo(uriWithQuerystring);
+    }
 
     private void ResetIndicatorWidth()
     {
