@@ -26,15 +26,16 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
 
+builder.Services.AddSingleton<SidebarStateService>();
 
 //builder.Services.AddSingleton<WeatherForecastService>();
 
-//Se añade como inyeccion de dependencias los servicios
+//Se aï¿½ade como inyeccion de dependencias los servicios
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserCredentialService, UserCredentialService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IPcService, PcService>();
-builder.Services.AddScoped<IStorageService,StorageService>();
+builder.Services.AddScoped<IStorageService, StorageService>();
 builder.Services.AddScoped<IMemoryRamService, MemoryRamService>();
 builder.Services.AddScoped<ICpuService, CpuService>();
 builder.Services.AddScoped<IMotherboardService, MotherboardService>();

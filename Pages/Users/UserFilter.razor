@@ -1,7 +1,8 @@
 ﻿@inject NavigationManager NavManager
 
-<div class="filters">
-    <label>Filtrar busqueda:</label>
+<label style="width: 100%; padding: 0.32rem 1rem; font-size: 1.1rem; line-height: 1.5; letter-spacing: 0.02857em;">Filtrar busqueda:</label>
+<div class="filters" style="display: flex; width: 100%; padding: 0.32rem 1rem; ">
+
 
 
     <div class="dropdown">
@@ -13,12 +14,12 @@
 
             @if (!string.IsNullOrEmpty(_userOffice))
             {
-                <span>@_userOffice</span>
+                <span class="bi bi-buildings-fill"><span class="ms-2">@_userOffice</span></span>
             }
 
             else
             {
-                <span>Ciudad</span>
+                <span class="bi bi-buildings-fill"> <span class="ms-2">Oficina</span></span>
             }
 
         </button>
@@ -44,12 +45,16 @@
 
             @if (_userLength.HasValue && !string.IsNullOrEmpty(_userLengthFilterSelectorStyles))
             {
-                <span>Ingreso: @_userLengthFilterSelector a @_userLength añ..</span>
+                <span class="bi bi-calendar-week-fill me-1">
+                    <span class="ms-2">
+                        @_userLengthFilterSelector a @_userLength añ..
+                    </span>
+                </span>
             }
 
             else
             {
-                <span>Fecha de Ingreso</span>
+                <span class="bi bi-calendar-week-fill me-1"><span class="ms-2">Fecha de Ingreso</span></span>
             }
 
         </button>
@@ -108,12 +113,15 @@
 
     </div>
 
+
     @*<button class="btn btn-outline-secondary"
                 @onclick="ClearSearchFilter">
             Limpiar
         </button>*@
 
 </div>
+
+
 
 
 @code {
