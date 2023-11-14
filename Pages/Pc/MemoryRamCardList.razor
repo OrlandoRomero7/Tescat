@@ -4,7 +4,7 @@
     num = i;
     <FormSection Title="Memoria RAM">
         <EditForm Model="@memoryRam">
-            @if (memoryRam[num].IdRam != Guid.Empty && !stockComponent)
+            @if (memoryRam[num].IdRam != Guid.Empty)
             {
                 <button type="button" class="btn btn-danger" @onclick="FunctionCallShowModal">Quitar</button>
             }
@@ -47,10 +47,6 @@
     </FormSection>
 }
 
-
-
-
-
 @*<FormSection Title="Memoria RAM">
     <RadzenDataList WrapItems="true" AllowPaging="false" Data="@memoryRamsForFilter" TItem="MemoryRam">
         <Template Context="ram">
@@ -86,8 +82,6 @@
     <RadzenPager Density="@Density" Count="count" PageSize="@pageSize" PageNumbersCount="2" PageChanged="@PageChanged" />
 </FormSection>*@
 
-
-
 @code {
     [Parameter]
     public List<MemoryRam> memoryRam { get; set; }
@@ -97,8 +91,8 @@
     [Parameter]
     public Action confirmationModalChild { get; set; }
 
-    [Parameter]
-    public bool stockComponent { get; set; } = false;
+    //[Parameter]
+    //public bool stockComponent { get; set; } = false;
 
     [Parameter]
     public Action confirmationModalDelete { get; set; }
@@ -135,6 +129,14 @@
             {
                 paginaActual = memoryRam.Count();
             }
+            oldMemoryRam = new List<MemoryRam>(memoryRam.ToList());
+        }
+        if (memoryRam.Count() < oldMemoryRam.Count())
+        {
+            paginaActual = 1;
+            StateHasChanged();
+            oldMemoryRam = new List<MemoryRam>(memoryRam.ToList());
+
         }
     }
     //void PageChanged(PagerEventArgs args)
@@ -165,7 +167,6 @@
 
     public void FunctionCallShowModal()
     {
-        
         OnNumListChanged.InvokeAsync(num);
         confirmationModalChild?.Invoke();
     }

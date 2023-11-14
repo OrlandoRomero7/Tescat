@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using System;
 using Tescat.Models;
 
 namespace Tescat.Services.Storages
@@ -40,7 +41,9 @@ namespace Tescat.Services.Storages
         {
             using var context = _contextFactory.CreateDbContext();
             var storageDbList = await context.Storages
-                                 .Where(storage => storage.IdPc == guid).ToListAsync();
+                                 .Where(storage => storage.IdPc == guid)
+                                 .OrderByDescending(s => s.IdStorage)
+                                 .ToListAsync();
             return storageDbList;
         }
         public async Task<Storage> GetStorage(Guid guid)
@@ -87,11 +90,12 @@ namespace Tescat.Services.Storages
         {
             using var context = _contextFactory.CreateDbContext();
 
+            //List<Guid> originalOrder = updatedStorages.Select(s => s.IdStorage).ToList();
+
             foreach (var updatedStorage in updatedStorages)
             {
                 if (updatedStorage.IdStorage != Guid.Empty)
                 {
-  
                     context.Entry(updatedStorage).State = EntityState.Modified;
                 }
                 else
@@ -102,9 +106,20 @@ namespace Tescat.Services.Storages
                 }
                 
             }
+
+            
             await context.SaveChangesAsync();
+            //Antes era verificaba igual a GuidEmpty pero lo cambie a null
+            updatedStorages.RemoveAll(s => s.IdPc == null);
+
+
+
+
+
 
             return updatedStorages;
+            // Recuperar las entidades ordenadas por el orden original
+            // updatedStorages = context.Storages.Where(s => originalOrder.Contains(s.IdStorage)).ToList();
         }
 
         public async Task<Storage> UpdateStorageForStock(Storage storage)

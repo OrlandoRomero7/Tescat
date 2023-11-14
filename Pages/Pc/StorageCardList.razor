@@ -1,18 +1,6 @@
 ﻿@using ChartJs.Blazor.PieChart
 @inject IStorageService StorageService
 
-@using Microsoft.EntityFrameworkCore
-
-
-@*@{
-    var itemsToDisplay = storage.Skip((currentPage - 1) * pageSize).Take(pageSize);
-}
-*@
-@*@foreach (var s in itemsToDisplay)
-{
-
-}*@
-
 
 @for (int i = (paginaActual - 1) * elementosPorPagina; i < Math.Min(paginaActual * elementosPorPagina, storage.Count); i++)
 {
@@ -21,6 +9,7 @@
     @* Por alguna razon dentro del FormSection el valor de i cambia a 1, cuando se supone que deberia valer 0*@
     <FormSection Title="Almacenamiento">
         <EditForm Model="@storage">
+            
             @if (storage[num].IdStorage != Guid.Empty)
             {
                 <button type="button" class="btn btn-danger" @onclick="FunctionCallShowModal">Quitar</button>
@@ -36,27 +25,35 @@
                     <InputText class="form-control" @bind-Value="s.Model" />
                 </div>
 
-                
-                @*@if (num == 0)
+                @if (num == 0)
                 {
                     <div class="col">
-                        <Chart Config="_pieConfiguration"> </Chart>
+                        @if (s.IdStorage != Guid.Empty && s.TotalStrge != null && s.AvailableStrge != null && s.UsedStrge != null)
+                        {
+                            <Chart Config="_pieConfiguration"> </Chart>
+                        }
                     </div>
                 }
                 @if (num == 1)
                 {
                     <div class="col">
-                        <Chart Config="_pieConfiguration2"> </Chart>
+                        @if (s.IdStorage != Guid.Empty && s.TotalStrge != null && s.AvailableStrge != null && s.UsedStrge != null)
+                        {
+                            <Chart Config="_pieConfiguration2"> </Chart>
+                        }
+                        
+
                     </div>
                 }
-               @if (num == 2)
+                @if (num == 2)
                 {
                     <div class="col">
-                        <Chart Config="_pieConfiguration3"> </Chart>
+                        @if (s.IdStorage != Guid.Empty && s.TotalStrge != null && s.AvailableStrge != null && s.UsedStrge != null)
+                        {
+                            <Chart Config="_pieConfiguration3"> </Chart>
+                        }
                     </div>
-                }*@
-
-
+                }
             </div>
             <div class="row mb-3">
                 <div class="col-md-3">
@@ -79,7 +76,6 @@
                     <label class="form-label">Disponible</label>
                     <InputNumber class="form-control" @bind-Value="s.AvailableStrge" />
                 </div>
-
             </div>
             <div class="row mb-3">
                 <div class="col-md-3">
@@ -98,6 +94,7 @@
         </EditForm>
         @if (storage.Count > elementosPorPagina)
         {
+
             <div class="row">
                 <div class="col">
                     <button class="btn btn-primary" @onclick="MostrarPaginaAnterior">Anterior</button>
@@ -111,7 +108,6 @@
             </div>
         }
     </FormSection>
-
 }
 
 
@@ -143,7 +139,7 @@
     public int? total, usado, disponible;
 
     public int count;
-    int num = 0;
+    public int num = 0;
 
     private List<Storage> oldStorage;
 
@@ -153,6 +149,10 @@
     int _paginaActual = 1;
     int totalItems = 0;
 
+    //List<int> totalList = new List<int>();
+    //List<int> usadoList = new List<int>();
+    //List<int> disponibleList = new List<int>();
+
     public int paginaActual
     {
         get => _paginaActual;
@@ -161,7 +161,7 @@
             if (_paginaActual != value)
             {
                 _paginaActual = value;
-                StartPieChart();
+                //StartPieChart(num);
             }
         }
     }
@@ -171,14 +171,19 @@
         base.OnInitialized();
         oldStorage = new List<Storage>(storage.ToList());
         totalItems = storage.Count();
-        StartPieChart();
+        //foreach (var i in storage)
+        //{
+        //    totalList.Add(i.TotalStrge ?? 0);
+        //    usadoList.Add(i.UsedStrge ?? 0);
+        //    disponibleList.Add(i.AvailableStrge ?? 0);
+        //}
+        StartPieChart(0);
 
     }
 
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-
         if (storage.Count() > oldStorage.Count())
         {
             int totalPaginas = (int)Math.Ceiling((double)storage.Count / elementosPorPagina);
@@ -186,6 +191,14 @@
             {
                 paginaActual = storage.Count();
             }
+            oldStorage = new List<Storage>(storage.ToList());
+        }
+        if (storage.Count() < oldStorage.Count())
+        {
+            paginaActual = 1;
+            StateHasChanged();
+            oldStorage = new List<Storage>(storage.ToList());
+            
         }
     }
 
@@ -194,6 +207,7 @@
         if (paginaActual > 1)
         {
             paginaActual--;
+            StartPieChart(paginaActual - 1);
         }
     }
 
@@ -203,19 +217,16 @@
         if (paginaActual < totalPaginas)
         {
             paginaActual++;
+
+            StartPieChart(paginaActual - 1);
         }
     }
 
-    void StartPieChart()
+    public void StartPieChart(int num)
     {
-        //Console.WriteLine(num);
         total = storage[num].TotalStrge;
         usado = storage[num].UsedStrge;
         disponible = storage[num].AvailableStrge;
-        //Console.WriteLine(total);
-        //Console.WriteLine(usado);
-        //Console.WriteLine(disponible);
-        // Crear una nueva instancia de PieConfig
         var pieConfiguration = new PieConfig();
         pieConfiguration.Options = new PieOptions
             {
@@ -226,43 +237,38 @@
                     Text = "Grafica"
                 }
             };
-
         int nonNullableTotal = total ?? 0;
         int nonNullableUsado = usado ?? 0;
         int nonNullableDisponible = disponible ?? 0;
-
         foreach (string item in new[] { "Total", "Usado", "Disponible" })
         {
             pieConfiguration.Data.Labels.Add(item);
         }
-
         PieDataset<int> dataset = new PieDataset<int>(new[] { nonNullableTotal, nonNullableUsado, nonNullableDisponible })
             {
                 BackgroundColor = new[]
-                {
+                                            {
             ColorUtil.ColorHexString(255, 99, 132),
             ColorUtil.ColorHexString(255, 205, 86),
             ColorUtil.ColorHexString(75, 192, 192),
             ColorUtil.ColorHexString(54, 162, 235),
         }
             };
-
         pieConfiguration.Data.Datasets.Add(dataset);
-
-        // Asignar la nueva configuración a la propiedad _pieConfiguration
-        if(num==0)
+        if (num == 0)
             _pieConfiguration = pieConfiguration;
-        if(num==1)
+        if (num == 1)
             _pieConfiguration2 = pieConfiguration;
         if (num == 2)
             _pieConfiguration3 = pieConfiguration;
     }
 
+
     public void FunctionCallShowModal()
     {
         OnNumListStoChanged.InvokeAsync(num);
         confirmationModalChild?.Invoke();
-        
+
     }
 
 

@@ -117,6 +117,8 @@ namespace Tescat.Services.MemoryRams
 
             }
             await context.SaveChangesAsync();
+            //Antes era verificaba igual a GuidEmpty pero lo cambie a null
+            updatedRams.RemoveAll(s => s.IdPc == null);
 
             return updatedRams;
         }

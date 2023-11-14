@@ -1,0 +1,29 @@
+﻿<FormSection Title="Memoria RAM">
+    <EditForm Model="@memoryRam">
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label class="form-label">Tipo</label>
+                <InputText class="form-control" @bind-Value="memoryRam.TypeRam" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Modelo</label>
+                <InputText class="form-control" @bind-Value="memoryRam.Model" />
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label class="form-label">Capacidad</label>
+                <InputText class="form-control" @bind-Value="memoryRam.Size" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Velocidad</label>
+                <InputText class="form-control" @bind-Value="memoryRam.Speed " />
+            </div>
+        </div>
+    </EditForm>
+</FormSection>
+
+@code {
+    [Parameter]
+    public MemoryRam memoryRam { get; set; }
+}

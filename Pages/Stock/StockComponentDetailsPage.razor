@@ -48,7 +48,7 @@
 @if (nameComponent == "RAM" && memoryRam is not null)
 {
     <button type="button" class="btn btn-danger" @onclick="@( () => ShowModalComponents("Memoria RAM") )">Eliminar</button>
-    @*<MemoryRamCard memoryRam="memoryRam" stockComponent="stockComponent"></MemoryRamCard>*@
+    <MemoryRamCard memoryRam="memoryRam"></MemoryRamCard>
 }
 @if (nameComponent == "Motherboard" && motherboard is not null)
 {

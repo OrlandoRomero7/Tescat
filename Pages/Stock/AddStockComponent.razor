@@ -4,6 +4,7 @@
 @inject IStorageService StorageService
 @inject ICpuService CpuService
 @inject IPowerSupplyService PowerSupply
+@inject IMemoryRamService MemoryRamService
 
 <button type="button" class="btn btn-info" @onclick="saveComponet">Guardar</button>
 
@@ -16,7 +17,7 @@
         <CpuCard cpu="cpu"></CpuCard>
         break;
     case ("ram"):
-        @*<MemoryRamCard memoryRam="memoryRam" stockComponent="stockComponent"></MemoryRamCard>*@
+        <MemoryRamCard memoryRam="memoryRam" ></MemoryRamCard>
         break;
     case ("storage"):
         <StorageCard storage="storage"></StorageCard>
@@ -59,7 +60,8 @@
                 NavigateToStockHomePage();
                 break;
             case ("ram"):
-                //NavigateToStockHomePage();
+                await MemoryRamService.InsertMemoryRam(memoryRam);
+                NavigateToStockHomePage();
                 break;
             case ("storage"):
                 await StorageService.InsertStorage(storage);
