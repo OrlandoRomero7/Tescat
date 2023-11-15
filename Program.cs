@@ -26,8 +26,6 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
 
-builder.Services.AddSingleton<SidebarStateService>();
-
 //builder.Services.AddSingleton<WeatherForecastService>();
 
 //Se a�ade como inyeccion de dependencias los servicios

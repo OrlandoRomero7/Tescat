@@ -83,26 +83,52 @@
         </div>
 
     }
-    <button @onclick="@( () => NavigateToSection("powerSupply") )">Ir a la sección 1</button>
+    @*Quitar estos if repetidos cando se le agreguen estilos*@
+    @if (selectedOptions.Contains("Tarjeta Madre") || motherboard.IdMotherboard != Guid.Empty)
+    {
+        <a @onclick="@(async () => await NavigateToSection("Tarjeta Madre"))">Tarjeta Madre</a>
+    }
+    @if (selectedOptions.Contains("CPU") || cpu.IdCpu != Guid.Empty)
+    {
+        <a @onclick="@(async () => await NavigateToSection("CPU"))">|Procesador</a>
+    }
+    @if (selectedOptions.Contains("Memoria RAM") || memoryRam.Count != 0)
+    {
+        <a @onclick="@(async () => await NavigateToSection("Memoria RAM"))">|Memoria Ram</a>
+    }
+    @if (selectedOptions.Contains("Almacenamiento") || storage.Count != 0)
+    {
+        <a @onclick="@(async () => await NavigateToSection("Almacenamiento"))">|Alamacenamiento</a>
+    }
+    @if (selectedOptions.Contains("Fuente de Poder") || powerSupply.IdPsu != Guid.Empty)
+    {
+        <a @onclick="@(async () => await NavigateToSection("Fuente de Poder"))">|Fuente de Poder</a>
+    }
 
     <BasicPcInformation pc="pc" user="user"></BasicPcInformation>
     @if (selectedOptions.Contains("Tarjeta Madre") || motherboard.IdMotherboard != Guid.Empty)
     {
-        <MotherboardCard motherboard="motherboard" confirmationModalChild="@( () => ShowModalComponents("Tarjeta Madre") )"></MotherboardCard>
+        <div id="Tarjeta Madre">
+            <MotherboardCard motherboard="motherboard" confirmationModalChild="@( () => ShowModalComponents("Tarjeta Madre") )"></MotherboardCard>
+        </div>
+        
     }
     @if (selectedOptions.Contains("CPU") || cpu.IdCpu != Guid.Empty)
     {
-        <div id="cpu">
+        <div id="CPU">
             <CpuCard cpu="cpu" confirmationModalChild="@( () => ShowModalComponents("CPU") )"></CpuCard>
         </div>
     }
     @if (selectedOptions.Contains("Memoria RAM") || memoryRam.Count != 0)
     {
-        <MemoryRamCardList memoryRam="memoryRam" confirmationModalChild="@( () => ShowModalComponents("Memoria RAM"))" OnNumListChanged="ListenNumListRam"></MemoryRamCardList>
+        <div id="Memoria RAM">
+            <MemoryRamCardList memoryRam="memoryRam" confirmationModalChild="@( () => ShowModalComponents("Memoria RAM"))" OnNumListChanged="ListenNumListRam"></MemoryRamCardList>
+        </div>
+        
     }
     @if (selectedOptions.Contains("Almacenamiento") || storage.Count != 0)
     {
-        <div id="storage">
+        <div id="Almacenamiento">
             <StorageCardList storage="storage" confirmationModalChild="@( () => ShowModalComponents("Almacenamiento") )" OnNumListStoChanged="ListenNumListSto" numeroLista="numeroListaSto"></StorageCardList>
         </div>
         
@@ -110,7 +136,7 @@
     
     @if (selectedOptions.Contains("Fuente de Poder") || powerSupply.IdPsu != Guid.Empty)
     {
-        <div id="powerSupply">
+        <div id="Fuente de Poder">
             <PowerSupplyCard powerSupply="powerSupply" confirmationModalChild="@( () => ShowModalComponents("Fuente de Poder") )"></PowerSupplyCard>
         </div>
         
@@ -216,10 +242,7 @@
 
     public bool _storage, _memoryRam, _cpu, _motherboard, _powerSupply;
 
-    private async Task NavigateToSection(string sectionId)
-    {
-        await JSRuntime.InvokeVoidAsync("scrollIntoView", sectionId);
-    }
+    
 
 
     protected override async Task OnInitializedAsync()
@@ -320,6 +343,12 @@
         }
 
     }
+    private async Task NavigateToSection(string sectionId)
+    {
+        await JSRuntime.InvokeVoidAsync("scrollIntoView", sectionId);
+    }
+    @*En esta funcion tuve que usar a fuerzas un timer para lograr el desplazamiento al seleccion una opcion en el select
+    se probo con async y await pero no funcionaba*@
     void EliminarOpcionSeleccionada(ChangeEventArgs args)
     {
         string valorSeleccionado = args.Value?.ToString();
@@ -331,6 +360,21 @@
             HandleSelectionChange(valorSeleccionado);
             //nullComponents.Remove(valorSeleccionado);
             opcionSeleccionada = "default";
+
+            // Configurar un temporizador para ejecutar la segunda función después de 2 segundos
+            System.Timers.Timer timer = new System.Timers.Timer();
+            timer.Interval = 200; // 2000 milisegundos = 2 segundos
+            timer.AutoReset = false; // No se reiniciará automáticamente
+
+            // Manejador para la segunda función
+            timer.Elapsed += (sender, e) =>
+            {
+                // Llamar a la segunda función aquí
+                NavigateToSection(valorSeleccionado);
+            };
+
+            // Iniciar el temporizador
+            timer.Start();
 
         }
     }

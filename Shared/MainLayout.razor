@@ -11,6 +11,7 @@
 
     @*   <MainHeader />*@
 
+
     <main class="container mb-5 @PageTransition" style="max-width:100%; margin-top:5.5rem">
 
         @Body
@@ -53,6 +54,7 @@
     }
 
 
+   
 
 
 
@@ -61,7 +63,7 @@
         // Apply hidden-transition first
         PageTransition = "hidden-transition";
         StateHasChanged();  // Force re-render
-                            // Wait for the transition to complete (assuming 255ms based on your CSS)
+
         await Task.Delay(250);
         // Then apply visible-transition
         PageTransition = "visible-transition";

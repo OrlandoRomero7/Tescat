@@ -7,10 +7,13 @@
 @inject OtherServices OtherServices
 @inject TescatDbContext Context
 @inject NavigationManager NavigationManager
-@layout UserHomePageLayout
-
+@*@layout UserHomePageLayout
+*@
 
 <PageTitle>Usuarios - Tescat Software</PageTitle>
+
+ <UserHomePageLayout>
+         
 <div class="cards container">
 
 
@@ -70,6 +73,8 @@
     </div>
 }
 
+
+</UserHomePageLayout>
 
 
 @code
