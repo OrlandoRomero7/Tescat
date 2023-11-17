@@ -1,45 +1,27 @@
 ﻿@inherits LayoutComponentBase
 
-<div style="position: absolute; right: 0; width: 100%; margin-top: -2.5%;">
-    <UserHomePageControls></UserHomePageControls>
+
+<div class="controls-container">
+    <UserHomePageControls FilterMenuOpened="HandleUserSearch"></UserHomePageControls>
 </div>
 
 
-
-<div>
-        @ChildContent
+<div style="transform: translateY(@verticalContentPosition);">
+    @ChildContent
 </div>
 
 
 @code {
-    //public string? PageTransition { get; set; }
-    //private bool firstRender = true;
-
-
     [Parameter, EditorRequired]
     public RenderFragment ChildContent { get; set; } = default!;
 
-    //protected override async Task OnAfterRenderAsync(bool firstRender)
-    //{
-    //    if (firstRender)
-    //    {
-    //        // Wait a little to ensure that the hidden-transition is applied
-    //        await Task.Delay(255);
-
-    //        PageTransition = "visible-transition";
-    //        StateHasChanged();
-
-    //    }
-    //}
+    private string? verticalContentPosition;
 
 
-    //protected override void OnInitialized()
-    //{
-    //    PageTransition = "hidden-transition";
-    //}
-
-
-
+    private void HandleUserSearch(string yValue)
+    {
+        verticalContentPosition = yValue;
+    }
 }
 
 

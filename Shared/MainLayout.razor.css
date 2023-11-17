@@ -115,10 +115,11 @@ main {
         padding-left: 2rem !important;
         padding-right: 1.5rem !important;
     }
+}
 
-    @media (min-width: 1640px) {
-        main.container {
-            max-width: 100%;
-        }
+
+@media (min-width: 1640px) {
+    main.container {
+        max-width: 100%;
     }
 }
