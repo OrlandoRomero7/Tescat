@@ -14,12 +14,11 @@ else
     <button type="button" class="btn btn-primary" @onclick="navigateToAddDevice">Agregar Equipo</button>
     <br />
     <br />
-    <div class="card">
+    @*<div class="card">
         <div class="card-body">
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th scope="col">Id Equipo</th>
                         <th scope="col">Id Usuario</th>
                         <th scope="col">Tipo de PC</th>
                         <th scope="col">Nombre de PC</th>
@@ -31,10 +30,6 @@ else
                     @foreach (var pc in pcs)
                     {
                         <tr>
-                            @{
-                                string firstEightCharacters = @pc.IdPc.ToString().Substring(0, 8);
-                            }
-                            <th scope="row">@firstEightCharacters</th>
                             <td>@pc.IdUser</td>
                             <td>@pc.PcType</td>
                             <td>@pc.PcName</td>
@@ -45,13 +40,30 @@ else
                 </tbody>
             </table>
         </div>
-    </div>
+    </div>*@
+    <RadzenDataGrid AllowVirtualization="true" AllowFiltering="true" AllowColumnResize="true"
+                    FilterMode="FilterMode.Simple" PageSize="10" AllowPaging="true" AllowSorting="true" Data="@pcs" ColumnWidth="150px"
+                    FilterCaseSensitivity="@filterCaseSensitivity" LogicalFilterOperator="@logicalFilterOperator">
+        <Columns>
+            @*<RadzenDataGridColumn TItem="CommonPropertiesViewModel" Property="Id" Title="ID" Filterable="false"></RadzenDataGridColumn>*@
+            <RadzenDataGridColumn TItem="Pc" Property="IdUser" Title="ID usuario"></RadzenDataGridColumn> @*Cambiar por nombre de usuario*@
+            <RadzenDataGridColumn TItem="Pc" Property="PcType" Title="Tipo"></RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Pc" Property="PcName" Title="Nombre de PC"></RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Pc" Title="Acción" Sortable="false">
+                <Template Context="item">
+                    <button type="button" class="btn btn-info" @onclick="() => navigateToPcDetails(item.IdPc)">Ver</button>
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
     
 
 }
 
 @code {
     private List<Pc> pcs { get; set; }
+    LogicalFilterOperator logicalFilterOperator = LogicalFilterOperator.And;
+    FilterCaseSensitivity filterCaseSensitivity = FilterCaseSensitivity.CaseInsensitive;
     protected override async Task OnInitializedAsync()
     {
         try

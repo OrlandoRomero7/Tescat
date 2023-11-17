@@ -63,6 +63,10 @@
     public User user { get; set; } = default!;
 
     //public string user;
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
 
     private void SetPc(ChangeEventArgs e)
     {

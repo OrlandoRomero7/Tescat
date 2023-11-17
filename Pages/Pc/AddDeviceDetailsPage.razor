@@ -1,4 +1,5 @@
-﻿@page "/addDevice/{idUser:int}"
+﻿@page "/{action}/{idUser:int}"
+@page "/{action}/{idUser:int}/{idPc:guid}"
 
 @inject IUserService UserService
 @inject IPcService PcService
@@ -7,29 +8,47 @@
 
 @if (dbPc is not null)
 {
-    @if (user is not null && dbPc.Count > 0 && !addOther)
+    @if (user!=null && dbPc.Count > 0 && !addOther)
     {
         <div class="alert alert-primary ">El Usuario: @user.Name <br> Ya Tiene @dbPc.Count Equipo(s) Asignado(s).</div>
+        count = 1;
         @foreach (var pc in dbPc)
         {
             <a @onclick="() => NavigateToPcDetails(pc.IdPc)">Ver Equipo @count</a>
             <br />
             count++;
         }
+        if (action == "addDevice")
+        {
+            <div>
+                <h3>
+                    ¿Quiere agregarle otro?
+                </h3>
+                <button class="btn btn-info" @onclick="addOtherDevice">
+                    Si
+                </button>
+                <button class="btn btn-info">
+                    No, Regresar
+                </button>
+            </div>
+        }
+        if (action == "assignDevice")
+        {
+            <div>
+                <h3>
+                    ¿Quiere asignarle otro?
+                </h3>
+                <button class="btn btn-info" @onclick="assignOtherDevice">
+                    Si
+                </button>
+                <button class="btn btn-info">
+                    No, Regresar
+                </button>
+            </div>
+        }
 
-        <div>
-            <h3>
-                ¿Quiere agregarle otro?
-            </h3>
-            <button class="btn btn-info" @onclick="addOtherDevice">
-                Si
-            </button>
-            <button class="btn btn-info">
-                No, Regresar
-            </button>
-        </div>
     }
-    else if ((user is not null && addOther) || (dbPc.Count == 0 && !addOther))
+    else if ((user is not null && user.IdUser != 0 && addOther) || (dbPc.Count == 0 && !addOther && user.IdUser != 0))
     {
         <button type="button" class="btn btn-primary" @onclick="createNewDevice">Crear</button>
         <BasicPcInformation pc="pc" user="user"></BasicPcInformation>
@@ -37,10 +56,18 @@
 }
 
 @code {
+    [Parameter] 
+    public string action { get; set; }
+
+    [Parameter]
+    public Guid idPc { get; set; }
+
     [Parameter]
     public int idUser { get; set; } = default!;
 
     public Pc pc = new Pc();
+
+    public Pc pcAssign = new Pc();
 
     public User? user { get; set; }
 
@@ -78,6 +105,17 @@
             NavigationManager.NavigateTo("/pcDetails/" + pc.IdPc);
         }
     }
-        
+    private async void assignOtherDevice()
+    {
+        if (user is not null)
+        {
+            pcAssign = await PcService.GetPcId(idPc);
+            pcAssign.IdUser = user.IdUser;
+            await PcService.UpdatePc(pcAssign);
+            NavigationManager.NavigateTo("/pcDetails/" + pcAssign.IdPc);
+
+        }
+    }
+
 
 }

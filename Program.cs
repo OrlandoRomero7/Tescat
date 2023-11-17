@@ -13,6 +13,7 @@ using Tescat.Services.MemoryRams;
 using Tescat.Services.Cpus;
 using Tescat.Services.Motherboards;
 using Tescat.Services.PowerSupplys;
+using Tescat.Services.Pc_Credentials;
 //using Tescat.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,6 +39,7 @@ builder.Services.AddScoped<IMemoryRamService, MemoryRamService>();
 builder.Services.AddScoped<ICpuService, CpuService>();
 builder.Services.AddScoped<IMotherboardService, MotherboardService>();
 builder.Services.AddScoped<IPowerSupplyService, PowerSupplyService>();
+builder.Services.AddScoped<IPcCredentialService, PcCredentialService>();
 builder.Services.AddScoped<OtherServices>();
 builder.Services.AddScoped<SaveTempID>();
 builder.Services.AddSweetAlert2();

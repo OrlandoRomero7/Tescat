@@ -15,58 +15,28 @@
 @if (pc is not null)
 {
     <button type="button" class="btn btn-primary" @onclick="updatePc">Actulizar</button>
-    <button type="button" class="btn btn-danger" @onclick="ShowConfirmationModal">Quitar</button>
+    if(user.IdUser != 0)
+    {
+        <button type="button" class="btn btn-danger" @onclick="ShowConfirmationModal">Quitar</button>
+    }
+    else
+    {
+        <button type="button" class="btn btn-primary" @onclick="NavigateToAssignDevice">Asignar</button>
+    }
+    if (existsCredential)
+    {
+        <button type="button" class="btn btn-info" @onclick="NavigateToPcCredential">Ver Credenciales de Pc</button>
+    }
+    else
+    {
+        <button type="button" class="btn btn-info" @onclick="NavigateToPcCredential">Crear Credenciales</button>
+    }
+
 }
 
-
-@*@if (options.Any(o => o.Value))
+@if (pc is not null )
 {
-    <div class="row mb-3">
-        <div class="col-md-4">
-            <label class="form-label">Agregar Cuenta</label>
-            <InputSelect class="form-select" @bind-Value="selectedOption">
-                <option value="default">Seleccione una opción</option>
-                @foreach (var option in options)
-                {
-                    if (option.Value)
-                    {
-                        <option>@option.Key</option>
-                    }
-                }
-            </InputSelect>
-        </div>
-    </div>
-}*@
-@*@if (opciones.Count != 0)
-{
-    <InputSelect @bind-Value="opcionSeleccionada" @onchange="HandleChange">
-        <option value="default">Selecciona una opción</option>
-        @foreach (var opcion in opciones.ToList())
-        {
-            <option value="@opcion">@opcion</option>
-        }
-    </InputSelect>
-}*@
 
-
-@if (pc != null && user != null)
-{
-    @*@if (nullComponents.Count != 0)
-    {
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <h5>Agrega un Componente</h5>
-                <InputSelect class="form-select" @bind-Value="opcionSeleccionada" @oninput="@( async (args) => { await EliminarOpcionSeleccionada(args); OtraFuncion(); } )">
-                    <option value="@opcionSeleccionada">Selecciona una opción</option>
-                    @foreach (var opcion in nullComponents.ToList())
-                    {
-                        <option value="@opcion">@opcion</option>
-                    }
-                </InputSelect>
-            </div>
-        </div>
-
-    }*@
     @if (nullComponents.Count != 0)
     {
         <div class="row mb-3">
@@ -80,9 +50,50 @@
                     }
                 </InputSelect>
             </div>
+            @*<div class="col-md-4">
+                @if (user.IdUser == 0)
+                {
+                    <h5>Asignar computadora a usuario</h5>
+                    <RadzenDropDown class="form-select" AllowClear="true" @bind-Value=idUser AllowVirtualization="true" @oninput="AssignDevice"
+                                    AllowFiltering="true" Data=@users TextProperty="Name" ValueProperty="IdUser" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" />
+                }
+            </div>*@
+
+            @*<div class="col-md-4">
+                @if (idUser != 0)
+                {
+                    <br />
+                    <button type="button" class="btn btn-secondary" @onclick="AssignDevice">Asingar</button>
+                }
+            </div>*@
+            
         </div>
 
     }
+    
+    @*@if (idUser != 0 && dbPc is not null && dbPc.Count > 0)
+    {
+        <div class="alert alert-primary ">El Usuario: @user.Name <br> Ya Tiene @dbPc.Count Equipo(s) Asignado(s).</div>
+        count = 1;
+        @foreach (var pc in dbPc)
+        {
+            <a @onclick="() => NavigateToPcDetails(pc.IdPc)">Ver Equipo @count</a>
+            <br />
+            count++;
+        }
+        <div>
+            <h3>
+                ¿Quiere asignarle otro?
+            </h3>
+            <button class="btn btn-info" @onclick="ConfirmAssingDevice">
+                Si
+            </button>
+            <button class="btn btn-info" @onclick="()=>idUser=0">
+                No
+            </button>
+        </div>
+    }*@
+
     @*Quitar estos if repetidos cando se le agreguen estilos*@
     @if (selectedOptions.Contains("Tarjeta Madre") || motherboard.IdMotherboard != Guid.Empty)
     {
@@ -188,14 +199,15 @@
     </div>
 </div>
 
-
-
-
 @code {
     [Parameter]
     public Guid id { get; set; }
 
     public Pc pc { get; set; }
+
+    public int idUser { get; set; }
+
+    IEnumerable<User> users;
 
     public User user { get; set; }
 
@@ -210,40 +222,23 @@
     public PowerSupply powerSupply { get; set; }
 
     public Guid IdPcComponent;
-    //////////
+
     private List<string> nullComponents = new List<string>();
     private List<string> selectedOptions = new List<string>();
 
+    public List<Pc>? dbPc = null;
+
     private string selectedOption = "default";
-
-    ////
-
-    //void HandleChange(ChangeEventArgs e)
-    //{
-    //    // Realiza acciones cuando el valor cambia
-    //    Console.WriteLine($"Nuevo valor: {miVariable}");
-    //}
 
     public int numeroListaSto = 0;
     public int numeroListaRam = 0;
 
     string opcionSeleccionada = "default";
 
-    //public string opcionSeleccionada
-    //{
-    //    get => _opcionSeleccionada;
-    //    set
-    //    {
-    //        _opcionSeleccionada = value;
-    //    }
-    //}
-
-    //List<string> opciones = new List<string>();
-
     public bool _storage, _memoryRam, _cpu, _motherboard, _powerSupply;
 
-    
-
+    public bool existsCredential;
+    //public int count = 1;
 
     protected override async Task OnInitializedAsync()
     {
@@ -252,96 +247,77 @@
 
         if (pc != null)
         {
-            if (pc.IdUser.HasValue)
+            if (pc.IdUser!=null)
             {
                 user = await userService.GetUserId(pc.IdUser.Value);
-                storage = await StorageService.GetStorageWithPcId(pc.IdPc);
-                memoryRam = await MemoryRamService.GetMemoryRamWithPcId(pc.IdPc);
-                cpu = await CpuService.GetCpuWithPcId(pc.IdPc);
-                motherboard = await MotherboardService.GetMotherboardWithPcId(pc.IdPc);
-                powerSupply = await PowerSupplyService.GetPowerSupplyWithPcId(pc.IdPc);
-
-                // Verificar nulos y agregar a la lista
-                if (storage.Count < 3) 
-                {
-                    nullComponents.Add("Almacenamiento");
-                    //_storage = true;
-                }
-
-                if (memoryRam.Count < 2)
-                {
-                    nullComponents.Add("Memoria RAM");
-                    //_memoryRam = true;
-                } 
-
-                if (cpu.IdCpu == Guid.Empty)
-                {
-                    nullComponents.Add("CPU");
-                    //_cpu = true;
-                }
-
-                if (motherboard.IdMotherboard == Guid.Empty)
-                {
-                    nullComponents.Add("Tarjeta Madre");
-                    //_motherboard = true;
-                }
-
-                if (powerSupply.IdPsu == Guid.Empty)
-                {
-                    nullComponents.Add("Fuente de Poder");
-                    //_powerSupply = true;
-                }
+            }
+            else
+            {
+                //Creo una nuevo usuario para que no se rompa la app al mandar el usurio 
+                //en BasicInformation. Si lo hacia desde ahi no funcionaba.
+                user = new User();
+                //users = await userService.GetAllUsers();
+            }
+            storage = await StorageService.GetStorageWithPcId(pc.IdPc);
+            memoryRam = await MemoryRamService.GetMemoryRamWithPcId(pc.IdPc);
+            cpu = await CpuService.GetCpuWithPcId(pc.IdPc);
+            motherboard = await MotherboardService.GetMotherboardWithPcId(pc.IdPc);
+            powerSupply = await PowerSupplyService.GetPowerSupplyWithPcId(pc.IdPc);
+            existsCredential = await PcCredentialService.ExistsCredential(pc.IdPc);
 
 
-                //if (user == null) nullComponents.Add("User",true);
-                //if (storage.Count < 3)
-                //{
-                //    options.Add("Almacenamiento", true);
-                //    //_storage = true;
-                //}
-                //else
-                //{
-                //    options.Add("Almacenamiento", false);
-                //}
-                //if (memoryRam.Count < 2)
-                //{
-                //    options.Add("Memoria RAM", true);
-                //    //_memoryRam = true;
-                //}
-                //else
-                //{
-                //    options.Add("Memoria RAM", false);
-                //}
-                //if (cpu.IdCpu == Guid.Empty)
-                //{
-                //    options.Add("CPU", true);
-                //    //_cpu = true;
-                //}
-                //else
-                //{
-                //    options.Add("CPU", false);
-                //}
-                //if (motherboard.IdMotherboard == Guid.Empty)
-                //{
-                //    options.Add("Tarjeta Madre", true);
-                //    //_motherboard = true;
-                //}
-                //else
-                //{
-                //    options.Add("Tarjeta Madre", false);
-                //}
-                //if (powerSupply.IdPsu == Guid.Empty)
-                //{
-                //    options.Add("Fuente de Poder", true);
-                //    //_powerSupply = true;
-                //}
-                //else
-                //{
-                //    options.Add("Fuente de Poder", false);
-                //}
+            // Verificar nulos y agregar a la lista
+            if (storage.Count < 3)
+            {
+                nullComponents.Add("Almacenamiento");
+                //_storage = true;
+            }
+
+            if (memoryRam.Count < 2)
+            {
+                nullComponents.Add("Memoria RAM");
+                //_memoryRam = true;
+            }
+
+            if (cpu.IdCpu == Guid.Empty)
+            {
+                nullComponents.Add("CPU");
+                //_cpu = true;
+            }
+
+            if (motherboard.IdMotherboard == Guid.Empty)
+            {
+                nullComponents.Add("Tarjeta Madre");
+                //_motherboard = true;
+            }
+
+            if (powerSupply.IdPsu == Guid.Empty)
+            {
+                nullComponents.Add("Fuente de Poder");
+                //_powerSupply = true;
             }
         }
 
+    }
+    
+    //public async Task ConfirmAssingDevice()
+    //{
+    //    pc.IdUser = idUser;
+    //    pc = await PcService.UpdatePc(pc);
+    //    Console.WriteLine("Se asigno Correctamente");
+    //}
+    //private void NavigateToPcDetails(Guid num)
+    //{
+    //    idUser = 0;
+    //    NavigationManager.NavigateTo("/pcDetails/" + num);
+    //}
+    public void NavigateToAssignDevice()
+    {
+        NavigationManager.NavigateTo("/assignDevice/"+id);
+    }
+    private void NavigateToPcCredential()
+    {
+        NavigationManager.NavigateTo("/pcCredential/"+id);
     }
     private async Task NavigateToSection(string sectionId)
     {
@@ -378,44 +354,9 @@
 
         }
     }
-    //private void HandleSelectionChange(ChangeEventArgs e)
-    //{
-    //    var newlySelectedOption = e.Value.ToString();
-
-    //    if (newlySelectedOption != "default")
-    //    {
-    //        // Realizar operaciones con la opción seleccionada
-    //        selectedOptions.Add(newlySelectedOption);
-    //    }
-
-    //    // Restablecer a la opción por defecto
-    //    selectedOption = "default";
-    //}
-    //private string _selectedOption = "default";
-
-    //public string selectedOption
-    //{
-    //    get => _selectedOption;
-    //    set
-    //    {
-    //        _selectedOption = value;
-    //        HandleSelectionChange();
-    //    }
-    //}
-
-
 
     private void HandleSelectionChange(string valorSeleccionado)
     {
-        //if (_selectedOption == "default")
-        //{
-        //    return;
-        //}
-        //options.Remove(_selectedOption);
-        //selectedOptions.Add(_selectedOption);
-        //_selectedOption = "default"; // Restablecer a la opción por defecto
-
-
         switch (valorSeleccionado)
         {
             case "Almacenamiento":
@@ -525,8 +466,6 @@
         CloseConfirmationModal(); // Cerrar el modal después de la confirmación
     }
 
-
-
     private string modalComponentsDisplay = "none";
     private string componentName { get; set; } = "";
     private void ShowModalComponents(string component)
@@ -616,16 +555,4 @@
                                 //StateHasChanged();
     }
 
-    @*
-    private async void OptionSelected(string a)
-    {
-        if (a == "Fuente de Poder")
-        {
-            await JSRuntime.InvokeVoidAsync("scrollToCard", "fuente-de-poder");
-            // Llamada a la función de desplazamiento o cualquier otra lógica que desees ejecutar.
-        }
-         _selectedOption = "default"; // Restablecer a la opción por defecto
-
-    }
-    *@
 }

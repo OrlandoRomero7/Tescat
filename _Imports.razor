@@ -22,6 +22,7 @@
 @using Tescat.Services.Storages;
 @using Tescat.Services.Motherboards;
 @using Tescat.Services.PowerSupplys;
+@using Tescat.Services.Pc_Credentials
 
 @using System
 @using Microsoft.EntityFrameworkCore;
@@ -39,3 +40,5 @@
 
 @using Radzen
 @using Radzen.Blazor
+
+@inject IPcCredentialService PcCredentialService

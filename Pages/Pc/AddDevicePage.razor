@@ -1,4 +1,6 @@
 ﻿@page "/addDevice"
+@page "/assignDevice/{idPc:guid}"
+
 
 @inject IUserService UserService
 @inject NavigationManager NavigationManager
@@ -18,7 +20,7 @@
         </div>
         <div class="card-body" style="text-align:center">
 
-            <form @onsubmit="CreateDevice">
+            <form @onsubmit="CreateOrAsssingDevice">
                 <h3>Usuario al que le pertenecera el equipo</h3>
                     <div class="rz-p-sm-12 rz-text-align-center">
                         <RadzenDropDown AllowClear="true" @bind-Value=idUser AllowVirtualization="true"
@@ -35,6 +37,12 @@
 
 
 @code {
+    //[Parameter]
+    //public string action { get; set; }
+
+    [Parameter]
+    public Guid idPc { get; set; }
+
     int idUser;
     //public string? ErrorMessage { get; set; }
     //public Pc pc { get; set; } = new Pc();
@@ -47,8 +55,17 @@
         users = await UserService.GetAllUsers();
     }
 
-    public void CreateDevice()
+    public void CreateOrAsssingDevice()
     {
-        NavigationManager.NavigateTo("/addDevice/" + idUser);
+        if (idPc == Guid.Empty)
+        {
+            NavigationManager.NavigateTo("/addDevice/" + idUser);
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/assignDevice/" + idUser + "/" + idPc);
+        }
+        
+        
     }
 }
