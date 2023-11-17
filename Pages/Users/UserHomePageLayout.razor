@@ -1,12 +1,17 @@
 ﻿@inherits LayoutComponentBase
-
-
+@*<div class="controls-container">
+        <UserHomePageControls FilterMenuOpened="HandleUserSearch"></UserHomePageControls>
+    </div>*@
 <div class="controls-container">
-    <UserHomePageControls FilterMenuOpened="HandleUserSearch"></UserHomePageControls>
+    <UserHomePageControls></UserHomePageControls>
 </div>
 
 
-<div style="transform: translateY(@verticalContentPosition);">
+
+@*<div style="transform: translateY(@verticalContentPosition);">
+        @ChildContent
+    </div>*@
+<div style="transform: translateY(0);">
     @ChildContent
 </div>
 
@@ -14,14 +19,14 @@
 @code {
     [Parameter, EditorRequired]
     public RenderFragment ChildContent { get; set; } = default!;
-
+    /*
     private string? verticalContentPosition;
 
 
     private void HandleUserSearch(string yValue)
     {
         verticalContentPosition = yValue;
-    }
+    }*/
 }
 
 

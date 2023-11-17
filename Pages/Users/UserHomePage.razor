@@ -28,6 +28,46 @@
             </div>
         }
 
+        @if (UserOffice != null || UserLength != null)
+        {
+            <div class="container" st yle="max-width:100%">
+                @*<NavLink href="users" Match="NavLinkMatch.All">
+                        <i class="bi bi-arrow-left" style="font-size:2rem; margin-top:-1rem"></i>
+                    </NavLink>*@
+
+                <h4 style="margin-top: 1%;">
+                    Filtro Aplicado:
+                    <br />
+                    @if (UserOffice != null)
+                    {<i>Ciudad:</i> <i style="color: var(--brand); font-weight: 500; font-size: 1.5rem; margin-left: 4px; margin-right: 14px; "> @UserOffice</i>}
+                    <br />
+
+                    @if (UserLength != null)
+                    {<i>Antiguedad:</i>
+                        <br />
+                        @if (UserLength > 0)
+                        {
+                            <i style="margin-left: 4px;">Mayor a:</i>
+                        }
+                        @if (UserLength < 0)
+                        {
+                            <i style="margin-left: 4px;">Menor a:</i>
+                        }
+                        @if (UserLength < 0)
+                        {
+                            <i style="color: var(--brand); font-weight:500; font-size:1.5rem; margin-left: 4px; "> @Math.Abs(UserLength ?? 0) año</i>}
+                        else
+                        {
+                            <i style="color: var(--brand); font-weight:500; font-size:1.5rem; margin-left: 4px; "> @UserLength año</i>}
+                    }
+
+
+
+
+                </h4>
+            </div>
+        }
+
 
         <div style="row-gap: 4rem; justify-content: center; display: grid; grid-template-columns: 1fr 1fr 1fr; margin-top:2.5rem">
 

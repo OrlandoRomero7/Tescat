@@ -151,6 +151,7 @@
     {
         @*we retrieve the values from UsersHomePage to set the values contained in the query string when loading the page directly*@
         _userOffice = UserOffice ?? "";
+        Console.WriteLine("userOfficeFilter:" + _userOffice + UserOffice);
 
         _userLength = UserLength >= 0 ? UserLength : -UserLength;
 
