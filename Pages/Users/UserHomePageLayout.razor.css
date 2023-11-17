@@ -1,12 +1,12 @@
-﻿/*div.visible-transition {
-    opacity: 1;
-    filter: none;
-    transition: opacity 250ms, filter 250ms ease;
+﻿.controls-container {
+    position: absolute;
+    right: 0;
+    width: 100%;
+    margin-top: -2.5%;
 }
 
-div.hidden-transition {
-    opacity: 0;
-    filter: blur(10px);
-    transition: filter 250ms ease-out;
+@media (min-width: 2000px) {
+    .controls-container {
+        margin-top: -2%;
+    }
 }
-*/

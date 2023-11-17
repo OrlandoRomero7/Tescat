@@ -7,71 +7,71 @@
 @inject OtherServices OtherServices
 @inject TescatDbContext Context
 @inject NavigationManager NavigationManager
-@*@layout UserHomePageLayout
-*@
+
 
 <PageTitle>Usuarios - Tescat Software</PageTitle>
 
- <UserHomePageLayout>
-         
-<div class="cards container">
+<UserHomePageLayout>
+
+    <div class="cards container">
 
 
-    @if (Users != null && SearchTerm != null || (UserOffice != null))
-    {
-        <div class="container" st yle="max-width:100%">
-            <NavLink href="users" Match="NavLinkMatch.All">
-                <i class="bi bi-arrow-left" style="font-size:2rem; margin-top:-1rem"></i>
-            </NavLink>
-
-            <h4 style="margin-top: 1%;">Resultados Para: <i style="color: var(--brand); font-weight:700; font-size:1.75rem; margin-left: 4px; "> @SearchTerm</i></h4>
-        </div>
-    }
-
-
-    <div style="row-gap: 4rem; justify-content: center; display: grid; grid-template-columns: 1fr 1fr 1fr; margin-top:2.5rem">
-
-        @if (Users == null)
+        @*@if (Users != null && SearchTerm != null || (UserOffice != null))*@
+        @if (Users != null && SearchTerm != null)
         {
-            <p>Loading users...</p>
+            <div class="container" st yle="max-width:100%">
+                <NavLink href="users" Match="NavLinkMatch.All">
+                    <i class="bi bi-arrow-left" style="font-size:2rem; margin-top:-1rem"></i>
+                </NavLink>
+
+                <h4 style="margin-top: 1%;">Resultados Para: <i style="color: var(--brand); font-weight:700; font-size:1.75rem; margin-left: 4px; "> @SearchTerm</i></h4>
+            </div>
         }
-        else
-        {
 
-            @if (_searchResults == null)
+
+        <div style="row-gap: 4rem; justify-content: center; display: grid; grid-template-columns: 1fr 1fr 1fr; margin-top:2.5rem">
+
+            @if (Users == null)
             {
-                @foreach (var user in Users)
-                {
-
-                    <UserCard User="user"></UserCard>
-
-                }
+                <p>Loading users...</p>
             }
             else
             {
 
+                @if (_searchResults == null)
+                {
+                    @foreach (var user in Users)
+                    {
 
-                @foreach (var user in _searchResults)
+                        <UserCard User="user"></UserCard>
+
+                    }
+                }
+                else
                 {
 
-                    <UserCard User="user"></UserCard>
 
+                    @foreach (var user in _searchResults)
+                    {
+
+                        <UserCard User="user"></UserCard>
+
+                    }
                 }
             }
-        }
-    </div>
-</div>
-
-
-@if (showAlert)
-{
-    <div class="overlay-alert">
-        <div class="alert alert-success flex-reverse" role="alert">
-            <button type="button" class="btn-close" @onclick="CloseAlert" aria-label="Close"></button>
-            @localMessage
         </div>
     </div>
-}
+
+
+    @if (showAlert)
+    {
+        <div class="overlay-alert">
+            <div class="alert alert-success flex-reverse" role="alert">
+                <button type="button" class="btn-close" @onclick="CloseAlert" aria-label="Close"></button>
+                @localMessage
+            </div>
+        </div>
+    }
 
 
 </UserHomePageLayout>
@@ -84,6 +84,7 @@
     private User[]? _cachedSearchResults { get; set; } = Array.Empty<User>();
     public string? localMessage;
     private bool showAlert = false;
+
 
 
     [Parameter, SupplyParameterFromQuery]

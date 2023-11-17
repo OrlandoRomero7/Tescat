@@ -69,6 +69,12 @@
             element.scrollIntoView({ behavior: 'smooth' });
         }</script>
 
+    @*Para leer la clase 'show' en el menu dropdown de los controles en UserHomePage*@
+    <script>function containsClass(elementId, className) {
+            var element = document.getElementById(elementId);
+            return element.classList.contains(className);
+        }</script>
+
     @*Script para Radzen*@
     <link rel="stylesheet" href="_content/Radzen.Blazor/css/material-base.css">
     <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>

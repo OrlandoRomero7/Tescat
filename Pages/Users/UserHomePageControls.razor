@@ -1,4 +1,5 @@
 ﻿@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
 
 <div class="controls-container" style="display: flex; justify-content: flex-end;  margin-bottom: 2%;">
 
@@ -26,7 +27,7 @@
             </button>
 
 
-            <div class="dropdown-menu shadow" style="padding: 0.824rem 0.824rem; min-width: 29rem; border-radius: 0.5rem; border: none;">
+            <div id="filtersButton" class="dropdown-menu shadow filters-dropdown " style="padding: 0.824rem 0.824rem; min-width: 28rem; border-radius: 0.5rem; border: none; ">
 
                 <div style="width:100%">
                     <UserFilter FilterData="@(tuple => HandleFiltering(tuple.Item1, tuple.Item2))"></UserFilter>
@@ -66,10 +67,41 @@
 
     string? searchTermFromUserSearch;
     string? userOfficeFromUserFilter;
-    int? userLengthFromUserFilter;
+    string? userLengthFromUserFilter;
 
+    [Parameter] public EventCallback<string> FilterMenuOpened { get; set; }
+    string? filtersOpended;
 
+    private async Task<bool> CheckClassAsync(string elementId, string className)
+    {
+        return await JSRuntime.InvokeAsync<bool>("containsClass", elementId, className);
+    }
 
+    /*
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            bool hasClass = await CheckClassAsync("miElementoId", "show");
+            Console.WriteLine("hasClass: " + hasClass);
+        }
+    }*/
+
+    private async Task filtersMenuOpened()
+    {
+        bool hasClass = await CheckClassAsync("filtersButton", "show");
+        if (hasClass)
+        {
+            filtersOpended = "4.85rem";
+            await FilterMenuOpened.InvokeAsync(filtersOpended);
+        }
+        else
+        {
+            filtersOpended = "0px";
+            await FilterMenuOpened.InvokeAsync(filtersOpended);
+        }
+
+    }
 
 
 
@@ -105,6 +137,7 @@
         showIndicator = true;
 
 
+
         switch (rippleType)
         {
             case RippleType.Add:
@@ -117,6 +150,7 @@
                 indicatorRight = "64px";
                 indicatorWidth = "50.8px";
                 showRippleFilter = true;
+                await filtersMenuOpened();
                 break;
 
             case RippleType.Search:
