@@ -24,7 +24,7 @@
 
         </button>
 
-        <ul class="dropdown-menu">
+        <ul class="dropdown-menu shadow mt-1" style="border-radius:6px;">
             <li><span class="dropdown-item" @onclick='() => SelectOfficeFilter("Ensenada")'>Ensenada</span></li>
             <li><span class="dropdown-item" @onclick='() => SelectOfficeFilter("Tijuana")'>Tijuana</span></li>
             <li><span class="dropdown-item" @onclick='() => SelectOfficeFilter("San Diego")'>San Diego</span></li>
@@ -59,7 +59,7 @@
 
         </button>
 
-        <div class="dropdown-menu user-length-filter @_closeLengthFilter">
+        <div class="dropdown-menu user-length-filter shadow mt-1 @_closeLengthFilter" style="border-radius:6px;">
 
 
             <div class="px-3 py-1">
@@ -69,7 +69,6 @@
                                 dropdown-toggle user-length-filter"
                             type="button"
                             data-bs-toggle="dropdown"
-                            data-bs-auto-close="outside"
                             aria-expanded="false">
 
 
@@ -83,14 +82,14 @@
 
 
                     </button>
-
+                   
                     <ul class="dropdown-menu">
                         <li><span class="dropdown-item" @onclick='() => SelectLengthFilter("Mayor")'>Mayor</span></li>
                         <li><span class="dropdown-item" @onclick='() => SelectLengthFilter("Menor")'>Menor</span></li>
                     </ul>
 
 
-
+                     <div>
                     <label>a</label>
 
 
@@ -99,7 +98,7 @@
                            id="DropdownInputLength"
                            type="number"
                            @bind="_userLength" /><label>años</label>
-
+                    </div>
                     <button class="btn btn-secondary user-length-filter" @onclick='() => LengthFilterButton(_userLength ?? 0)'>
                         Filtrar
                     </button>
@@ -113,8 +112,8 @@
 
     </div>
 
-
-    @*<button class="btn btn-outline-secondary"
+@*
+    <button class="btn btn-outline-secondary"
                 @onclick="ClearSearchFilter">
             Limpiar
         </button>*@
@@ -169,7 +168,7 @@
 
 
     private async Task
-SelectOfficeFilter(string officeSelection)
+    SelectOfficeFilter(string officeSelection)
     {
         _userOffice = officeSelection;
 
@@ -219,7 +218,7 @@ SelectOfficeFilter(string officeSelection)
         await FilterData.InvokeAsync((_userOffice, _userLength));
     }
 
-    /*
+    
       private void
       ClearSearchFilter()
       {
@@ -228,14 +227,21 @@ SelectOfficeFilter(string officeSelection)
           _userLengthFilterSelector = "Mayor";
 
           _userLengthFilterSelectorStyles = "";
-          @*_closeLengthFilter = "close"; *@
+        @*_closeLengthFilter = "close"; *@
 
 
 
 
-          NavManager
-          .NavigateTo
-          ($"/search/{SearchTerm}");
-      }
-   */
+      @*  NavManager
+                  .NavigateTo
+                  ($"/users/");*@
+    }
+
+
+    protected override void OnParametersSet()
+    {
+        ClearSearchFilter();
+
+    }
+
 }

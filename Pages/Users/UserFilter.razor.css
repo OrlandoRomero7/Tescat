@@ -29,3 +29,7 @@
         .filters div.dropdown button:hover {
             background-color: rgba(36,93,130,0.1);
         }
+
+.dropdown-menu li {
+    cursor:pointer;
+}
