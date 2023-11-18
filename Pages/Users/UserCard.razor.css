@@ -69,3 +69,10 @@ small.text-details {
     padding-left: 5%;
     padding-right: 0px;
 }
+
+
+.card-body-content-incomplete {
+    filter: blur(2.8px);
+    user-select: none;
+    pointer-events: none;
+}

@@ -27,43 +27,59 @@
             </center>
         </div>
 
-        <div class="card-body">
-            <h5 class="card-title m-t-10">@User.Name</h5>
-
-            <div style="display:flex; align-content:center">
-                <small class="text-details material-symbols-outlined me-1" style="font-size:20px">
-                    work
-                </small>
-                <h6>
-                    @User.Position
-                </h6>
+        @if (_CardBodyContent != "")
+        {
+            <div style="position: absolute; display:flex; width:100%; justify-content:center; bottom:5.5rem; z-index:3">
+                <button class="btn btn-outline-primary" style="padding:.75rem; font-size:1.25rem; border-radius:6px" @onclick="() => UserDetails(User.IdUser)">
+                    Completar Información
+                </button>
             </div>
-        </div>
+        }
 
-        <div class="card-body pt-0 pb-0">
-            <div style="display:flex; justify-content:space-between">
-                <div>
-                    <small class="text-details bi bi-telephone"></small>
-                    <h4>@User.Tel</h4>
-                </div>
-                <div>
-                    <small class="text-details p-t-30 db bi bi-building"></small>
-                    <h4>@User.Dept</h4>
+
+        <div class="@_CardBodyContent">
+
+
+            <div class="card-body ">
+                <h5 class="card-title m-t-10">@User.Name</h5>
+
+                <div style="display:flex; align-content:center">
+                    <small class="text-details material-symbols-outlined me-1" style="font-size:20px">
+                        work
+                    </small>
+                    <h6>
+                        @User.Position
+                    </h6>
                 </div>
             </div>
 
+            <div class="card-body pt-0 pb-0">
+                <div style="display:flex; justify-content:space-between">
+                    <div>
+                        <small class="text-details bi bi-telephone"></small>
+                        <h4>@User.Tel</h4>
+                    </div>
+                    <div>
+                        <small class="text-details p-t-30 db bi bi-building"></small>
+                        <h4>@User.Dept</h4>
+                    </div>
+                </div>
+
+            </div>
+
+
+            @*buttons*@
+            <div style="text-align:left" class="card-body">
+
+
+                <button class="btn btn-primary bi bi-binoculars me-2" @onclick="() => UserDetails(User.IdUser)">
+                </button>
+
+                <button class="btn btn-outline-primary bi bi-info-circle-fill">
+                </button>
+            </div>
+
         </div>
-
-        <div style="text-align:left" class="card-body">
-
-
-            <button class="btn btn-primary bi bi-binoculars me-2" @onclick="() => UserDetails(User.IdUser)">
-            </button>
-
-            <button class="btn btn-outline-primary bi bi-info-circle-fill">
-            </button>
-        </div>
-
 
 
 
@@ -82,12 +98,38 @@
     public User User
     { get; set; } = default!;
 
+    string? _CardBodyContent;
 
+
+    protected override void
+    OnInitialized()
+    {
+        CardBodyContentBlur();
+    }
 
     protected void UserDetails(int id)
     {
         NavigationManager.NavigateTo("/UserDetails/" + id);
     }
 
+
+    protected void CardBodyContentBlur()
+    {
+        if (User.Name is null || User.Position is null || !User.Tel.HasValue || User.Dept is null)
+        {
+            _CardBodyContent = "card-body-content-incomplete";
+        }
+        else
+        {
+            _CardBodyContent = "";
+        }
+
+    }
+
+    protected override void OnParametersSet()
+    {
+        CardBodyContentBlur();
+
+    }
 
 }

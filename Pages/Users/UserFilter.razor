@@ -69,11 +69,12 @@
                                 dropdown-toggle user-length-filter"
                             type="button"
                             data-bs-toggle="dropdown"
-                            aria-expanded="false">
+                            aria-expanded="false"
+                            style="margin-bottom:10px;">
 
 
 
-                        <span>@_userLengthFilterSelector</span>
+                        <span>@_userLengthFilterSelector a</span>
 
 
 
@@ -82,23 +83,27 @@
 
 
                     </button>
-                   
+
                     <ul class="dropdown-menu">
                         <li><span class="dropdown-item" @onclick='() => SelectLengthFilter("Mayor")'>Mayor</span></li>
                         <li><span class="dropdown-item" @onclick='() => SelectLengthFilter("Menor")'>Menor</span></li>
                     </ul>
 
 
-                     <div>
-                    <label>a</label>
+                    <div>
 
 
+                        <input class="form-control"
+                               id="DropdownInputLength"
+                               type="number"
+                               @bind="_userLength"
+                               style="margin-bottom: 4px;" />
 
-                    <input class="form-control"
-                           id="DropdownInputLength"
-                           type="number"
-                           @bind="_userLength" /><label>años</label>
+
+                        <label style="margin-bottom: 3px; padding: 0.375rem 0.75rem;">años</label>
+
                     </div>
+
                     <button class="btn btn-secondary user-length-filter" @onclick='() => LengthFilterButton(_userLength ?? 0)'>
                         Filtrar
                     </button>
@@ -112,11 +117,11 @@
 
     </div>
 
-@*
-    <button class="btn btn-outline-secondary"
-                @onclick="ClearSearchFilter">
-            Limpiar
-        </button>*@
+    @*
+        <button class="btn btn-outline-secondary"
+                    @onclick="ClearSearchFilter">
+                Limpiar
+            </button>*@
 
 </div>
 
@@ -150,7 +155,7 @@
     {
         @*we retrieve the values from UsersHomePage to set the values contained in the query string when loading the page directly*@
         _userOffice = UserOffice ?? "";
-        Console.WriteLine("userOfficeFilter:" + _userOffice + UserOffice);
+        //Console.WriteLine("userOfficeFilter:" + _userOffice + UserOffice);
 
         _userLength = UserLength >= 0 ? UserLength : -UserLength;
 
@@ -218,23 +223,15 @@
         await FilterData.InvokeAsync((_userOffice, _userLength));
     }
 
-    
-      private void
-      ClearSearchFilter()
-      {
-          _userOffice = "";
-          _userLength = null;
-          _userLengthFilterSelector = "Mayor";
 
-          _userLengthFilterSelectorStyles = "";
-        @*_closeLengthFilter = "close"; *@
+    private void
+    ClearSearchFilter()
+    {
+        _userOffice = "";
+        _userLength = null;
+        //_userLengthFilterSelector = "Mayor";
 
-
-
-
-      @*  NavManager
-                  .NavigateTo
-                  ($"/users/");*@
+        _userLengthFilterSelectorStyles = "";
     }
 
 
