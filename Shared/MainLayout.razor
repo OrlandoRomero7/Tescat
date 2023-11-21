@@ -1,10 +1,20 @@
 ﻿@inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
-<PageTitle>Tescat</PageTitle>
+@inject IJSRuntime JSRuntime
+
+
+<PageTitle>Tescat Software</PageTitle>
 <div class="page">
+
     <span class="@ActiveSideBarStyles active-sidebar-toggle material-symbols-outlined ms-3" @onclick="ToggleActiveSideBarStyles">
         @SideBarIcon
     </span>
+
+    <div id="top" class="header-container" style="position:absolute; top:0; left:0; right:0; margin:auto; width:1px">
+        
+
+    </div>
+
     <div class="@ActiveSideBarStyles sidebar" @onmouseover="ApplyActiveSideBarStyles " @onmouseout="ApplyActiveSideBarStyles ">
         <NavMenu ActiveSideBarStyles="@ActiveSideBarStyles" />
     </div>
@@ -16,7 +26,14 @@
 
         @Body
 
+        
+
     </main>
+
+    <button class="scroll-to-top-button shadow"  onclick="document.getElementById('top').scrollIntoView({behavior:'smooth'})" >
+        <i style="font-size:1.5rem" class="bi bi-arrow-up-short"></i>
+    </button>
+
 </div>
 @code {
     public string ActiveSideBarStyles { get; private set; } = "sidebar-active";
@@ -45,8 +62,20 @@
             await Task.Delay(255);
             PageTransition = "visible-transition";
             StateHasChanged();
+
+                   await JSRuntime.InvokeVoidAsync("initToggleButtonVisibility");
+
+
         }
     }
+
+
+    public void toggleButtonVisibility()
+    {
+        JSRuntime.InvokeVoidAsync("toggleButtonVisibility");
+    }
+
+
     protected override void OnInitialized()
     {
         PageTransition = "hidden-transition";
@@ -71,6 +100,10 @@
     }
     public void Dispose()
     {
+        JSRuntime.InvokeVoidAsync("window.removeEventListener", "scroll", DotNetObjectReference.Create(new Action(toggleButtonVisibility)));
+
         NavigationManager.LocationChanged -= HandleLocationChanged; // Unsubscribe to avoid memory leaks
+
+
     }
 }

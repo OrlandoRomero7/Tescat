@@ -1,5 +1,5 @@
 ﻿@inject NavigationManager NavigationManager
-@inject IJSRuntime JSRuntime
+
 
 <div class="controls-container" style="display: flex; justify-content: flex-end;  margin-bottom: 2%;">
 
@@ -69,46 +69,10 @@
     string? userOfficeFromUserFilter;
     string? userLengthFromUserFilter;
 
-    [Parameter] public EventCallback<string> FilterMenuOpened { get; set; }
-    string? filtersOpended;
-
-    private async Task<bool> CheckClassAsync(string elementId, string className)
-    {
-        return await JSRuntime.InvokeAsync<bool>("containsClass", elementId, className);
-    }
-
-    /*
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            bool hasClass = await CheckClassAsync("miElementoId", "show");
-            Console.WriteLine("hasClass: " + hasClass);
-        }
-    }*/
-
-    private async Task filtersMenuOpened()
-    {
-        bool hasClass = await CheckClassAsync("filtersButton", "show");
-        if (hasClass)
-        {
-            filtersOpended = "4.85rem";
-            await FilterMenuOpened.InvokeAsync(filtersOpended);
-        }
-        else
-        {
-            filtersOpended = "0px";
-            await FilterMenuOpened.InvokeAsync(filtersOpended);
-        }
-
-
-    }
-
-
-
 
 
     public enum RippleType
+
     {
         Add,
         Filter,
@@ -151,7 +115,6 @@
                 indicatorRight = "64px";
                 indicatorWidth = "50.8px";
                 showRippleFilter = true;
-                await filtersMenuOpened();
                 break;
 
             case RippleType.Search:
@@ -195,7 +158,7 @@
 
     private async Task CombinedClickHandler(MouseEventArgs e, RippleType rippleType)
     {
-        await ClickHandler(e, rippleType);  // Ejecuta la lógica actual de ClickHandler
+        await ClickHandler(e, rippleType);  
                                             //CreateNewUser();
     }
 

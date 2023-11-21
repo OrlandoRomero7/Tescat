@@ -69,11 +69,6 @@
             element.scrollIntoView({ behavior: 'smooth' });
         }</script>
 
-    @*Para leer la clase 'show' en el menu dropdown de los controles en UserHomePage*@
-  @*  <script>function containsClass(elementId, className) {
-            var element = document.getElementById(elementId);
-            return element.classList.contains(className);
-        }</script>*@
 
     @*Script para Radzen*@
     <link rel="stylesheet" href="_content/Radzen.Blazor/css/material-base.css">
@@ -86,7 +81,30 @@
         };
     </script>
 
+    <script>
+        function initToggleButtonVisibility() {
+            // Initial check for button visibility
+            toggleButtonVisibility();
 
+            // Register the scroll event listener
+            window.addEventListener('scroll', toggleButtonVisibility);
+        }
+
+        function toggleButtonVisibility() {
+            var header = document.querySelector('.header-container');
+            var button = document.querySelector('.scroll-to-top-button');
+            var headerBounds = header.getBoundingClientRect();
+
+            // Check if the header is out of the viewport
+            if (headerBounds.bottom < 0) {
+                button.style.opacity = '1';
+                button.style.visibility = 'visible';// Show button
+            } else {
+                button.style.opacity = '0'; // Hide button
+            }
+        }
+
+    </script>
 
 
 

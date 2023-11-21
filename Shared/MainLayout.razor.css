@@ -123,3 +123,35 @@ main {
         max-width: 100%;
     }
 }
+
+
+.scroll-to-top-button {
+    transition: opacity 0.75s ease, transform 0.75s ease;
+    opacity: 0; /* Start with the button invisible */
+    visibility: hidden;
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    padding: 0;
+    border: none;
+    background: none;
+
+
+    background: white;
+    display: flex;
+    height: 2.75rem;
+    width: 2.75rem;
+    border-radius: 50%;
+    align-items: center;
+    justify-content:center;
+
+
+}
+
+    /* When the button should be visible */
+    .scroll-to-top-button.visible {
+        opacity: 1;
+        visibility: visible;
+    }
+
+ 
