@@ -9,9 +9,16 @@
     <span class="@ActiveSideBarStyles active-sidebar-toggle material-symbols-outlined ms-3" @onclick="ToggleActiveSideBarStyles">
         @SideBarIcon
     </span>
+    @if (!ActiveToggle)
+    {
+        <span class="@ActiveSideBarStyles active-sidebar-toggle material-symbols-outlined ms-3 mt-5" @onclick="LockSideBarToggle">
+            @LockBarIcon
+
+        </span>
+    }
 
     <div id="top" class="header-container" style="position:absolute; top:0; left:0; right:0; margin:auto; width:1px">
-        
+
 
     </div>
 
@@ -26,11 +33,11 @@
 
         @Body
 
-        
+
 
     </main>
 
-    <button class="scroll-to-top-button shadow"  onclick="document.getElementById('top').scrollIntoView({behavior:'smooth'})" >
+    <button class="scroll-to-top-button shadow" onclick="document.getElementById('top').scrollIntoView({behavior:'smooth'})">
         <i style="font-size:1.5rem" class="bi bi-arrow-up-short"></i>
     </button>
 
@@ -39,17 +46,36 @@
     public string ActiveSideBarStyles { get; private set; } = "sidebar-active";
     public bool ActiveToggle { get; private set; } = true;
     public string SideBarIcon { get; private set; } = "menu_open";
+    public string LockBarIcon { get; private set; } = "lock_open";
+    public bool ActiveToggleLock { get; private set; } = false;
+
     public string? PageTransition { get; set; }
+
     private bool firstRender = true;
+
+
+
+
+
     public void ToggleActiveSideBarStyles()
     {
         ActiveToggle = !ActiveToggle;
+        ActiveToggleLock = false;
         ActiveSideBarStyles = ActiveToggle ? "sidebar-active" : "";
         SideBarIcon = ActiveToggle ? "menu_open" : "menu";
+        LockBarIcon = "lock_open";
     }
+
+
+    public void LockSideBarToggle()
+    {
+        ActiveToggleLock = !ActiveToggleLock;
+        LockBarIcon = ActiveToggleLock ? "lock" : "lock_open";
+    }
+
     public void ApplyActiveSideBarStyles()
     {
-        if (!ActiveToggle)
+        if (!ActiveToggle && !ActiveToggleLock)
         {
             ActiveSideBarStyles = string.IsNullOrEmpty(ActiveSideBarStyles) ? "sidebar-active" : "";
         }
@@ -63,7 +89,7 @@
             PageTransition = "visible-transition";
             StateHasChanged();
 
-                   await JSRuntime.InvokeVoidAsync("initToggleButtonVisibility");
+            await JSRuntime.InvokeVoidAsync("initToggleButtonVisibility");
 
 
         }
@@ -83,7 +109,7 @@
     }
 
 
-   
+
 
 
 

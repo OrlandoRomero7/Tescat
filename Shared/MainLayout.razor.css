@@ -32,9 +32,15 @@ main {
 }
 
 
+
+
+
+@media (min-width: 920px) {
     .active-sidebar-toggle.sidebar-active {
         transform: translateX(168px);
     }
+}
+
 
 .sidebar {
     background-image: linear-gradient(180deg, #ffffff 0%, #F6F6F6 70%);
@@ -81,8 +87,7 @@ main {
     }
 
     .sidebar {
-        /*width: 250px;*/
-        /****/
+        min-width: 5rem;
         width: 5rem;
         height: calc(100vh - 2rem);
         position: sticky;
@@ -93,6 +98,16 @@ main {
         .sidebar.sidebar-active {
             width: 250px;
         }
+
+    @media (max-width: 920px) {
+        .sidebar.sidebar-active {
+            width: 5rem;
+        }
+
+        .active-sidebar-toggle {
+            transform: translateX(0px);
+        }
+    }
 
     .active-sidebar-toggle {
         display: block;
@@ -118,40 +133,40 @@ main {
 }
 
 
+
 @media (min-width: 1640px) {
     main.container {
-        max-width: 100%;
+        width: 250px;
     }
 }
 
 
 .scroll-to-top-button {
-    transition: opacity 0.75s ease, transform 0.75s ease;
+    transition: all 0.75s ease-in-out;
     opacity: 0; /* Start with the button invisible */
     visibility: hidden;
     position: fixed;
-    bottom: 1rem;
-    right: 1rem;
+    bottom: 1.5rem;
+    right: 1.5rem;
     padding: 0;
     border: none;
     background: none;
-
-
     background: white;
     display: flex;
     height: 2.75rem;
     width: 2.75rem;
     border-radius: 50%;
     align-items: center;
-    justify-content:center;
-
-
+    justify-content: center;
 }
+
+    .scroll-to-top-button:hover {
+        transform: scale(1.25);
+        transition: all 0.75s ease-in-out;
+    }
 
     /* When the button should be visible */
     .scroll-to-top-button.visible {
         opacity: 1;
         visibility: visible;
     }
-
- 
