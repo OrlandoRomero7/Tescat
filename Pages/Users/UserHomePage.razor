@@ -16,86 +16,87 @@
     <div class="cards container">
 
 
-        @if (SearchTerm != null || UserOffice != null || UserLength != null){
-        <NavLink href="users" Match="NavLinkMatch.All">
-            <i class="bi bi-arrow-left" style="font-size:2rem; margin-top:-1rem"></i>
+        @if (SearchTerm != null || UserOffice != null || UserLength != null)
+        {
+            <NavLink href="users" Match="NavLinkMatch.All">
+                <i class="bi bi-arrow-left" style="font-size:2rem; margin-top:-1rem"></i>
             </NavLink>
         }
         <div style="display: flex; margin-top:1rem; flex-direction:column;">
-        @if (Users != null && SearchTerm != null)
-        {
-               
-            
+            @if (Users != null && SearchTerm != null)
+            {
 
 
-                    <div style="height:2rem; display:flex; align-items:center; width:100%; margin-bottom:1.25%;">
 
-                        <h4 style="margin-top: 1%;  margin-right: .25%">
+
+                <div style="height:2rem; display:flex; align-items:center; width:100%; margin-bottom:1.25%;">
+
+                    <h4 style="margin-top: 1%;  margin-right: .25%">
 
                         <i class="material-symbols-outlined search-icon " style="font-size:1.6rem;">search</i>
 
-                        </h4>
+                    </h4>
 
-                        <i style="margin-left: 4px;">Resultados para:</i>
-                        <i style="color: var(--brand); font-weight:500; font-size:1.25rem; margin-left: 4px; "> @SearchTerm</i>
+                    <i style="margin-left: 4px;">Resultados para:</i>
+                    <i style="color: var(--brand); font-weight:500; font-size:1.25rem; margin-left: 4px; "> @SearchTerm</i>
 
-                    </div>
-                 
-       
-        }
+                </div>
 
-        @if (UserOffice != null || UserLength != null)
-        {
 
-                
-                  
-           <div style="height:2rem; display:flex; align-items:center; width:100%; ">
+            }
+
+            @if (UserOffice != null || UserLength != null)
+            {
+
+
+
+                <div style="height:2rem; display:flex; align-items:center; width:100%; ">
                     <h4 style="margin-top: 1%;  margin-right: .25%">
 
                         @*Icono Filtro*@
                         <i style="font-size:1.5rem; color:var(--brand-secondary); " class="bi bi-funnel"></i>
-                         
-                        </h4>
+
+                    </h4>
                     @if (UserOffice != null)
                     {<i>Ciudad:</i> <i style="color: var(--brand); font-weight: 500; font-size: 1.25rem; margin-left: 4px; margin-right: 14px; "> @UserOffice</i>}
-          
 
 
-             
+
+
                     @if (UserLength != null)
                     {
 
-                            @if (UserLength > 0)
-                            {
-                                <i style="margin-left: 4px;">Antiguedad mayor a:</i>
-                            }
-                            @if (UserLength < 0)
-                            {
-                                <i style="margin-left: 4px;">Antiguedad menor a:</i>
-                            }
-                          
+                        @if (UserLength > 0)
+                        {
+                            <i style="margin-left: 4px;">Antiguedad mayor a:</i>
+                        }
+                        @if (UserLength < 0)
+                        {
+                            <i style="margin-left: 4px;">Antiguedad menor a:</i>
+                        }
 
 
 
-                            @if (UserLength > 1 || UserLength < -1)
-                            {
-                                <i style="color: var(--brand); font-weight:500; font-size:1.25rem; margin-left: 4px; "> @Math.Abs(UserLength ?? 0) años </i>
-                            }
-                            else
-                            {
-                                <i style="color: var(--brand); font-weight:500; font-size:1.25rem; margin-left: 4px; "> @Math.Abs(UserLength ?? 0) año </i>
 
+                        @if (UserLength > 1 || UserLength < -1)
+                        {
+                            <i style="color: var(--brand); font-weight:500; font-size:1.25rem; margin-left: 4px; "> @Math.Abs(UserLength ?? 0) años </i>
+                        }
+                        else
+                        {
+                            <i style="color: var(--brand); font-weight:500; font-size:1.25rem; margin-left: 4px; "> @Math.Abs(UserLength ?? 0) año </i>
 
-                            }
 
                         }
-                    </div>
 
-                
+                    }
+                </div>
 
-              
-            
-        }
+
+
+
+
+            }
 
         </div>
 
@@ -130,9 +131,9 @@
                 }
             }
         </div>
-    
-    
-    
+
+
+
     </div>
 
 
@@ -284,12 +285,6 @@
     }
 
     /* */
-
-
-    protected void CreateNewUser()
-    {
-        NavigationManager.NavigateTo("/addUser");
-    }
 
 
 
