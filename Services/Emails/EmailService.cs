@@ -33,6 +33,17 @@ namespace Tescat.Services.Emails
             await context.SaveChangesAsync();
             return userEmail;
         }
+        public async Task<Email> QuitEmailFromUserDetails(int IdUser)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            var emailDb = await context.Emails.FirstOrDefaultAsync(c => c.IdUser == IdUser);
+            if (emailDb != null)
+            {
+                emailDb.IdUser = null;
+                await context.SaveChangesAsync();
+            }
+            return emailDb;
+        }
 
     }
 }

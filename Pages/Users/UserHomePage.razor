@@ -191,8 +191,7 @@
         {
             Users = await UserService.GetAllUsers();
 
-            localMessage = OtherServices.Message;
-            if (localMessage != null) await ShowAndHideAlert();
+            
 
             _cachedSearchResults = Users.ToArray();
             UpdateSearchResults();
@@ -311,6 +310,12 @@
         UpdateSearchResults();
         UpdateFilters();
 
+    }
+    protected async override Task OnParametersSetAsync()
+    {
+        //return base.OnParametersSetAsync();
+        localMessage = OtherServices.Message;
+        if (localMessage != null) await ShowAndHideAlert();
     }
 
 

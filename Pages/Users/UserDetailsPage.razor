@@ -12,6 +12,7 @@
 @inject NavigationManager NavigationManager
 @inject IDbContextFactory<TescatDbContext> ContextFactory
 @inject IJSRuntime JSRuntime
+@inject IPcService PcService
 
 
 
@@ -249,9 +250,11 @@ else
             {
                 int idtemp = user.IdUser;
                 //user.Name = tempName;
+                await EmailService.QuitEmailFromUserDetails(idtemp);
+                await PcService.QuitPcFromUserDetails(idtemp);
                 await UserCredentialService.DeleteUserCredentials(idtemp);
                 await UserService.DeleteUser(idtemp);
-                OtherServices.ShowMessage("Se elimino el usuario: " + idtemp);
+                await OtherServices.ShowMessage("Se elimino el usuario: " + idtemp);
                 NavigationManager.NavigateTo("/users");
 
                 Console.WriteLine("Se elimino correctamente");

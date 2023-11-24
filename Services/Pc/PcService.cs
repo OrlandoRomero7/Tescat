@@ -19,10 +19,6 @@ namespace Tescat.Services.Pcs
             return await context.Pcs.ToListAsync();
         }
 
-        
-
-
-
         public async Task<Pc> GetPcId(Guid IdPc)
         {
             using var context = _contextFactory.CreateDbContext();
@@ -91,7 +87,7 @@ namespace Tescat.Services.Pcs
             return pc;
 
         }
-
+        //Revisar esta funcion
         public async Task<Pc> QuitPc(Pc pc)
         {
             using var context = _contextFactory.CreateDbContext();
@@ -104,6 +100,17 @@ namespace Tescat.Services.Pcs
 
             await context.SaveChangesAsync();
             return pc;
+        }
+        public async Task<Pc> QuitPcFromUserDetails(int IdUser)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            var pcDb = await context.Pcs.FirstOrDefaultAsync(c => c.IdUser == IdUser);
+            if(pcDb!=null)
+            {
+                pcDb.IdUser = null;
+                await context.SaveChangesAsync();
+            }
+            return pcDb;
         }
 
         public Task<Pc> DeletePc(Guid IdPc)

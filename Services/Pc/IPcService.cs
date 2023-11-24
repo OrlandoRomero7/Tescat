@@ -22,5 +22,7 @@ namespace Tescat.Services.Pcs
 
         public Task<Guid> GetPcForAssingComponent(int IdUser);
 
+        public Task<Pc> QuitPcFromUserDetails(int IdUser);
+
     }
 }

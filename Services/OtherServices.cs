@@ -33,7 +33,7 @@ namespace Tescat.Services
 
         //Estado para compartir mensaje utilzado cuando se emlimina un usuario en UserDetails
 
-        public void ShowMessage(string message)
+        public async Task ShowMessage(string message)
         {
             Message = message;
         }
