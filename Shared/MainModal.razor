@@ -1,5 +1,5 @@
 ﻿<!-- Modal de confirmación -->
-<div class="modal" tabindex="-1" role="dialog" style="display: @modalDisplay">
+<div class="modal" tabindex="-1" role="dialog" style="display: @_modalStatus">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -20,20 +20,41 @@
 </div>
 
 @code {
-    private string modalDisplay = "none";
+  
+    private string? _modalStatus;
 
-    [Parameter] public EventCallback<string> OnDelete { get; set; }
+
+    [Parameter]
+    public bool
+    ModalDisplay
+    { get; set; }
 
 
-    private void ShowConfirmationModal()
+    [Parameter] public EventCallback<string>
+    OnDelete 
+    { get; set; }
+
+
+
+    protected override void OnParametersSet()
     {
-        modalDisplay = "block"; // Mostrar el modal
+
+        if (ModalDisplay)
+        {
+            _modalStatus = "block";
+            
+        }
+
     }
+
+
 
     private void CloseConfirmationModal()
     {
-        modalDisplay = "none"; // Ocultar el modal
+        _modalStatus = null;
+       
     }
+
 
     private async Task ConfirmDeleteButton()
     {

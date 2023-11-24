@@ -17,28 +17,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @if (user != null && user.IdUser == 0)
 {
 <button type="button" class="btn btn-primary"  @onclick="SubmitChildForm">
@@ -114,7 +92,7 @@ else
 <UserAccount userCredential="userCredential"></UserAccount>
 
 }
-<MainModal modalDisplay="modalDisplay" OnDelete="ConfirmDeletion"></MainModal>
+<MainModal ModalDisplay="@ModalActive" OnDelete="ConfirmDeletion"></MainModal>
 
 
 
@@ -145,7 +123,7 @@ else
     public int id { get; set; }
 
     [Parameter]
-    public string modalDisplay { get; set; }
+    public string? modalDisplay { get; set; }
 
 
 
@@ -167,7 +145,7 @@ else
 
     public bool isEdit = false;
 
-
+    public bool ModalActive { get; private set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -302,18 +280,20 @@ else
     private async void ConfirmDeletion()
     {
         await Delete();
-        // ...
-     @*CloseConfirmationModal(); // Cerrar el modal después de la confirmación*@
+    
     }
-     protected void ReturnToAddUsersHome()
-        {
-            NavigationManager.NavigateTo("/addUser");
+
+    protected void ReturnToAddUsersHome()
+    {
+        NavigationManager.NavigateTo("/addUser");
     }
 
     private void ShowConfirmationModal()
     {
-        modalDisplay = "block"; // Mostrar el modal
+        ModalActive = true;
+        Console.WriteLine(ModalActive);// Mostrar el modal
     }
+
 
 
 }
