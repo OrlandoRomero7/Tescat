@@ -104,7 +104,7 @@
 
             @if (Users == null)
             {
-                <p>Loading users...</p>
+                <p>Cargando Usuarios...</p>
             }
             else
             {
@@ -151,6 +151,8 @@
 </UserHomePageLayout>
 
 
+
+
 @code
 {
     private List<User>? Users { get; set; }
@@ -159,7 +161,8 @@
     public string? localMessage;
     private bool showAlert = false;
 
-
+    
+  
 
     [Parameter, SupplyParameterFromQuery]
     public string?

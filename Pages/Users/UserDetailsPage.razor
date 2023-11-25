@@ -93,7 +93,9 @@ else
 <UserAccount userCredential="userCredential"></UserAccount>
 
 }
-<MainModal ModalDisplay="@ModalActive" OnDelete="ConfirmDeletion"></MainModal>
+
+
+<MainModal ModalDisplay="@ModalActive" OnActive="ConfirmDeletion"></MainModal>
 
 
 
@@ -146,7 +148,7 @@ else
 
     public bool isEdit = false;
 
-    public bool ModalActive { get; private set; }
+    public string? ModalActive { get; private set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -293,7 +295,7 @@ else
 
     private void ShowConfirmationModal()
     {
-        ModalActive = true;
+        ModalActive = "DeleteUser";
         Console.WriteLine(ModalActive);// Mostrar el modal
     }
 

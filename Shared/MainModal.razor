@@ -3,35 +3,42 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
+
+                @if (ModalDisplay == "DeleteUser"){
                 <h5 class="modal-title">Confirmar eliminación</h5>
+                }
                 <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar" @onclick="CloseConfirmationModal">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <p>¿Estás seguro de que quieres eliminar este elemento?</p>
+                @if (ModalDisplay == "DeleteUser")
+                {
+                    <p>¿Estás seguro de que quieres eliminar este elemento?</p>
+                }
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="CloseConfirmationModal">Cancelar</button>
-                <button type="button" class="btn btn-danger" @onclick="ConfirmDeleteButton">Eliminar</button>
+                <button type="button" class="btn btn-danger" @onclick="ConfirmDeleteButton">Confirmar</button>
             </div>
         </div>
     </div>
 </div>
 
 @code {
-  
+
     private string? _modalStatus;
+    private string? _modalLocation;
 
 
     [Parameter]
-    public bool
+    public string?
     ModalDisplay
     { get; set; }
 
 
     [Parameter] public EventCallback<string>
-    OnDelete 
+    OnActive
     { get; set; }
 
 
@@ -39,10 +46,16 @@
     protected override void OnParametersSet()
     {
 
-        if (ModalDisplay)
+        if (ModalDisplay == "DeleteUser")
         {
             _modalStatus = "block";
-            
+            _modalLocation = ModalDisplay;
+        }
+
+        else if (ModalDisplay == "UserHomePageLayout")
+        {
+            _modalStatus = "block";
+            _modalLocation = ModalDisplay;
         }
 
     }
@@ -52,13 +65,12 @@
     private void CloseConfirmationModal()
     {
         _modalStatus = null;
-       
     }
 
 
     private async Task ConfirmDeleteButton()
     {
-        await OnDelete.InvokeAsync();
+        await OnActive.InvokeAsync();
 
     }
 

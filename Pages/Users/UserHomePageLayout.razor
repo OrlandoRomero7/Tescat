@@ -1,9 +1,11 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+
 @*<div class="controls-container">
         <UserHomePageControls FilterMenuOpened="HandleUserSearch"></UserHomePageControls>
     </div>*@
 <div class="controls-container">
-    <UserHomePageControls></UserHomePageControls>
+    <UserHomePageControls AddingUser="ShowConfirmationModal"></UserHomePageControls>
 </div>
 
 
@@ -15,18 +17,30 @@
     @ChildContent
 </div>
 
+<MainModal ModalDisplay="@ModalActive" OnActive="AddNewUser"></MainModal>
+
 
 @code {
     [Parameter, EditorRequired]
     public RenderFragment ChildContent { get; set; } = default!;
-    /*
-    private string? verticalContentPosition;
+
+    public string? ModalActive { get; private set; }
 
 
-    private void HandleUserSearch(string yValue)
+    private void ShowConfirmationModal()
     {
-        verticalContentPosition = yValue;
-    }*/
+        ModalActive = "UserHomePageLayout";
+        Console.WriteLine(ModalActive);// Mostrar el modal
+    }
+
+    private void AddNewUser()
+    {
+        NavigationManager.NavigateTo("/users");
+    }
+
+
+   
+
 }
 
 
