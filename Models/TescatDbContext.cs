@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace Tescat.Models
 {
-    public partial class TescatDbContext : DbContext
+    public partial class TescatDbContext : IdentityDbContext
     {
 
 
@@ -52,6 +53,7 @@ namespace Tescat.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Cpu>(entity =>
             {
                 entity.HasKey(e => e.IdCpu).HasName("PK__CPU__2BF960E00CF1C646");
@@ -544,10 +546,10 @@ namespace Tescat.Models
                     .HasConstraintName("FK_User_Credentials_Users");
             });
 
-            OnModelCreatingPartial(modelBuilder);
+            //OnModelCreatingPartial(modelBuilder);
         }
 
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+        //partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 
     }
 }

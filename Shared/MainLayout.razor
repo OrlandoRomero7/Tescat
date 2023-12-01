@@ -1,47 +1,52 @@
-﻿@inherits LayoutComponentBase
+﻿@using System.Text.RegularExpressions
+@inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 
 <PageTitle>Tescat Software</PageTitle>
-<div class="page">
+<CascadingAuthenticationState>
 
-    <span class="@ActiveSideBarStyles active-sidebar-toggle material-symbols-outlined ms-3" @onclick="ToggleActiveSideBarStyles">
-        @SideBarIcon
-    </span>
-    @if (!ActiveToggle)
-    {
-        <span class="@ActiveSideBarStyles active-sidebar-toggle material-symbols-outlined ms-3 mt-5" @onclick="LockSideBarToggle">
-            @LockBarIcon
+    <div class="page">
 
+        <span class="@ActiveSideBarStyles active-sidebar-toggle material-symbols-outlined ms-3" @onclick="ToggleActiveSideBarStyles">
+            @SideBarIcon
         </span>
-    }
+        @if (!ActiveToggle)
+        {
+            <span class="@ActiveSideBarStyles active-sidebar-toggle material-symbols-outlined ms-3 mt-5" @onclick="LockSideBarToggle">
+                @LockBarIcon
 
-    <div id="top" class="header-container" style="position:absolute; top:0; left:0; right:0; margin:auto; width:1px">
+            </span>
+        }
 
+        <div id="top" class="header-container" style="position:absolute; top:0; left:0; right:0; margin:auto; width:1px">
+        </div>
+
+        <div class="@ActiveSideBarStyles sidebar" @onmouseover="ApplyActiveSideBarStyles " @onmouseout="ApplyActiveSideBarStyles ">
+               <NavMenu ActiveSideBarStyles="@ActiveSideBarStyles" />  
+        </div>
+
+        @*   <MainHeader />*@
+
+
+        <main class="container mb-5 @PageTransition" style="max-width:100%; margin-top:5.5rem">
+
+            @Body
+
+
+
+        </main>
+
+        <button class="scroll-to-top-button shadow" onclick="document.getElementById('top').scrollIntoView({behavior:'smooth'})">
+            <i style="font-size:1.5rem" class="bi bi-arrow-up-short"></i>
+        </button>
 
     </div>
-
-    <div class="@ActiveSideBarStyles sidebar" @onmouseover="ApplyActiveSideBarStyles " @onmouseout="ApplyActiveSideBarStyles ">
-        <NavMenu ActiveSideBarStyles="@ActiveSideBarStyles" />
-    </div>
-
-    @*   <MainHeader />*@
+</CascadingAuthenticationState>
 
 
-    <main class="container mb-5 @PageTransition" style="max-width:100%; margin-top:5.5rem">
-
-        @Body
-
-
-
-    </main>
-
-    <button class="scroll-to-top-button shadow" onclick="document.getElementById('top').scrollIntoView({behavior:'smooth'})">
-        <i style="font-size:1.5rem" class="bi bi-arrow-up-short"></i>
-    </button>
-
-</div>
 @code {
     public string ActiveSideBarStyles { get; private set; } = "sidebar-active";
     public bool ActiveToggle { get; private set; } = true;
@@ -53,7 +58,28 @@
 
     private bool firstRender = true;
 
+    private async Task CheckAuthenticationStateAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
 
+        string currentUrl = NavigationManager.Uri;
+        bool isUserRoute;
+        isUserRoute = System.Text.RegularExpressions.Regex.IsMatch(currentUrl, @"/pcDetails/[a-fA-F0-9-]+");
+
+        //var isInUsersRoute = NavigationManager.Uri.EndsWith("/users", StringComparison.OrdinalIgnoreCase);
+
+        // Verifica si la ruta actual está en la lista de rutas exentas
+        if (!user.Identity.IsAuthenticated && !isUserRoute)
+        {
+            NavigationManager.NavigateTo("Identity/Account/Login", true);
+        }
+    }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        await CheckAuthenticationStateAsync();
+    }
 
 
 
