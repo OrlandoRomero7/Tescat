@@ -1,46 +1,21 @@
 ﻿@inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
 
-@*<div class="controls-container">
-        <UserHomePageControls FilterMenuOpened="HandleUserSearch"></UserHomePageControls>
-    </div>*@
 <div class="controls-container">
-    <UserHomePageControls AddingUser="ShowConfirmationModal"></UserHomePageControls>
+  <UserHomePageControls ></UserHomePageControls>
 </div>
 
 
-
-@*<div style="transform: translateY(@verticalContentPosition);">
-        @ChildContent
-    </div>*@
 <div style="transform: translateY(0);">
     @ChildContent
 </div>
 
-<MainModal ModalDisplay="@ModalActive" OnActive="AddNewUser"></MainModal>
+
 
 
 @code {
     [Parameter, EditorRequired]
     public RenderFragment ChildContent { get; set; } = default!;
-
-    public string? ModalActive { get; private set; }
-
-
-    private void ShowConfirmationModal()
-    {
-        ModalActive = "UserHomePageLayout";
-        Console.WriteLine(ModalActive);// Mostrar el modal
-    }
-
-    private void AddNewUser()
-    {
-        NavigationManager.NavigateTo("/addUser");
-    }
-
-
-   
-
 }
 
 

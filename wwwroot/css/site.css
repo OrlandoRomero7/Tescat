@@ -5,9 +5,9 @@
     --brand: #1181CD;
     --brand-hover: #245D82;
     --brand-text: #06151F;
-    --brand-white: #F9F9F9;
+    --brand-white: #FBFCFE;
     --brand-secondary: #137019;
-    overflow-y: scroll;
+  /*  overflow-y: scroll;*/
 }
 
 html, body {

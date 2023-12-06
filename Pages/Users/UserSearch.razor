@@ -2,12 +2,12 @@
     <i class="material-symbols-outlined search-icon">search</i>
     <input type="text"
            placeholder="Nombre, Puesto, Depart..."
-           @onkeydown="SearchForUser"
-           @bind="_searchTerm"
            @bind:event="oninput"
+           @bind="_searchTerm"
+           @ref="inputElement"
+           @onkeydown="SearchForUser"
            @onblur="HandleDivClick"
-           @onfocus="HandleInputFocus"
-           @ref="inputElement">
+           @onfocus="HandleInputFocus">
 </div>
 
 @code {

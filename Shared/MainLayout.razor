@@ -26,22 +26,32 @@
         <NavMenu ActiveSideBarStyles="@ActiveSideBarStyles" />
     </div>
 
+
+
     @*   <MainHeader />*@
 
 
+    <MainModal @ref="showingModal" DeletingUser="OnDeletingUser"></MainModal>
+
+
+    <CascadingValue Value="showingModal">
     <main class="container mb-5 @PageTransition" style="max-width:100%; margin-top:5.5rem">
+            
 
         @Body
 
 
-
     </main>
+    </CascadingValue>
+
 
     <button class="scroll-to-top-button shadow" onclick="document.getElementById('top').scrollIntoView({behavior:'smooth'})">
         <i style="font-size:1.5rem" class="bi bi-arrow-up-short"></i>
     </button>
 
 </div>
+
+
 @code {
     public string ActiveSideBarStyles { get; private set; } = "sidebar-active";
     public bool ActiveToggle { get; private set; } = true;
@@ -54,8 +64,22 @@
     private bool firstRender = true;
 
 
+    MainModal? showingModal;
+
+    private string? modalLocationValue;
 
 
+    private void OnDeletingUser(string locationValue)
+    {
+        modalLocationValue = locationValue;
+
+        showingModal?.ShowConfirmationModal(locationValue);
+
+        Console.WriteLine("valor en mainlayout:"+modalLocationValue);
+
+
+        StateHasChanged();
+    }
 
     public void ToggleActiveSideBarStyles()
     {
@@ -84,7 +108,7 @@
     {
         if (firstRender)
         {
-            // Wait a little to ensure that the hidden-transition is applied
+      
             await Task.Delay(255);
             PageTransition = "visible-transition";
             StateHasChanged();

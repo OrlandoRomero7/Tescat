@@ -2,12 +2,16 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    background-image: linear-gradient(180deg,rgb(17 129 205 / 4%) 70px,rgba(225,235,255,0) 290px);
 }
+
+
 
 main {
     flex: 1;
     margin-left: 0;
     margin-right: 0;
+   
 }
 
 

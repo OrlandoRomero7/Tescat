@@ -30,7 +30,7 @@
             <div id="filtersButton" class="dropdown-menu shadow filters-dropdown " style="padding: 0.824rem 0.824rem; min-width: 28rem; border-radius: 0.5rem; border: none; ">
 
                 <div style="width:100%">
-                    <UserFilter FilterData="@(tuple => HandleFiltering(tuple.Item1, tuple.Item2))"></UserFilter>
+                    <UserFilter FilterData="@(data => HandleFiltering(data.Item1, data.Item2))"></UserFilter>
                 </div>
 
             </div>
@@ -57,10 +57,12 @@
 @code
 {
 
-    [Parameter]
-    public EventCallback<string>
-       AddingUser
-    { get; set; }
+
+    [CascadingParameter]
+    public MainModal? OpeningModal { get; set; }
+
+    private string modalLocation = "UserHomePageLayout";
+
 
     double xPos = 0;
     double yPos = 0;
@@ -68,7 +70,7 @@
     bool showRippleFilter = false;
     bool showRippleSearch = false;
     bool showIndicator = false;
-    string indicatorRight = "125px";
+    string indicatorRight = "123px";
     string indicatorWidth = "50.8px";
 
     string? searchTermFromUserSearch;
@@ -77,11 +79,7 @@
 
 
 
-    private async Task AddNewUser()
-    {
-        await AddingUser.InvokeAsync();
 
-    }
 
     public enum RippleType
 
@@ -118,7 +116,7 @@
         switch (rippleType)
         {
             case RippleType.Add:
-                indicatorRight = "125px";
+                indicatorRight = "123px";
                 indicatorWidth = "50.8px";
                 showRippleAdd = true;
                 break;
@@ -130,7 +128,7 @@
                 break;
 
             case RippleType.Search:
-                indicatorRight = "2px";
+                indicatorRight = "4px";
                 indicatorWidth = "262.8px";
                 showRippleSearch = true;
                 break;
@@ -171,8 +169,9 @@
     private async Task CombinedClickHandler(MouseEventArgs e, RippleType rippleType)
     {
         await ClickHandler(e, rippleType);
-        await AddNewUser();
-
+        await JSRuntime.InvokeVoidAsync("disableVerticalScroll");
+        OpeningModal?.ShowConfirmationModal(modalLocation);
+        Console.WriteLine(modalLocation);
     }
 
 
@@ -189,12 +188,6 @@
         ResetIndicatorWidth();
     }
 
-
-
-  
-
-
-
     private void HandleUserSearch(string searchTerm)
     {
         searchTermFromUserSearch = searchTerm;
@@ -203,7 +196,7 @@
         NavigationManager.NavigateTo($"/users/{searchTermFromUserSearch}");
     }
 
-    private void HandleFiltering(string userOffice, int? userLength)
+    private void HandleFiltering(string? userOffice, int? userLength)
     {
 
         var queryParameters = new Dictionary<string, object?>()
@@ -211,7 +204,7 @@
             [nameof(UserHomePage.UserOffice)] = string.IsNullOrEmpty(userOffice) ? null : userOffice,
         };
 
-        if (userLength.HasValue)
+        if (userLength.HasValue && userLength != 0 )
         {
             queryParameters.Add(nameof(UserHomePage.UserLength), userLength);
         }
@@ -224,7 +217,7 @@
     private void ResetIndicatorWidth()
     {
 
-        indicatorRight = "125px";
+        indicatorRight = "123px";
         indicatorWidth = "50.8px";
         StateHasChanged();
 

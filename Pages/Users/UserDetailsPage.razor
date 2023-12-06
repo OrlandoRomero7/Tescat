@@ -26,8 +26,9 @@
 else
 {
     <button type="button" class="btn btn-primary"  @onclick="Update">
-        Actulizar</button>
-        <button type="button" class="btn btn-danger"  @onclick="ShowConfirmationModal">
+        Actualizar</button>
+        <button type="button" class="btn btn-danger"
+    @onclick="() => OpeningModal?.ShowConfirmationModal(_modalLocation)">
             Borrar</button>
 }
 
@@ -95,21 +96,6 @@ else
 }
 
 
-<MainModal ModalDisplay="@ModalActive" OnActive="ConfirmDeletion"></MainModal>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -124,9 +110,6 @@ else
 @code {
     [Parameter]
     public int id { get; set; }
-
-    [Parameter]
-    public string? modalDisplay { get; set; }
 
 
 
@@ -148,7 +131,15 @@ else
 
     public bool isEdit = false;
 
-    public string? ModalActive { get; private set; }
+
+
+    [CascadingParameter]
+    public MainModal? OpeningModal { get; set; }
+
+
+
+    private string _modalLocation = "DeleteUser";
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -181,6 +172,7 @@ else
         {
             Console.WriteLine($"Fallo al cargar datos {e.Message}");
         }
+
 
     }
 
@@ -251,7 +243,6 @@ else
             if (user != null && user.IdUser != 0)
             {
                 int idtemp = user.IdUser;
-                //user.Name = tempName;
                 await EmailService.QuitEmailFromUserDetails(idtemp);
                 await PcService.QuitPcFromUserDetails(idtemp);
                 await UserCredentialService.DeleteUserCredentials(idtemp);
@@ -282,10 +273,27 @@ else
 
 
 
-    private async void ConfirmDeletion()
+
+
+    //private async void ConfirmDeletion()
+    //{   
+
+    //    /*        StateHasChanged()*/;
+    //    await Delete();
+
+
+    //}
+
+
+    protected async override Task OnParametersSetAsync()
     {
-        await Delete();
-    
+        if (OpeningModal._modalLocation == "UserDeleted")
+        {
+            //Console.WriteLine("onparameter set en UserDetails: " + OpeningModal._modalLocation);
+
+            await Delete();
+        }
+        
     }
 
     protected void ReturnToAddUsersHome()
@@ -293,11 +301,7 @@ else
         NavigationManager.NavigateTo("/addUser");
     }
 
-    private void ShowConfirmationModal()
-    {
-        ModalActive = "DeleteUser";
-        Console.WriteLine(ModalActive);// Mostrar el modal
-    }
+ 
 
 
 
