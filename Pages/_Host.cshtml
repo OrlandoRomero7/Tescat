@@ -105,9 +105,26 @@
             }
         }
 
-    </script> 
 
 
+    </script>
+
+
+
+
+    //Para desactivar el scroll vertical cuando MainModal este activo
+    <script>
+
+        function disableVerticalScroll() 
+        {
+        document.documentElement.style.overflowY = 'hidden';
+        }
+
+        function enableVerticalScroll() {
+            document.documentElement.style.overflowY = 'initial';
+        }
+
+    </script>
 
 </body>
 </html>

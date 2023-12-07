@@ -1,13 +1,17 @@
 ﻿<!-- Modal de confirmación -->
-<div class="modal " tabindex="-1" role="dialog" style="display: @_modalStatus">
-    <div class="modal-dialog" role="document">
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+
+<div class="modal" tabindex="-1" style="display:@_modalStatus; background: rgb(0,0,0, 50%)" >
+    <div class="modal-dialog">
         <div class="modal-content shadow-lg">
             <div class="modal-header">
 
-                @if (ModalDisplay == "DeleteUser"){
+                @if (_modalLocation == "DeleteUser")
+                {
                 <h5 class="modal-title">Confirmar eliminación</h5>
                 }
-                @if (ModalDisplay == "UserHomePageLayout")
+                @if (_modalLocation == "UserHomePageLayout")
                 {
                     <h5 class="modal-title"><i class="bi bi-person-fill-add" style="font-size:3rem"></i>
 </h5>
@@ -18,71 +22,84 @@
                 </button>
             </div>
             <div class="modal-body">
-                @if (ModalDisplay == "DeleteUser")
+                @if (_modalLocation == "DeleteUser")
                 {
                     <p>¿Estás seguro de que quieres eliminar este elemento?</p>
                 }
-                @if (ModalDisplay == "UserHomePageLayout")
+                @if (_modalLocation == "UserHomePageLayout")
                 {
                     <p>¿Necesita agregar un nuevo usuario?</p>
                 }
 
             </div>
+
             <div class="modal-footer">
+
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="CloseConfirmationModal">Cancelar</button>
+
                 <button type="button" class="btn btn-primary" @onclick="ConfirmDeleteButton">Confirmar</button>
+
             </div>
         </div>
     </div>
 </div>
 
 @code {
-
-    private string? _modalStatus;
-    private string? _modalLocation;
-
+    string? _modalStatus;
+    public string? _modalLocation; 
 
     [Parameter]
-    public string?
-    ModalDisplay
+    public EventCallback<string>
+       DeletingUser
     { get; set; }
 
 
-    [Parameter] public EventCallback<string>
-    OnActive
-    { get; set; }
-
-
-
-    protected override void OnParametersSet()
+    public void ShowConfirmationModal(string _currentModalLocation)
     {
+        JSRuntime.InvokeVoidAsync("disableVerticalScroll");
+        Console.WriteLine("metodo ShowConfirmationModal en MainModal: " + _currentModalLocation);
 
-        if (ModalDisplay == "DeleteUser")
-        {
-            _modalStatus = "block";
-            _modalLocation = ModalDisplay;
-        }
+        _modalStatus = "block";
+        _modalLocation = _currentModalLocation;
 
-        else if (ModalDisplay == "UserHomePageLayout")
-        {
-            _modalStatus = "block";
-            _modalLocation = ModalDisplay;
-        }
-
+        StateHasChanged();
     }
+
 
 
 
     private void CloseConfirmationModal()
     {
-        _modalStatus = null;
+
+        _modalStatus = "none";
+        JSRuntime.InvokeVoidAsync("enableVerticalScroll");
+
+        StateHasChanged();
     }
 
 
-    private async Task ConfirmDeleteButton()
+    public void ConfirmDeleteButton()
+    
     {
-        await OnActive.InvokeAsync();
+        Console.WriteLine("esto es en mainmodal 1:" + _modalLocation);
 
+        if (_modalLocation == 
+        "DeleteUser")
+        {
+            _modalLocation = "UserDeleted";
+            Console.WriteLine("esto es en mainmodal 2:"+_modalLocation);
+            DeletingUser.InvokeAsync(_modalLocation);
+          //invocar evento para pasar dato hacia MainLayout y cambiar el dato de 
+        }
+
+        if (_modalLocation == "UserHomePageLayout")
+        {
+             NavigationManager.NavigateTo("/addUser");
+       
+        }
+
+        _modalStatus = "none";
+        StateHasChanged();
     }
 
 
