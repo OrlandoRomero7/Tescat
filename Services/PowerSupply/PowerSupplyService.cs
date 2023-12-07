@@ -1,17 +1,21 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
+using Radzen;
 using System.Net.NetworkInformation;
 using Tescat.Models;
+using Tescat.Services.Notification;
 
 namespace Tescat.Services.PowerSupplys
 {
     public class PowerSupplyService : IPowerSupplyService
     {
         private readonly IDbContextFactory<TescatDbContext> _contextFactory;
+        private readonly NotificationService _notificationService;
 
-        public PowerSupplyService(IDbContextFactory<TescatDbContext> dbContextFactory)
+        public PowerSupplyService(IDbContextFactory<TescatDbContext> dbContextFactory, NotificationService notificationService)
         {
             _contextFactory = dbContextFactory;
+            _notificationService = notificationService;
         }
         public async Task<PowerSupply> DeletePowerSupply(Guid guid)
         {
@@ -70,21 +74,34 @@ namespace Tescat.Services.PowerSupplys
 
         public async Task<PowerSupply> UpdatePowerSupply(PowerSupply powerSupply, Guid IdPc)
         {
-            using var context = _contextFactory.CreateDbContext();
-            bool powerSuppyExists = context.PowerSupplies.Any(c => c.IdPc == IdPc);
-            if(powerSuppyExists)
+            try
             {
-                context.Entry(powerSupply).State = EntityState.Modified;
-                await context.SaveChangesAsync();
+                using var context = _contextFactory.CreateDbContext();
+                bool powerSuppyExists = context.PowerSupplies.Any(c => c.IdPc == IdPc);
+                if (powerSuppyExists)
+                {
+                    context.Entry(powerSupply).State = EntityState.Modified;
+                    await context.SaveChangesAsync();
+                    _notificationService.Notify(NotificationSeverity.Success, "Completado", "Se actualizo fuente de poder.");
+                    return powerSupply;
+                }
+                else
+                {
+                    powerSupply.IdPc = IdPc;
+                    context.PowerSupplies.Add(powerSupply);
+                    await context.SaveChangesAsync();
+                }
+                
+                return powerSupply;
+
+            }
+            catch
+            {
+                _notificationService.Notify(NotificationSeverity.Error, "Error", "No se pudo actualizar fuente de poder.");
                 return powerSupply;
             }
-            else
-            { 
-                powerSupply.IdPc = IdPc;
-                return await InsertPowerSupply(powerSupply);
             
-            }    
-            
+
         }
 
         public async Task<PowerSupply> UpdatePowerSupplyForStock(PowerSupply powerSupply)

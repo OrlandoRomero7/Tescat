@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Components.Authorization;
 using Tescat.Areas.Identity;
 using Microsoft.Extensions.Options;
+using Radzen;
 //using Tescat.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,7 +31,7 @@ builder.Services.AddDbContextFactory<TescatDbContext>(options =>
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<TescatDbContext>();
 builder.Services.AddRazorPages(options =>{
-    options.Conventions.AuthorizeAreaPage("Identity", "/Account/Register");
+    //options.Conventions.AuthorizeAreaPage("Identity", "/Account/Register");
 });
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
@@ -52,6 +53,7 @@ builder.Services.AddScoped<IPcCredentialService, PcCredentialService>();
 builder.Services.AddScoped<OtherServices>();
 builder.Services.AddScoped<SaveTempID>();
 builder.Services.AddSweetAlert2();
+builder.Services.AddRadzenComponents();
 
 var app = builder.Build();
 

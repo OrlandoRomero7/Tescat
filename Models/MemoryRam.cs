@@ -11,7 +11,7 @@ public partial class MemoryRam
 
     public string? TypeRam { get; set; }
 
-    public string? Size { get; set; }
+    public int? Size { get; set; }
 
     public string? Speed { get; set; }
 

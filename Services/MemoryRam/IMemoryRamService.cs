@@ -1,10 +1,11 @@
 ﻿using Tescat.Models;
+using Tescat.Models.ExclusiveForApplication;
 
 namespace Tescat.Services.MemoryRams
 {
     public interface IMemoryRamService
     {
-        public Task<List<MemoryRam>> GetAllMemoryRams();
+        public Task<List<PcWithTotalRam>> GetMemoryRamsFromHomePage();
         public Task<MemoryRam> GetMemoryRam(Guid guid);
 
         //public Task<MemoryRam> GetMemoryRamWithPcId(Guid guid);

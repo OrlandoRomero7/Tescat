@@ -1,4 +1,5 @@
 ﻿using Tescat.Models;
+using Tescat.Models.ExclusiveForApplication;
 
 namespace Tescat.Services.Storages
 {
@@ -7,6 +8,7 @@ namespace Tescat.Services.Storages
         public Task<List<Storage>> GetListStoragesWithoutIdPC();
 
         //public Task<Storage> GetStorageWithoutIdPC();
+        public Task<List<PcWithAvailableStrge>> GetAvailableStrgeFromHomePage();
 
         public Task<Storage> GetStorage(Guid guid);
         public Task<List<Storage>> GetStorageWithPcId(Guid guid);

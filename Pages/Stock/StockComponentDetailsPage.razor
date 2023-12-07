@@ -27,10 +27,10 @@
                 </Template>
             </RadzenDropDown>
             <div class="col-md-3">
-                @if (IdPc != Guid.Empty)
+               @*  @if (IdPc != Guid.Empty)
                 {
                     <button type="button" class="btn btn-info" @onclick='() => assingComponent(IdComponent, nameComponent)'>Asignar</button>
-                }
+                } *@
             </div>
         </div>
     </FormSection>
@@ -216,82 +216,82 @@
     }
     private bool existsComponent = false;
 
-    public async Task assingComponent(Guid IdComponent, string component)
-    {
-        switch (component)
-        {
-            case "storage":
-                var storagePc = await StorageService.GetStorageWithPcId(IdPc);
-                Console.WriteLine(storagePc.Count());
-                if (storagePc.Count()<3)
-                {
-                    storage.IdPc = IdPc;
-                    storage = await StorageService.UpdateStorageForStock(storage);
-                    NavigateToPC(IdPc);
-                }
-                else
-                {
-                    existsComponent = true;
-                }
-                break;
-            case "CPU":
-                var cpuPc = await CpuService.GetCpuWithPcId(IdPc);
-                if (cpuPc.IdCpu == Guid.Empty)
-                {
-                    cpu.IdPc = IdPc;
-                    cpu = await CpuService.UpdateCpuForStock(cpu);
-                    NavigateToPC(IdPc);
-                }
-                else
-                {
-                    existsComponent = true;
-                }
-                break;
-                /*
-            case "RAM":
-                var ramPc = await MemoryRamService.GetMemoryRamWithPcId(IdPc);
-                if (ramPc.IdRam == Guid.Empty)
-                {
-                    memoryRam.IdPc = IdPc;
-                    memoryRam = await MemoryRamService.UpdateMemoryRamForStock(memoryRam);
-                    NavigateToPC(IdPc);
-                }
-                else
-                {
-                    existsComponent = true;
-                }
+    // public async Task assingComponent(Guid IdComponent, string component)
+    // {
+    //     switch (component)
+    //     {
+    //         case "storage":
+    //             var storagePc = await StorageService.GetStorageWithPcId(IdPc);
+    //             Console.WriteLine(storagePc.Count());
+    //             if (storagePc.Count()<3)
+    //             {
+    //                 storage.IdPc = IdPc;
+    //                 storage = await StorageService.UpdateStorageForStock(storage);
+    //                 NavigateToPC(IdPc);
+    //             }
+    //             else
+    //             {
+    //                 existsComponent = true;
+    //             }
+    //             break;
+    //         case "CPU":
+    //             var cpuPc = await CpuService.GetCpuWithPcId(IdPc);
+    //             if (cpuPc.IdCpu == Guid.Empty)
+    //             {
+    //                 cpu.IdPc = IdPc;
+    //                 cpu = await CpuService.UpdateCpuForStock(cpu);
+    //                 NavigateToPC(IdPc);
+    //             }
+    //             else
+    //             {
+    //                 existsComponent = true;
+    //             }
+    //             break;
+    //             /*
+    //         case "RAM":
+    //             var ramPc = await MemoryRamService.GetMemoryRamWithPcId(IdPc);
+    //             if (ramPc.IdRam == Guid.Empty)
+    //             {
+    //                 memoryRam.IdPc = IdPc;
+    //                 memoryRam = await MemoryRamService.UpdateMemoryRamForStock(memoryRam);
+    //                 NavigateToPC(IdPc);
+    //             }
+    //             else
+    //             {
+    //                 existsComponent = true;
+    //             }
 
-                break;
-                */
-            case "Motherboard":
-                var motherboardPc = await MotherboardService.GetMotherboardWithPcId(IdPc);
-                if (motherboardPc.IdMotherboard == Guid.Empty)
-                {
-                    motherboard.IdPc = IdPc;
-                    motherboard = await MotherboardService.UpdateMotherboardForStock(motherboard);
-                    NavigateToPC(IdPc);
-                }
-                else
-                {
-                    existsComponent = true;
-                }
-                break;
-            case "PowerSupply":
-                var psuPc = await PowerSupplyService.GetPowerSupplyWithPcId(IdPc);
-                if (psuPc.IdPsu == Guid.Empty)
-                {
-                    powerSupply.IdPc = IdPc;
-                    powerSupply = await PowerSupplyService.UpdatePowerSupplyForStock(powerSupply);
-                    NavigateToPC(IdPc);
-                }
-                else
-                {
-                    existsComponent = true;
-                }
-                break;
-        }
+    //             break;
+    //             */
+    //         case "Motherboard":
+    //             var motherboardPc = await MotherboardService.GetMotherboardWithPcId(IdPc);
+    //             if (motherboardPc.IdMotherboard == Guid.Empty)
+    //             {
+    //                 motherboard.IdPc = IdPc;
+    //                 motherboard = await MotherboardService.UpdateMotherboardForStock(motherboard);
+    //                 NavigateToPC(IdPc);
+    //             }
+    //             else
+    //             {
+    //                 existsComponent = true;
+    //             }
+    //             break;
+    //         case "PowerSupply":
+    //             var psuPc = await PowerSupplyService.GetPowerSupplyWithPcId(IdPc);
+    //             if (psuPc.IdPsu == Guid.Empty)
+    //             {
+    //                 powerSupply.IdPc = IdPc;
+    //                 powerSupply = await PowerSupplyService.UpdatePowerSupplyForStock(powerSupply);
+    //                 NavigateToPC(IdPc);
+    //             }
+    //             else
+    //             {
+    //                 existsComponent = true;
+    //             }
+    //             break;
+    //     }
 
-    }
+    // }
     public void NavigateToPC(Guid IdPc)
     {
         NavigationManager.NavigateTo("/pcDetails/" + IdPc);

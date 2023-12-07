@@ -1,5 +1,6 @@
 ﻿@page "/pcDetails"
 @page "/pcDetails/{id:guid}"
+@inject NotificationService NotificationService
 @attribute [AllowAnonymous]
 
 @inject IPcService PcService
@@ -259,6 +260,7 @@
                 user = new User();
                 //users = await userService.GetAllUsers();
             }
+
             storage = await StorageService.GetStorageWithPcId(pc.IdPc);
             memoryRam = await MemoryRamService.GetMemoryRamWithPcId(pc.IdPc);
             cpu = await CpuService.GetCpuWithPcId(pc.IdPc);
@@ -271,31 +273,33 @@
             if (storage.Count < 3)
             {
                 nullComponents.Add("Almacenamiento");
+                if (storage.Count() == 0) _storage = true;
                 //_storage = true;
             }
-
+            
             if (memoryRam.Count < 2)
             {
                 nullComponents.Add("Memoria RAM");
+                if (memoryRam.Count() == 0) _memoryRam = true;
                 //_memoryRam = true;
             }
-
+            
             if (cpu.IdCpu == Guid.Empty)
             {
                 nullComponents.Add("CPU");
-                //_cpu = true;
+                _cpu = true;
             }
 
             if (motherboard.IdMotherboard == Guid.Empty)
             {
                 nullComponents.Add("Tarjeta Madre");
-                //_motherboard = true;
+                _motherboard = true;
             }
 
             if (powerSupply.IdPsu == Guid.Empty)
             {
                 nullComponents.Add("Fuente de Poder");
-                //_powerSupply = true;
+                _powerSupply = true;
             }
         }
 
@@ -371,7 +375,7 @@
                     //selectedOptions.Add(valorSeleccionado);
                     //_selectedOption = "default";
                 }
-                
+                _storage = false;
                 break;
             case "Memoria RAM":
                 Console.WriteLine(memoryRam.Count());
@@ -384,22 +388,23 @@
                     //selectedOptions.Add(valorSeleccionado);
                     //_selectedOption = "default";
                 }
+                _memoryRam = false;
                 break;
             case "CPU":
-                _cpu = true;
+                _cpu = false;
                 nullComponents.Remove(valorSeleccionado);
                 selectedOptions.Add(valorSeleccionado);
                 //_selectedOption = "default";
-                
+
                 break;
             case "Tarjeta Madre":
-                _motherboard = true;
+                _motherboard = false;
                 nullComponents.Remove(valorSeleccionado);
                 selectedOptions.Add(valorSeleccionado);
                 //_selectedOption = "default";
                 break;
             case "Fuente de Poder":
-                _powerSupply = true;
+                _powerSupply = false;
                 nullComponents.Remove(valorSeleccionado); ;
                 selectedOptions.Add(valorSeleccionado);
                 //_selectedOption = "default";
@@ -420,18 +425,41 @@
 
     private async Task updatePc()
     {
+        //if(storage.Count() == 0) _storage = true;
+        //if (memoryRam.Count() == 0) _memoryRam = true;
         //Los ifs sirven para que al momento de actualizar no cree componentes vacios. Estos solo ayudaran a cuando no este seleccionado, pero si el componente esta seleccionado y no se escribio nada aqui tendra que entrar las validaciones.
         //pc = await PcService.UpdatePc(pc);
         var IdPc = pc.IdPc;
-        storage = await StorageService.UpdateStorages(storage, IdPc);
-        memoryRam = await MemoryRamService.UpdateMemoryRam(memoryRam, IdPc);
+        if(!_storage) storage = await StorageService.UpdateStorages(storage, IdPc);
+        if(!_memoryRam) memoryRam = await MemoryRamService.UpdateMemoryRam(memoryRam, IdPc);
+        motherboard = await MotherboardService.UpdateMotherboard(motherboard, IdPc);
+        if(!_cpu) cpu = await CpuService.UpdateCpu(cpu, IdPc);
+        if(!_powerSupply)powerSupply = await PowerSupplyService.UpdatePowerSupply(powerSupply, IdPc);
+        // var(updatedStorage,saveStorage) = await StorageService.UpdateStorages(storage, IdPc);
+        // var(updatedMemoryRam,saveMemoryRam) = await MemoryRamService.UpdateMemoryRam(memoryRam, IdPc);
+        // if (saveStorage == true)
+        // {
+        //     NotificationService.Notify(NotificationSeverity.Success, "Éxito", "Todo bien Almacenamiento");
+        // }
+        // else
+        // {
+        //     NotificationService.Notify(NotificationSeverity.Error, "Error", "Hubo problemas al guardar Alamacenamiento");
+        // }
+        // if (saveMemoryRam == true)
+        // {
+        //     NotificationService.Notify(NotificationSeverity.Success, "Éxito", "Todo bien Memoria Ram");
+        // }
+        // else
+        // {
+        //     NotificationService.Notify(NotificationSeverity.Error, "Error", "Hubo problemas al guardar Memoria Ram");
+        // }
         //revisar para que sirven estos if
         //if (!_motherboard) motherboard = await MotherboardService.UpdateMotherboard(motherboard, IdPc);
         //if (!_cpu) cpu = await CpuService.UpdateCpu(cpu, IdPc);
         //if (!_powerSupply) powerSupply = await PowerSupplyService.UpdatePowerSupply(powerSupply, IdPc);
-        if(_motherboard) motherboard = await MotherboardService.UpdateMotherboard(motherboard, IdPc);
-        if (_cpu) cpu = await CpuService.UpdateCpu(cpu, IdPc);
-        if (_powerSupply) powerSupply = await PowerSupplyService.UpdatePowerSupply(powerSupply, IdPc);
+        //if(_motherboard) motherboard = await MotherboardService.UpdateMotherboard(motherboard, IdPc);
+        //if (_cpu) cpu = await CpuService.UpdateCpu(cpu, IdPc);
+        //if (_powerSupply) powerSupply = await PowerSupplyService.UpdatePowerSupply(powerSupply, IdPc);
         StateHasChanged();
     }
 
@@ -511,6 +539,7 @@
                 {
                     selectedOptions.Remove("Almacenamiento");
                     nullComponents.Add("Almacenamiento");
+                    _storage = true;
                 }
                 break;
             case "Memoria RAM":
@@ -521,6 +550,7 @@
                 {
                     selectedOptions.Remove("Memoria RAM");
                     nullComponents.Add("Memoria RAM");
+                    _memoryRam = true;
                 }
                 break;
             case "CPU":
@@ -530,7 +560,7 @@
                 cpu = new Cpu();
                 selectedOptions.Remove("CPU");
                 nullComponents.Add("CPU");
-                //_cpu = true;
+                _cpu = true;
                 break;
             case "Tarjeta Madre":
                 var IdPcMother = motherboard.IdPc.Value;
@@ -539,7 +569,7 @@
                 motherboard = new Motherboard();
                 selectedOptions.Remove("Tarjeta Madre");
                 nullComponents.Add("Tarjeta Madre");
-                //_motherboard = true;
+                _motherboard = true;
                 break;
             case "Fuente de Poder":
                 var IdPcPSU = powerSupply.IdPc.Value;
@@ -548,10 +578,10 @@
                 powerSupply = new PowerSupply();
                 selectedOptions.Remove("Fuente de Poder");
                 nullComponents.Add("Fuente de Poder");
-                //_powerSupply = true;
+                _powerSupply = true;
                 break;
+                
         }
-
         CloseModalComponents(); // Cerrar el modal después de la confirmación
                                 //StateHasChanged();
     }
