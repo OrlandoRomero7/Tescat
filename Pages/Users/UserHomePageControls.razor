@@ -1,5 +1,5 @@
 ﻿@inject NavigationManager NavigationManager
-@inject IJSRuntime JSRuntime
+
 
 <div class="controls-container" style="display: flex; justify-content: flex-end;  margin-bottom: 2%;">
 
@@ -169,7 +169,7 @@
     private async Task CombinedClickHandler(MouseEventArgs e, RippleType rippleType)
     {
         await ClickHandler(e, rippleType);
-        await JSRuntime.InvokeVoidAsync("disableVerticalScroll");
+
         OpeningModal?.ShowConfirmationModal(modalLocation);
         Console.WriteLine(modalLocation);
     }

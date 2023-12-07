@@ -20,6 +20,7 @@
     <link href="Tescat.styles.css" rel="stylesheet" />
     <link rel="icon" type="image/png" href="favicon.png" />
     <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
+    
 </head>
 <body>
     <component type="typeof(App)" render-mode="ServerPrerendered" />
@@ -105,7 +106,10 @@
         }
 
 
+
     </script>
+
+
 
 
     //Para desactivar el scroll vertical cuando MainModal este activo
@@ -117,10 +121,10 @@
         }
 
         function enableVerticalScroll() {
-            document.documentElement.style.overflowY = 'hidden';
+            document.documentElement.style.overflowY = 'initial';
         }
 
     </script>
 
 </body>
-</html>s
+</html>

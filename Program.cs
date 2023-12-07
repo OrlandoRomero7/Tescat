@@ -14,6 +14,10 @@ using Tescat.Services.Cpus;
 using Tescat.Services.Motherboards;
 using Tescat.Services.PowerSupplys;
 using Tescat.Services.Pc_Credentials;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Components.Authorization;
+using Tescat.Areas.Identity;
+using Microsoft.Extensions.Options;
 //using Tescat.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,8 +27,13 @@ builder.Services.AddDbContextFactory<TescatDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 //builder.Services.AddDbContext<TescatDbContext>(options =>
 //    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddRazorPages();
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<TescatDbContext>();
+builder.Services.AddRazorPages(options =>{
+    //options.Conventions.AuthorizeAreaPage("Identity", "/Account/Register");
+});
 builder.Services.AddServerSideBlazor();
+builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
 
 
 //builder.Services.AddSingleton<WeatherForecastService>();
@@ -59,6 +68,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseAuthorization();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");

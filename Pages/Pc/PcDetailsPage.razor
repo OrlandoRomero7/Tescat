@@ -1,5 +1,6 @@
 ﻿@page "/pcDetails"
 @page "/pcDetails/{id:guid}"
+@attribute [AllowAnonymous]
 
 @inject IPcService PcService
 @inject IStorageService StorageService

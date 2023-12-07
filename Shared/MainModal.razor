@@ -1,5 +1,6 @@
 ﻿<!-- Modal de confirmación -->
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
 
 <div class="modal" tabindex="-1" style="display:@_modalStatus; background: rgb(0,0,0, 50%)" >
     <div class="modal-dialog">
@@ -55,7 +56,7 @@
 
     public void ShowConfirmationModal(string _currentModalLocation)
     {
-
+        JSRuntime.InvokeVoidAsync("disableVerticalScroll");
         Console.WriteLine("metodo ShowConfirmationModal en MainModal: " + _currentModalLocation);
 
         _modalStatus = "block";
@@ -69,8 +70,9 @@
 
     private void CloseConfirmationModal()
     {
-        _modalStatus = "none";
 
+        _modalStatus = "none";
+        JSRuntime.InvokeVoidAsync("enableVerticalScroll");
 
         StateHasChanged();
     }
