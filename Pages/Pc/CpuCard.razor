@@ -1,6 +1,6 @@
 ﻿
 <FormSection Title="Procesador">
-    <EditForm Model="@cpu">
+    <EditForm EditContext="cpuContext">
         @if (cpu.IdCpu != Guid.Empty && !stockComponent)
         {
             <button type="button" class="btn btn-danger" @onclick="FunctionCallShowModal">Quitar</button>
@@ -27,6 +27,9 @@
 @code {
     [Parameter]
     public Cpu cpu { get; set; }
+
+    [Parameter]
+    public EditContext cpuContext { get; set; }
 
     [Parameter]
     public Action confirmationModalChild { get; set; }

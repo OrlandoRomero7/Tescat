@@ -88,26 +88,18 @@ namespace Tescat.Services.Motherboards
             try
             {
                 using var context = _contextFactory.CreateDbContext();
-                if (context.ChangeTracker.HasChanges())
+                if (motherboard.IdMotherboard != Guid.Empty)
                 {
                     context.Entry(motherboard).State = EntityState.Modified;
-                    await context.SaveChangesAsync();
-                    _notificationService.Notify(NotificationSeverity.Success, "Completado", "Se actualizó la tarjeta madre.");
                 }
                 else
                 {
-                    _notificationService.Notify(NotificationSeverity.Info, "Sin cambios", "No se realizaron cambios en la tarjeta madre.");
+                    motherboard.IdPc = IdPc;
+                    context.Motherboards.Add(motherboard);
                 }
-                    
-
-
+                await context.SaveChangesAsync();
+                _notificationService.Notify(NotificationSeverity.Success, "Completado", "Se actualizó la tarjeta madre.");
                 return motherboard;
-            }
-            catch (DbUpdateException ex)
-            {
-                // Manejar la excepción
-                Console.WriteLine(ex.Message);
-                return null;
             }
             catch
             {
@@ -115,13 +107,6 @@ namespace Tescat.Services.Motherboards
                 return motherboard;
             }
             //bool existeMotherboard = context.Motherboards.Any(c => c.IdPc == IdPc);
-
-            //else
-            //{
-            //    motherboard.IdPc = IdPc;
-            //    context.Motherboards.Add(motherboard);
-            //    await context.SaveChangesAsync();
-            //}
         }
         public async Task<Motherboard> UpdateMotherboardForStock(Motherboard motherboard)
         {

@@ -77,21 +77,18 @@ namespace Tescat.Services.PowerSupplys
             try
             {
                 using var context = _contextFactory.CreateDbContext();
-                bool powerSuppyExists = context.PowerSupplies.Any(c => c.IdPc == IdPc);
-                if (powerSuppyExists)
+                //bool powerSuppyExists = context.PowerSupplies.Any(c => c.IdPc == IdPc);
+                if (powerSupply.IdPsu!=Guid.Empty)
                 {
                     context.Entry(powerSupply).State = EntityState.Modified;
-                    await context.SaveChangesAsync();
-                    _notificationService.Notify(NotificationSeverity.Success, "Completado", "Se actualizo fuente de poder.");
-                    return powerSupply;
                 }
                 else
                 {
                     powerSupply.IdPc = IdPc;
                     context.PowerSupplies.Add(powerSupply);
-                    await context.SaveChangesAsync();
                 }
-                
+                await context.SaveChangesAsync();
+                _notificationService.Notify(NotificationSeverity.Success, "Completado", "Se actualizo fuente de poder.");
                 return powerSupply;
 
             }
@@ -101,7 +98,6 @@ namespace Tescat.Services.PowerSupplys
                 return powerSupply;
             }
             
-
         }
 
         public async Task<PowerSupply> UpdatePowerSupplyForStock(PowerSupply powerSupply)

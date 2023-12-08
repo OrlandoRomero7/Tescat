@@ -1,6 +1,6 @@
 ﻿
 <FormSection Title="Tarjeta Madre">
-    <EditForm Model="@motherboard">
+    <EditForm EditContext="motherboardContext">
         @if (motherboard.IdMotherboard != Guid.Empty && !stockComponent)
         {
             <button type="button" class="btn btn-danger" @onclick="FunctionCallShowModal">Quitar</button>
@@ -49,6 +49,9 @@
     public Motherboard motherboard { get; set; } = default!;
 
     [Parameter]
+    public EditContext motherboardContext { get; set; } = default!;
+
+    [Parameter]
     public Action confirmationModalChild { get; set; }
 
     [Parameter]
@@ -61,5 +64,4 @@
     {
         confirmationModalChild?.Invoke();
     }
-
 }

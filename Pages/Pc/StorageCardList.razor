@@ -8,7 +8,7 @@
     num = i;
     @* Por alguna razon dentro del FormSection el valor de i cambia a 1, cuando se supone que deberia valer 0*@
     <FormSection Title="Almacenamiento">
-        <EditForm Model="@storage">
+        <EditForm EditContext="storageCotext">
             
             @if (storage[num].IdStorage != Guid.Empty)
             {
@@ -114,6 +114,9 @@
 @code {
     [Parameter]
     public List<Storage> storage { get; set; }
+
+    [Parameter]
+    public EditContext storageCotext { get; set; }
 
     [Parameter]
     public Action confirmationModalChild { get; set; }

@@ -82,19 +82,17 @@ namespace Tescat.Services.Cpus
             try
             {
                 using var context = _contextFactory.CreateDbContext();
-                bool existeCpu = context.Cpus.Any(c => c.IdPc == IdPc);
-                if (existeCpu)
+                //bool existeCpu = context.Cpus.Any(c => c.IdPc == IdPc);
+                if (cpu.IdCpu!=Guid.Empty)
                 {
                     context.Entry(cpu).State = EntityState.Modified;
-                    await context.SaveChangesAsync();
-                    
                 }
                 else
                 {
                     cpu.IdPc = IdPc;
                     context.Cpus.Add(cpu);
-                    await context.SaveChangesAsync();
                 }
+                await context.SaveChangesAsync();
                 _notificationService.Notify(NotificationSeverity.Success, "Completado", "Se actualizo procesador.");
                 return cpu;
             }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Tescat.Models;
 
-public partial class PcCredential
+public partial class PcCredential: ICloneable
 {
     public Guid IdPc { get; set; }
 
@@ -32,4 +32,9 @@ public partial class PcCredential
     public DateTime? LastModif { get; set; }
 
     public virtual Pc IdPcNavigation { get; set; } = null!;
+
+    public object Clone()
+    {
+        return MemberwiseClone();
+    }
 }

@@ -43,7 +43,7 @@
 @if (nameComponent == "CPU" && cpu is not null)
 {
     <button type="button" class="btn btn-danger" @onclick="@( () => ShowModalComponents("CPU") )">Eliminar</button>
-    <CpuCard cpu="cpu" stockComponent="stockComponent"></CpuCard>
+    <CpuCard cpuContext="cpuContext" cpu="cpu" stockComponent="stockComponent"></CpuCard>
 }
 @if (nameComponent == "RAM" && memoryRam is not null)
 {
@@ -53,12 +53,12 @@
 @if (nameComponent == "Motherboard" && motherboard is not null)
 {
     <button type="button" class="btn btn-danger" @onclick="@( () => ShowModalComponents("Tarjeta Madre") )">Eliminar</button>
-    <MotherboardCard motherboard="motherboard" stockComponent="stockComponent"></MotherboardCard>
+    <MotherboardCard motherboardContext="motherboardContext" motherboard="motherboard" stockComponent="stockComponent"></MotherboardCard>
 }
 @if (nameComponent == "PowerSupply" && powerSupply is not null)
 {
     <button type="button" class="btn btn-danger" @onclick="@( () => ShowModalComponents("Fuente de Poder") )">Eliminar</button>
-    <PowerSupplyCard powerSupply="powerSupply" stockComponent="stockComponent"></PowerSupplyCard>
+    <PowerSupplyCard powerSupplyContext="powerSupplyContext" powerSupply="powerSupply" stockComponent="stockComponent"></PowerSupplyCard>
 }
 
 
@@ -126,6 +126,11 @@
 
     Guid IdPc;
 
+    EditContext cpuContext;
+    EditContext motherboardContext;
+    EditContext powerSupplyContext;
+
+
     protected override async Task OnInitializedAsync()
     {
         users = await userService.GetAllUsers();
@@ -140,15 +145,18 @@
                     break;
                 case "CPU":
                     cpu = await CpuService.GetCpu(IdComponent);
+                    cpuContext = new(cpu);
                     break;
                 case "RAM":
                     memoryRam = await MemoryRamService.GetMemoryRam(IdComponent);
                     break;
                 case "Motherboard":
                     motherboard = await MotherboardService.GetMotherboard(IdComponent);
+                    motherboardContext = new(motherboard);
                     break;
                 case "PowerSupply":
                     powerSupply = await PowerSupplyService.GetPowerSupply(IdComponent);
+                    powerSupplyContext = new(powerSupply);
                     break;
 
             }

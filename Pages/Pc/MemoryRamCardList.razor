@@ -3,7 +3,7 @@
     var m = memoryRam[i];
     num = i;
     <FormSection Title="Memoria RAM">
-        <EditForm Model="@memoryRam">
+        <EditForm EditContext="memoryRamContext">
             @if (memoryRam[num].IdRam != Guid.Empty)
             {
                 <button type="button" class="btn btn-danger" @onclick="FunctionCallShowModal">Quitar</button>
@@ -85,6 +85,9 @@
 @code {
     [Parameter]
     public List<MemoryRam> memoryRam { get; set; }
+
+    [Parameter]
+    public EditContext memoryRamContext { get; set; }
 
     private List<MemoryRam> oldMemoryRam;
 

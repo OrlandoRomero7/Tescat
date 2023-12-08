@@ -1,6 +1,6 @@
 ﻿
 <FormSection Title="Fuente de Poder">
-    <EditForm Model="@powerSupply">
+    <EditForm EditContext="powerSupplyContext">
         @if (powerSupply.IdPsu != Guid.Empty && !stockComponent)
         {
             <button type="button" class="btn btn-danger" @onclick="FunctionCallShowModal">Quitar</button>
@@ -17,6 +17,9 @@
 @code {
     [Parameter]
     public PowerSupply powerSupply { get; set; }
+
+    [Parameter]
+    public EditContext powerSupplyContext { get; set; }
 
     [Parameter]
     public Action confirmationModalChild { get; set; }
