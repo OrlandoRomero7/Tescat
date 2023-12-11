@@ -14,19 +14,24 @@
 
             @if (user.IdUser == 0)
             {
+
+              
                 <UserPictureUpload @ref="userPictureUploadRef"
                                    OnFileUploaded="HandleFileUpload"
                                    OnFilePreviewReady="HandleFilePreview"
                                    UploadComponentStyle="@HandlingUploadStyles()"
                                    IdUser="@id" />
+               
             }
             else
             {
+                <div style="border: 1px solid #ccc; cursor: pointer; width:10rem;  padding: 6px 12px;">
                 <UserPictureUpload @ref="userPictureUploadRef"
                                    OnFileUploaded="HandleFileUpload"
                                    OnFilePreviewReady="HandleFilePreview"
                                    UploadComponentStyle="@HandlingUploadStyles()"
                                    IdUser="@user.IdUser" />
+                </div>
             }
 
             @if (user?.IMAGE_NAME != null)
@@ -223,7 +228,7 @@
     {
         return
         (!string.IsNullOrEmpty(base64ImagePreview) || (user?.IMAGE_NAME is not null && user.IMAGE_NAME != "default.svg"))
-        ? "Cambiar" : "Agregar";
+        ? "Cambiar  Imagen" : "Agregar  Imagen";
     }
 
 

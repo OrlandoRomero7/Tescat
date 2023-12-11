@@ -9,6 +9,7 @@
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'http' " />
   <ItemGroup>
+    <None Remove="Pages\Users\AddUserPage.razor.css" />
     <None Remove="Pages\Users\UserSearch.razor.css" />
     <None Remove="Shared\MainModal.razor.css" />
   </ItemGroup>
@@ -17,6 +18,7 @@
     <Content Remove="Shared\BasicModal.razor" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Pages\Users\AddUserPage.razor.css" />
     <Content Include="Pages\Users\UserSearch.razor.css" />
     <Content Include="Shared\MainModal.razor.css" />
   </ItemGroup>

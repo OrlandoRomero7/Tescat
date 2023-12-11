@@ -1,6 +1,6 @@
 ﻿.searchbox {
     background-color: var(--brand-white);
-    background: white;
+    background: var(--plain-white);
     background: transparent;
     padding: 0px 15px;
     font-size: 17px;

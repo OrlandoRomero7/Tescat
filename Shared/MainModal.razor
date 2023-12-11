@@ -28,7 +28,7 @@
                 }
                 @if (_modalLocation == "UserHomePageLayout")
                 {
-                    <p>¿Necesita agregar un nuevo usuario?</p>
+                    <p>¿Necesita crear un nuevo usuario?</p>
                 }
 
             </div>
@@ -79,7 +79,7 @@
 
 
     public void ConfirmDeleteButton()
-    
+
     {
         Console.WriteLine("esto es en mainmodal 1:" + _modalLocation);
 
@@ -89,13 +89,14 @@
             _modalLocation = "UserDeleted";
             Console.WriteLine("esto es en mainmodal 2:"+_modalLocation);
             DeletingUser.InvokeAsync(_modalLocation);
-          //invocar evento para pasar dato hacia MainLayout y cambiar el dato de 
+            CloseConfirmationModal();
+            //invocar evento para pasar dato hacia MainLayout y cambiar el dato de 
         }
 
         if (_modalLocation == "UserHomePageLayout")
         {
              NavigationManager.NavigateTo("/addUser");
-       
+            CloseConfirmationModal();
         }
 
         _modalStatus = "none";
