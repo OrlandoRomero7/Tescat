@@ -18,6 +18,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Components.Authorization;
 using Tescat.Areas.Identity;
 using Microsoft.Extensions.Options;
+using Radzen;
+using System.Net.NetworkInformation;
 //using Tescat.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -52,6 +54,8 @@ builder.Services.AddScoped<IPcCredentialService, PcCredentialService>();
 builder.Services.AddScoped<OtherServices>();
 builder.Services.AddScoped<SaveTempID>();
 builder.Services.AddSweetAlert2();
+builder.Services.AddRadzenComponents();
+builder.Services.AddScoped<PictureStateContainer>();
 
 var app = builder.Build();
 

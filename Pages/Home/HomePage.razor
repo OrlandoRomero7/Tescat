@@ -1,28 +1,82 @@
 ﻿@page "/"
 @inject IJSRuntime JS
+@inject IMemoryRamService MemoryRamService
+@inject IStorageService StorageService
+@inject IPcService PcService
+@inject NavigationManager NavigationManager
 <PageTitle>Inicio - Tescat Software</PageTitle>
 
 <div style="padding: 0 5rem">
 
 <h1 style="padding-left: 1px; margin:3rem 0 2.75rem .25rem; font-size:2rem;">Estado De Equipos</h1>
 
-<div style="display:flex;  flex-wrap: wrap; margin-top:4rem">
+    <div style="display:flex;  flex-wrap: wrap; margin-top:4rem">
 
-    <HomeCard Title="Almacenamiento" CardIcon="bi bi-hdd">
-        Estado del Almacenamiento
-    </HomeCard>
+        <HomeCard Title="Almacenamiento" CardIcon="bi bi-hdd">
+            Estado del Almacenamiento
+        </HomeCard>
 
-    <HomeCard Title="RAM" CardIcon="bi bi-memory">
-        Estado de la ram
-    </HomeCard>
+        <HomeCard Title="RAM" CardIcon="bi bi-memory">
+            Estado
+        </HomeCard>
 
-    <HomeCard Title="Bandejas de Entrada" CardMaterialIcon="stacked_inbox">
-        Estado de los archivos de correo
-    </HomeCard>
+        <HomeCard Title="Bandejas de Entrada" CardMaterialIcon="stacked_inbox">
+            Estado de los archivos de correo
+        </HomeCard>
 
-    <HomeCard Title="SSD's TBW" CardMaterialIcon="save_as">
-        Alto numero de escrituras en discos
-    </HomeCard>
+        <HomeCard Title="SSD's TBW" CardMaterialIcon="save_as">
+            Alto numero de escrituras en discos
+        </HomeCard>
+
+    </div>
 
 </div>
-</div>
+
+@*<RadzenDataGrid AllowFiltering="true" AllowColumnResize="true"
+                FilterMode="FilterMode.Simple" PageSize="3" AllowPaging="true" AllowSorting="true" Data="@pcRam" ColumnWidth="200px">
+    <Columns>
+        <RadzenDataGridColumn TItem="PcWithTotalRam" Property="TotalRamCapacity" Title="Total Ram" Filterable="false"></RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="PcWithTotalRam" Property="Pc.PcName" Title="Nombre de PC" Filterable="false"></RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="PcWithTotalRam" Title="Acción" Sortable="false">
+        <Template Context="item">
+            <button type="button" class="btn btn-info" @onclick="()=>NavigateToPc(item.Pc.IdPc)">Ver</button>
+        </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
+<RadzenDataGrid AllowFiltering="true" AllowColumnResize="true"
+                FilterMode="FilterMode.Simple" PageSize="3" AllowPaging="true" AllowSorting="true" Data="@pcStorage" ColumnWidth="200px">
+    <Columns>
+        <RadzenDataGridColumn TItem="PcWithAvailableStrge" Property="AvailableStorage" Title="Total Almacenamiento" Filterable="false"></RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="PcWithAvailableStrge" Property="Pc.PcName" Title="Nombre de PC" Filterable="false"></RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="PcWithAvailableStrge" Title="Acción" Sortable="false">
+            <Template Context="item">
+                <button type="button" class="btn btn-info" @onclick="()=>NavigateToPc(item.Pc.IdPc)">Ver</button>
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>*@
+
+@code{
+    //public List<PcWithTotalRam> pcRam {get;set;}
+    //public List<PcWithAvailableStrge> pcStorage { get; set; }
+
+    //LogicalFilterOperator logicalFilterOperator = LogicalFilterOperator.And;
+    //FilterCaseSensitivity filterCaseSensitivity = FilterCaseSensitivity.CaseInsensitive;
+
+    //protected override async Task OnInitializedAsync()
+    //{
+    //    pcRam = await MemoryRamService.GetMemoryRamsFromHomePage();
+    //    pcStorage = await StorageService.GetAvailableStrgeFromHomePage();
+
+    //    // foreach (var p in pcStorage)
+    //    // {
+    //    //     Console.WriteLine(p.Pc.PcName+"\t"+p.AvailableStorage);
+    //    // }
+        
+    //}  
+    public void NavigateToPc(Guid Guid){
+        NavigationManager.NavigateTo("/pcDetails/"+Guid);
+    }
+}

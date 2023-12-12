@@ -20,8 +20,9 @@
 
 @if (user != null && user.IdUser == 0)
 {
-<button type="button" class="btn btn-primary"  @onclick="SubmitChildForm">
-    Crear</button>
+    <button type="button" class="btn btn-primary" @onclick="SubmitChildForm">
+        Crear
+    </button>
 }
 else
 {
@@ -36,45 +37,45 @@ else
 {
     if (!isEdit) // Añade esta condición
     {
-<div class="alert alert-primary">El Usuario Con Numero De Empleado: @user.IdUser <br> Ya Existe.</div>
-<div>
-    <h3>
-        ¿Quiere editar al usuario?
-    </h3>
-    <button class="btn btn-info" @onclick="(() => isEdit = true)">
-        Editar
-    </button>
-    <button class="btn btn-info" @onclick="ReturnToAddUsersHome">
-        Regresar
-    </button>
-</div>
+        <div class="alert alert-primary">El Usuario Con Numero De Empleado: @user.IdUser <br> Ya Existe.</div>
+        <div>
+            <h3>
+                ¿Quiere editar al usuario?
+            </h3>
+            <button class="btn btn-info" @onclick="(() => isEdit = true)">
+                Editar
+            </button>
+            <button class="btn btn-info" @onclick="ReturnToAddUsersHome">
+                Regresar
+            </button>
+        </div>
     }
 }
 
 @*Cuando se quiere agregar un usuario que ya esta desde AddUserpage*@
 @if (user?.IdUser != 0 && isEdit && FromUserAddPage)
 {
- <!-- Card de Informacion Basica -->
-<BasicInformation @ref="childReference" user="user" id="id" areas="areas" departaments="departaments" CreateUserCallback="CreateUser"></BasicInformation>
+    <!-- Card de Informacion Basica -->
+    <BasicInformation @ref="childReference" user="user" id="id" areas="areas" departaments="departaments" CreateUserCallback="CreateUser"></BasicInformation>
 
- <!-- Card de Informacion de Contacto -->
-<ContacInformation user="user"></ContacInformation>
+    <!-- Card de Informacion de Contacto -->
+    <ContacInformation user="user"></ContacInformation>
 
- <!-- Card de Cuentas de Usuario -->
-<UserAccount userCredential="userCredential"></UserAccount>
+    <!-- Card de Cuentas de Usuario -->
+    <UserAccount userCredential="userCredential"></UserAccount>
 }
 
 @*Cuando se quiere agregar un nuevo Usuario*@
 @if (user?.IdUser == 0)
 {
- <!-- Card de Informacion Basica -->
-<BasicInformation @ref="childReference" user="user" id="id" areas="areas" departaments="departaments" CreateUserCallback="CreateUser"></BasicInformation>
+    <!-- Card de Informacion Basica -->
+    <BasicInformation @ref="childReference" user="user" id="id" areas="areas" departaments="departaments" CreateUserCallback="CreateUser"></BasicInformation>
 
- <!-- Card de Informacion de Contacto -->
-<ContacInformation user="user"></ContacInformation>
+    <!-- Card de Informacion de Contacto -->
+    <ContacInformation user="user"></ContacInformation>
 
- <!-- Card de Cuentas de Usuario -->
-<UserAccount userCredential="userCredential"></UserAccount>
+    <!-- Card de Cuentas de Usuario -->
+    <UserAccount userCredential="userCredential"></UserAccount>
 
 }
 
@@ -84,14 +85,14 @@ else
 @if (user?.IdUser != 0 && !isEdit && !FromUserAddPage)
 
 {
- <!-- Card de Informacion Basica -->
-<BasicInformation @ref="childReference" user="@user" id="id" areas="areas" departaments="departaments" CreateUserCallback="CreateUser"></BasicInformation>
+    <!-- Card de Informacion Basica -->
+    <BasicInformation @ref="childReference" user="@user" id="id" areas="areas" departaments="departaments" CreateUserCallback="CreateUser"></BasicInformation>
 
- <!-- Card de Informacion de Contacto -->
-<ContacInformation user="user" userEmails="userEmails"></ContacInformation>
+    <!-- Card de Informacion de Contacto -->
+    <ContacInformation user="user" userEmails="userEmails"></ContacInformation>
 
- <!-- Card de Cuentas de Usuario -->
-<UserAccount userCredential="userCredential"></UserAccount>
+    <!-- Card de Cuentas de Usuario -->
+    <UserAccount userCredential="userCredential"></UserAccount>
 
 }
 
@@ -116,6 +117,7 @@ else
     public User user = new User();
     private UserCredential? userCredential = new UserCredential();
     private Email userEmails = new Email();
+    public List<Pc>? dbPc = null;
 
 
     public string[] areas;
@@ -123,7 +125,7 @@ else
 
     public int IdOld;
 
-
+    public int count;
 
     public bool FromUserAddPage = false;
 
@@ -163,6 +165,7 @@ else
                 departaments = await OtherServices.getDepartaments();
                 userCredential = await UserCredentialService.GetUserCredentials(id);
                 userEmails = await EmailService.GetEmails(id);
+                dbPc = await PcService.GetNumberPc(id);
                 //dataLoaded = true;
 
                 OriginalUserId = user?.IdUser;
@@ -248,6 +251,7 @@ else
                 await UserCredentialService.DeleteUserCredentials(idtemp);
                 await UserService.DeleteUser(idtemp);
                 await OtherServices.ShowMessage("Se elimino el usuario: " + idtemp);
+                StateHasChanged();
                 NavigationManager.NavigateTo("/users");
 
                 Console.WriteLine("Se elimino correctamente");
@@ -259,12 +263,16 @@ else
         }
 
     }
+
+
     private async void deleteOldId(int id)
     {
         await UserService.DeleteUser(id);
     }
 
+
     private BasicInformation childReference;
+
 
     private void SubmitChildForm()
     {
@@ -278,10 +286,10 @@ else
 
     protected async override Task OnParametersSetAsync()
     {
-        if (OpeningModal._modalLocation == "UserDeleted")
+     
+        if (OpeningModal?._modalLocation == "UserDeleted")
         {
-            //Console.WriteLine("onparameter set en UserDetails: " + OpeningModal._modalLocation);
-
+            OpeningModal._modalLocation = "UserHomePageLayout";
             await Delete();
         }
         
@@ -293,6 +301,11 @@ else
     }
 
  
+
+    private void NavigateToPcDetails(Guid num)
+    {
+        NavigationManager.NavigateTo("/pcDetails/" + num);
+    }
 
 
 

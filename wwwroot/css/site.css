@@ -29,7 +29,7 @@ p, h1, h2, h3, h4, h5, h6, span, strong, em, a, li, td, th, b, i, label {
 
 a {
     color: var(--brand);
-    text-decoration: underline;
+    text-decoration: none;
 }
 
     a:hover {

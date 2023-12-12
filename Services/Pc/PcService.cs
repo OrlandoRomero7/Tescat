@@ -1,17 +1,21 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Radzen;
 using System.Diagnostics.Tracing;
 using Tescat.Models;
+using Tescat.Services.Notification;
 
 namespace Tescat.Services.Pcs
 {
     public class PcService : IPcService
     {
         private readonly IDbContextFactory<TescatDbContext> _contextFactory;
+        private readonly NotificationService _notificationService;
 
-        public PcService(IDbContextFactory<TescatDbContext> dbContextFactory)
+        public PcService(IDbContextFactory<TescatDbContext> dbContextFactory, NotificationService notificationService)
         {
             _contextFactory = dbContextFactory;
+            _notificationService = notificationService;
         }
         public async Task<List<Pc>> GetAllPc()
         {
@@ -81,10 +85,20 @@ namespace Tescat.Services.Pcs
 
         public async Task<Pc> UpdatePc(Pc pc)
         {
-            using var context = _contextFactory.CreateDbContext();
-            context.Entry(pc).State = EntityState.Modified;
-            await context.SaveChangesAsync();
-            return pc;
+            try
+            {
+                using var context = _contextFactory.CreateDbContext();
+                context.Entry(pc).State = EntityState.Modified;
+                await context.SaveChangesAsync();
+                _notificationService.Notify(NotificationSeverity.Success, "Completado", "Se actualizo información de pc.");
+                return pc;
+            }
+            catch
+            {
+                _notificationService.Notify(NotificationSeverity.Error, "Error", "No se pudo actualizar información de pc.");
+                return pc;
+            }
+            
 
         }
         //Revisar esta funcion

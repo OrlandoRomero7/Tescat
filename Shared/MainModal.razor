@@ -46,7 +46,7 @@
 
 @code {
     string? _modalStatus;
-    public string? _modalLocation; 
+    public string? _modalLocation { get; set; }
 
     [Parameter]
     public EventCallback<string>
@@ -73,7 +73,6 @@
 
         _modalStatus = "none";
         JSRuntime.InvokeVoidAsync("enableVerticalScroll");
-
         StateHasChanged();
     }
 

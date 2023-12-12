@@ -1,16 +1,21 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
+using Radzen;
 using Tescat.Models;
+using Tescat.Services.Notification;
 
 namespace Tescat.Services.Cpus
 {
     public class CpuService : ICpuService
     {
         private readonly IDbContextFactory<TescatDbContext> _contextFactory;
+        private readonly NotificationService _notificationService;
 
-        public CpuService(IDbContextFactory<TescatDbContext> dbContextFactory)
+        public CpuService(IDbContextFactory<TescatDbContext> dbContextFactory,
+            NotificationService notificationService)
         {
             _contextFactory = dbContextFactory;
+            _notificationService = notificationService;
         }
         public async Task<Cpu> DeleteCpu(Guid cpuGuid)
         {
@@ -58,27 +63,45 @@ namespace Tescat.Services.Cpus
 
         public async Task<Cpu> InsertCpu(Cpu cpu)
         {
-            using var context = _contextFactory.CreateDbContext();
-            context.Cpus.Add(cpu);
-            await context.SaveChangesAsync();
-            return cpu;
+            try
+            {
+                using var context = _contextFactory.CreateDbContext();
+                context.Cpus.Add(cpu);
+                await context.SaveChangesAsync();
+                return cpu;
+            }
+            catch
+            {
+                return cpu;
+            }
+            
         }
 
         public async Task<Cpu> UpdateCpu(Cpu cpu, Guid IdPc)
         {
-            using var context = _contextFactory.CreateDbContext();
-            bool existeCpu = context.Cpus.Any(c => c.IdPc == IdPc);
-            if (existeCpu)
+            try
             {
-                context.Entry(cpu).State = EntityState.Modified;
+                using var context = _contextFactory.CreateDbContext();
+                //bool existeCpu = context.Cpus.Any(c => c.IdPc == IdPc);
+                if (cpu.IdCpu!=Guid.Empty)
+                {
+                    context.Entry(cpu).State = EntityState.Modified;
+                }
+                else
+                {
+                    cpu.IdPc = IdPc;
+                    context.Cpus.Add(cpu);
+                }
                 await context.SaveChangesAsync();
+                _notificationService.Notify(NotificationSeverity.Success, "Completado", "Se actualizo procesador.");
                 return cpu;
             }
-            else
+            catch
             {
-                cpu.IdPc = IdPc;
-                return await InsertCpu(cpu);
+                _notificationService.Notify(NotificationSeverity.Error, "Error", "No se pudo actualizar procesador.");
+                return cpu;
             }
+            
         }
         public async Task<Cpu> UpdateCpuForStock(Cpu cpu)
         {
@@ -86,9 +109,6 @@ namespace Tescat.Services.Cpus
             context.Entry(cpu).State = EntityState.Modified;
             await context.SaveChangesAsync();
             return cpu;
-
-
-
         }
     }
 }

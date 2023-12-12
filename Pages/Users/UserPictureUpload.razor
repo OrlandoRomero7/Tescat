@@ -1,4 +1,5 @@
 ﻿@inject IConfiguration config
+@inject PictureStateContainer PictureStateContainer
 
 <label for="file-upload"
        style="display:block; cursor: pointer; width:100%; height:100%; z-index:5">@UploadComponentStyle</label>
@@ -21,7 +22,9 @@
 @code {
     private long maxFileSize = 1024 * 1024 * 3; //3MB
     private List<string> errors = new();
-    private IBrowserFile? file;
+    //private IBrowserFile? file;
+    //[Inject]
+    private IBrowserFile? file { get => PictureStateContainer.File; set => PictureStateContainer.File = value; }
 
     [Parameter]
     public EventCallback<string> OnFileUploaded { get; set; }
@@ -55,15 +58,14 @@
             var resizedImage = await file.RequestImageFileAsync("image/png", 600, 600);
 
             // Convert to Base64
-            using Stream imageStream = resizedImage.OpenReadStream(1024 * 1024 * 3); // Limit to 3MB
+            using Stream imageStream = resizedImage.OpenReadStream(1024 * 1024 * 6); // Limit to 6MB
             using MemoryStream ms = new MemoryStream();
             await imageStream.CopyToAsync(ms);
             var base64Image = $"data:image/png;base64,{Convert.ToBase64String(ms.ToArray())}";
 
-            // Invoke Preview and Upload
+            // Invoke Preview
             await OnFilePreviewReady.InvokeAsync(base64Image);
-            // If you also want to upload the file after resizing and conversion
-            // await OnFileUploaded.InvokeAsync(base64Image);
+       
         }
         catch (Exception ex)
         {
