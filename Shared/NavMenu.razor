@@ -11,7 +11,7 @@
     </div>
 
     <div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="flex-column @ActiveSideBarStyles">
+        <nav class="flex-column @ActiveSideBarStyles">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
                 <span class="bi bi-house-fill me-3" aria-hidden="true"></span> <span class="nav-link-tab"> Inicio</span>
@@ -32,9 +32,13 @@
                 <span class="bi bi-motherboard-fill me-3" aria-hidden="true"></span> <span class="nav-link-tab"> Almacen</span>
             </NavLink>
         </div>
-        <LoginDisplay></LoginDisplay>
+
     </nav>
-</div>
+    </div>
+
+    <div style="height:3rem; display:flex; justify-content:space-between; align-items:center;  padding: 0 1.15rem; ">
+        <LoginDisplay></LoginDisplay>
+    </div>
 
 
     @code {

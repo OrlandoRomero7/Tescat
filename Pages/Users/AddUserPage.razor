@@ -4,33 +4,57 @@
 @inject NavigationManager NavigationManager
 @inject OtherServices OtherServices
 
-<h3>AddUser</h3>
 
+<div class="col-lg-4 shadow-lg" style="margin: 8.8rem auto; width: 42%; border-radius: 1rem; ">
 
-<div class="col-lg-4" style="margin: 0 auto;">
-    <div class="card border-rounded" style="width: 300px; border-radius: 15px;">
+    <div class="card border-rounded " style="width: 100%; border-radius: 1rem; ">
+
         <div class="card-body">
             <center class="m-t-30">
-                <div class="profile-img">
-                    <img src="/Images/default.svg" class="img-circle" width="150">
-                </div>
+       
+                    <div class="profile-img" style="margin-top:-6rem; ">
+
+
+
+                    <div class="shadow" style=" border-radius:100%; position:relative; height:150px; width:150px; ">
+
+                       
+                      @*  <div class="shadow-sm" style="position:absolute; height:38px; width:38px; right:0; border-radius:100%; background: var(--plain-white); align-items: center;display: flex; justify-content: center;     font-size: 1.34rem; ">
+                           
+                            <UserPictureUpload 
+                                @ref="userPictureUploadRef"
+                                OnFilePreviewReady="HandleFilePreview"/>
+                            <i style="position:absolute" class="bi bi-camera"></i>
+                        </div>*@
+
+                        <div  style=" border-radius:100%;  background: var(--plain-white);  height:150px; width:150px; overflow:hidden">
+
+                        <img src="@GetImagePath()" style=" border-radius:100%;  height:174px; width:150px; object-fit: cover; margin-top:1%;">
+
+                        </div>
+                    </div>
+
+
+
+                    </div>
+               
             </center>
         </div>
-        <div>
-            <hr>
-        </div>
+
+
+    
+
+
         <div class="card-body" style="text-align:center">
 
-            <form @onsubmit="CrearUser">
-                <h3>Ingrese numero de Usuario</h3>
-                <InputNumber class="form-control" @bind-Value="newUser"></InputNumber>
-                <button class="btn btn-primary" type="submit">Guardar</button>
+            <form @onsubmit="CrearUser" style="display: flex; flex-direction:column;align-items:center;">
+                <h3 class="mb-4 mt-1">Ingrese Un Numero Para El Usuario</h3>
 
-            
+                <InputNumber style="width: 5rem; height: 4.25rem;text-align: center; font-size:2rem; border: 1px solid var(--brand-text); " class="form-control mb-4" @bind-Value="newUser"></InputNumber>
+             
+                <button style="width: 40%;  background-color: var(--brand-text); border: none; border-radius:8px; padding: 0.5rem 0.75rem;" class="btn btn-primary mb-5" type="submit">Crear</button>
 
             </form>
-
-
 
 
         </div>
@@ -46,11 +70,20 @@
 }
 
 @code {
-    //public int newUserId;
-    //private User newUser = new User();
-    //private int id;
     private int newUser { get; set; }
     public string? ErrorMessage { get; set; }
+
+
+    private UserPictureUpload? userPictureUploadRef;
+    private string? base64ImagePreview;
+
+
+
+    private void HandleFilePreview(string base64String)
+    {
+        base64ImagePreview = base64String;
+    }
+
 
     private void CrearUser()
     {
@@ -67,6 +100,19 @@
         }
     }
 
+
+    private string GetImagePath()
+    {
+
+        if (!string.IsNullOrEmpty(base64ImagePreview))
+        {
+            return base64ImagePreview;
+        }
+        else
+        {
+            return $"/Images/default.svg";
+        }
+    }
 
 
 

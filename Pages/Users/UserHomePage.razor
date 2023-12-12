@@ -13,6 +13,8 @@
 
 <UserHomePageLayout>
 
+
+   
     <div class="cards container">
 
 
@@ -21,6 +23,10 @@
             <NavLink href="users" Match="NavLinkMatch.All">
                 <i class="bi bi-arrow-left" style="font-size:2rem; margin-top:-1rem"></i>
             </NavLink>
+        }
+        else
+        {
+            <h1 style="padding-left: 1px; margin:3rem 0 1rem .25rem; font-size:2rem;">Lista de Usuarios</h1>
         }
         <div style="display: flex; margin-top:1rem; flex-direction:column;">
             @if (Users != null && SearchTerm != null)
@@ -135,7 +141,6 @@
 
 
     </div>
-
 
     @if (showAlert)
     {

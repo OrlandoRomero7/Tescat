@@ -33,7 +33,7 @@
                 }
                 @if (_modalLocation == "UserHomePageLayout")
                 {
-                    <p>¿Necesita agregar un nuevo usuario?</p>
+                    <p>¿Necesita crear un nuevo usuario?</p>
                 }
                 @if (_modalLocation == "RemovePc")
                 {
@@ -57,6 +57,7 @@
     string? _modalStatus;
     public string? _modalLocation;
     public string? _userName;
+    //public string? _modalLocation { get; set; }
 
     [Parameter]
     public EventCallback<string>
@@ -99,7 +100,6 @@
 
         _modalStatus = "none";
         JSRuntime.InvokeVoidAsync("enableVerticalScroll");
-
         StateHasChanged();
     }
 
@@ -116,12 +116,16 @@
             Console.WriteLine("esto es en mainmodal 2:" + _modalLocation);
             DeletingUser.InvokeAsync(_modalLocation);
             //invocar evento para pasar dato hacia MainLayout y cambiar el dato de
+            CloseConfirmationModal();
+            //invocar evento para pasar dato hacia MainLayout y cambiar el dato de 
         }
 
         if (_modalLocation == "UserHomePageLayout")
         {
             NavigationManager.NavigateTo("/addUser");
 
+             NavigationManager.NavigateTo("/addUser");
+            CloseConfirmationModal();
         }
         if(_modalLocation == "RemovePc")
         {

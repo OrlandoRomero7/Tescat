@@ -1,6 +1,6 @@
 ﻿@inject IJSRuntime JSRuntime
 
-
+@inject PictureStateContainer PictureStateContainer
 
 
 @if (user is not null)
@@ -14,19 +14,25 @@
 
             @if (user.IdUser == 0)
             {
+
+              
                 <UserPictureUpload @ref="userPictureUploadRef"
                                    OnFileUploaded="HandleFileUpload"
                                    OnFilePreviewReady="HandleFilePreview"
                                    UploadComponentStyle="@HandlingUploadStyles()"
+
                                    IdUser="@id" />
+               
             }
             else
             {
+                <div style="border: 1px solid #ccc; cursor: pointer; width:10rem;  padding: 6px 12px;">
                 <UserPictureUpload @ref="userPictureUploadRef"
                                    OnFileUploaded="HandleFileUpload"
                                    OnFilePreviewReady="HandleFilePreview"
                                    UploadComponentStyle="@HandlingUploadStyles()"
                                    IdUser="@user.IdUser" />
+                </div>
             }
 
             @if (user?.IMAGE_NAME != null)
@@ -174,11 +180,18 @@
 
     private UserPictureUpload? userPictureUploadRef;
 
+
+    protected override void OnInitialized()
+    {
+        Console.WriteLine("culo: " + PictureStateContainer.File);
+    }
+
+
     private void HandleFileUpload(string path)
     {
         imageFilePath = path;
         Console.WriteLine("Ruta de la imagen: " + imageFilePath);
-        // Aquí puede a signar imageFilePath al modelo de usuario, si es necesario
+        
         if (user is not null)
         {
             user.IMAGE_NAME = imageFilePath;
@@ -223,7 +236,7 @@
     {
         return
         (!string.IsNullOrEmpty(base64ImagePreview) || (user?.IMAGE_NAME is not null && user.IMAGE_NAME != "default.svg"))
-        ? "Cambiar" : "Agregar";
+        ? "Cambiar  Imagen" : "Agregar  Imagen";
     }
 
 

@@ -1,5 +1,5 @@
 ﻿.user-buttons-box {
-    background: #fff;
+    background: var(--plain-white);
     /*  padding: 0.25rem;*/
     border-radius: 0.75rem;
     display: flex;

@@ -251,6 +251,7 @@ else
                 await UserCredentialService.DeleteUserCredentials(idtemp);
                 await UserService.DeleteUser(idtemp);
                 await OtherServices.ShowMessage("Se elimino el usuario: " + idtemp);
+                StateHasChanged();
                 NavigationManager.NavigateTo("/users");
 
                 Console.WriteLine("Se elimino correctamente");
@@ -262,12 +263,16 @@ else
         }
 
     }
+
+
     private async void deleteOldId(int id)
     {
         await UserService.DeleteUser(id);
     }
 
+
     private BasicInformation childReference;
+
 
     private void SubmitChildForm()
     {
@@ -281,10 +286,10 @@ else
 
     protected async override Task OnParametersSetAsync()
     {
-        if (OpeningModal._modalLocation == "UserDeleted")
+     
+        if (OpeningModal?._modalLocation == "UserDeleted")
         {
-            //Console.WriteLine("onparameter set en UserDetails: " + OpeningModal._modalLocation);
-
+            OpeningModal._modalLocation = "UserHomePageLayout";
             await Delete();
         }
         
