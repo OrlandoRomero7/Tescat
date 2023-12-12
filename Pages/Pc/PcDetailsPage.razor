@@ -17,15 +17,17 @@
 @if (pc is not null)
 {
     <button type="button" class="btn btn-primary" @onclick="updatePc">Actulizar</button>
-    if(user.IdUser != 0)
+    @if(user.IdUser != 0)
     {
         <button type="button" class="btn btn-danger" @onclick="ShowConfirmationModal">Quitar</button>
+        @* <button type="button" class="btn btn-danger" @onclick="() => OpeningModal?.ShowConfirmationModalPc(_modalLocation,user.Name!)">Quitar</button>  *@
+
     }
     else
     {
         <button type="button" class="btn btn-primary" @onclick="NavigateToAssignDevice">Asignar</button>
     }
-    if (existsCredential)
+    @if (existsCredential)
     {
         <button type="button" class="btn btn-info" @onclick="NavigateToPcCredential">Ver Credenciales de Pc</button>
     }
@@ -162,6 +164,11 @@
     [Parameter]
     public Guid id { get; set; }
 
+    [CascadingParameter]
+    public MainModal? OpeningModal { get; set; }
+
+    private string _modalLocation = "RemovePc";
+
     public Pc pc { get; set; }
 
     public int idUser { get; set; }
@@ -261,6 +268,9 @@
             }
         }
     }
+
+    
+
     public void NavigateToAssignDevice()
     {
         NavigationManager.NavigateTo("/assignDevice/"+id);
@@ -367,7 +377,7 @@
     {
         //Los ifs sirven para que solo al momento que detecta que el forrmulario tuvo un cambio entonces
         //puede llamar al servicio de actualizar correspondiente.
-        //pc = await PcService.UpdatePc(pc);
+
         var IdPc = pc.IdPc;
         if (pcContext.IsModified())
         {
@@ -403,14 +413,23 @@
 
     private async Task QuitPC()
     {
-        if (pc.IdUser != 0)
+        try
         {
-            int idtemp = pc.IdUser.Value;
-            pc.IdUser = null;
-            pc = await PcService.UpdatePc(pc);
-            OtherServices.ShowMessage("Se le quito el equipo al usuario: " + idtemp);
-            NavigationManager.NavigateTo("/devices");
+            if (pc.IdUser != 0)
+            {
+                int idtemp = pc.IdUser.Value;
+                pc.IdUser = null;
+                await PcService.UpdatePc(pc);
+                NavigationManager.NavigateTo("/devices");
+                StateHasChanged();
+                //OtherServices.ShowMessage("Se le quito el equipo al usuario: " + idtemp);
+            }
         }
+        catch (ArgumentException e)
+        {
+            Console.WriteLine($"Fallo al eliminar suario {e.Message}");
+        }
+
 
     }
     private string modalDisplay = "none";
@@ -464,6 +483,8 @@
         modalComponentsDisplay = "none"; // Ocultar el modal
         StateHasChanged();
     }
+
+
     /*Revisar que pasa con  selectedOptions y nullComponents Storage Y memoryRam*/
     private async Task ConfirmQuitModalComponents()
     {
@@ -514,6 +535,19 @@
                 nullComponents.Add("Fuente de Poder");
                 break;
         }
-        CloseModalComponents(); // Cerrar el modal después de la confirmación
+        //CloseModalComponents(); // Cerrar el modal después de la confirmación
     }
+
+    // protected async override Task OnParametersSetAsync()
+    // {
+
+    //     if (OpeningModal._modalLocation == "RemovedPc")
+    //     {
+    //         await QuitPC();
+    //     }
+    //     OpeningModal._modalLocation = "nada";
+
+    // }
+
+    
 }

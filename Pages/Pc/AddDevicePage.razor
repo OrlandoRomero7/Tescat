@@ -5,33 +5,42 @@
 @inject IUserService UserService
 @inject NavigationManager NavigationManager
 
-
-<div class="col-lg-4" style="margin: 0 auto;">
-    <div class="card border-rounded" style="width: 300px; border-radius: 15px;">
-        <div class="card-body">
-            <center class="m-t-30">
-                <div class="profile-img">
-                    <img src="/Images/default.svg" class="img-circle" width="150">
-                </div>
-            </center>
-        </div>
-        <div>
-            <hr>
-        </div>
-        <div class="card-body" style="text-align:center">
-
-            <form @onsubmit="CreateOrAsssingDevice">
-                <h3>Usuario al que le pertenecera el equipo</h3>
-                    <div class="rz-p-sm-12 rz-text-align-center">
-                        <RadzenDropDown AllowClear="true" @bind-Value=idUser AllowVirtualization="true"
-                                        AllowFiltering="true" Data=@users TextProperty="Name" ValueProperty="IdUser" />
+@if (users != null)
+{
+    <div class="col-lg-4" style="margin: 0 auto;">
+        <div class="card border-rounded" style="width: 300px; border-radius: 15px;">
+            <div class="card-body">
+                <center class="m-t-30">
+                    <div class="profile-img">
+                        <img src="/Images/default.svg" class="img-circle" width="150">
                     </div>
-                
-                <button class="btn btn-primary" type="submit">Siguiente</button>
-            </form>
+                </center>
+            </div>
+            <div>
+                <hr>
+            </div>
+            <div class="card-body" style="text-align:center">
+
+                <form @onsubmit="CreateOrAsssingDevice">
+                    <h3>Usuario al que le pertenecera el equipo</h3>
+
+                    <RadzenDropDown AllowClear="true" @bind-Value=idUser AllowVirtualization="true"
+                                    AllowFiltering="true" Data=@users TextProperty="Name" ValueProperty="IdUser" />
+
+
+                    @* <RadzenDropDown FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowFiltering="true"
+                    Data=@users TextProperty="Name" ValueProperty="IdUser" AllowClear="true" @bind-Value=idUser Style="width: 100%; max-width: 400px;" Name="DropDownFiltering" /> *@
+                    <button class="btn btn-primary" type="submit">Siguiente</button>
+                </form>
+            </div>
         </div>
     </div>
-</div>
+
+}
+else
+{
+    <h5>No hay usuarios para mostrar</h5>
+}
 
 
 
@@ -43,10 +52,10 @@
     [Parameter]
     public Guid idPc { get; set; }
 
-    int idUser;
+    public int idUser { get; set; }
     //public string? ErrorMessage { get; set; }
     //public Pc pc { get; set; } = new Pc();
-    IEnumerable<User> users; 
+    public List<User> users { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -57,7 +66,7 @@
 
     public void CreateOrAsssingDevice()
     {
-        if (idPc == Guid.Empty)
+        if (idPc == Guid.Empty || idPc == null)
         {
             NavigationManager.NavigateTo("/addDevice/" + idUser);
         }
@@ -65,7 +74,7 @@
         {
             NavigationManager.NavigateTo("/assignDevice/" + idUser + "/" + idPc);
         }
-        
-        
+
+
     }
 }
