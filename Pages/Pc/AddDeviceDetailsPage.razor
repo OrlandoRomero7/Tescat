@@ -48,10 +48,10 @@
         }
 
     }
-    else if ((user is not null && user.IdUser != 0 && addOther) || (dbPc.Count == 0 && !addOther && user.IdUser != 0))
+    @if ((user is not null && user.IdUser != 0 && addOther) || (dbPc.Count == 0 && !addOther && user.IdUser != 0))
     {
         <button type="button" class="btn btn-primary" @onclick="createNewDevice">Crear</button>
-        <BasicPcInformation pc="pc" user="user"></BasicPcInformation>
+        <BasicPcInformation pcContext="pcContext" pc="pc" user="user"></BasicPcInformation>
     }
 }
 
@@ -77,12 +77,20 @@
 
     private bool addOther = false;
 
+    EditContext pcContext;
+
     protected override async Task OnInitializedAsync()
     {
 
         user = await UserService.GetUserId(idUser);
-
         dbPc = await PcService.GetNumberPc(idUser);
+
+        pcContext = new EditContext(pc);
+
+        if (action == "assignDevice" && dbPc.Count == 0)
+        {
+            assignOtherDevice();
+        }
 
     }
 
@@ -116,6 +124,5 @@
 
         }
     }
-
 
 }

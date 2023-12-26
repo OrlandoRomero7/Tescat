@@ -38,7 +38,7 @@
       
 
 
-            <MainModal @ref="showingModal" DeletingUser="OnDeletingUser"></MainModal>
+            <MainModal @ref="showingModal" DeletingUser="OnDeletingUser" RemovingPc="OnRemovingPc"></MainModal>
 
 
             <CascadingValue Value="showingModal">
@@ -114,6 +114,13 @@
         Console.WriteLine("valor en mainlayout:"+modalLocationValue);
 
 
+        StateHasChanged();
+    }
+    private void OnRemovingPc(string locationValue)
+    {
+        modalLocationValue = locationValue;
+        showingModal?.ShowConfirmationModal(locationValue);
+        Console.WriteLine("valor en mainlayout:" + modalLocationValue);
         StateHasChanged();
     }
 

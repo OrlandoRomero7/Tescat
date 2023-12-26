@@ -2,20 +2,25 @@
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
 
-<div class="modal" tabindex="-1" style="display:@_modalStatus; background: rgb(0,0,0, 50%)" >
+<div class="modal" tabindex="-1" style="display:@_modalStatus; background: rgb(0,0,0, 50%)">
     <div class="modal-dialog">
         <div class="modal-content shadow-lg">
             <div class="modal-header">
 
                 @if (_modalLocation == "DeleteUser")
                 {
-                <h5 class="modal-title">Confirmar eliminación</h5>
+                    <h5 class="modal-title">Confirmar eliminación</h5>
                 }
                 @if (_modalLocation == "UserHomePageLayout")
                 {
-                    <h5 class="modal-title"><i class="bi bi-person-fill-add" style="font-size:3rem"></i>
-</h5>
+                    <h5 class="modal-title">
+                        <i class="bi bi-person-fill-add" style="font-size:3rem"></i>
+                    </h5>
 
+                }
+                @if (_modalLocation == "RemovePc")
+                {
+                    <h5 class="modal-title">Quitar PC a usuario</h5>
                 }
                 <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar" @onclick="CloseConfirmationModal">
                     <span aria-hidden="true">&times;</span>
@@ -29,6 +34,10 @@
                 @if (_modalLocation == "UserHomePageLayout")
                 {
                     <p>¿Necesita crear un nuevo usuario?</p>
+                }
+                @if (_modalLocation == "RemovePc")
+                {
+                    <p>¿Estás seguro de que quieres quitarle esta PC a @_userName?</p>
                 }
 
             </div>
@@ -46,11 +55,18 @@
 
 @code {
     string? _modalStatus;
-    public string? _modalLocation { get; set; }
+    public string? _modalLocation;
+    public string? _userName;
+    //public string? _modalLocation { get; set; }
 
     [Parameter]
     public EventCallback<string>
        DeletingUser
+    { get; set; }
+
+    [Parameter]
+    public EventCallback<string>
+       RemovingPc
     { get; set; }
 
 
@@ -61,6 +77,17 @@
 
         _modalStatus = "block";
         _modalLocation = _currentModalLocation;
+
+        StateHasChanged();
+    }
+
+    public void ShowConfirmationModalPc(string _currentModalLocation, string userName)
+    {
+        JSRuntime.InvokeVoidAsync("disableVerticalScroll");
+        Console.WriteLine("metodo ShowConfirmationModal en MainModal: " + _currentModalLocation);
+        _modalStatus = "block";
+        _modalLocation = _currentModalLocation;
+        _userName = userName;
 
         StateHasChanged();
     }
@@ -82,20 +109,30 @@
     {
         Console.WriteLine("esto es en mainmodal 1:" + _modalLocation);
 
-        if (_modalLocation == 
+        if (_modalLocation ==
         "DeleteUser")
         {
             _modalLocation = "UserDeleted";
-            Console.WriteLine("esto es en mainmodal 2:"+_modalLocation);
+            Console.WriteLine("esto es en mainmodal 2:" + _modalLocation);
             DeletingUser.InvokeAsync(_modalLocation);
+            //invocar evento para pasar dato hacia MainLayout y cambiar el dato de
             CloseConfirmationModal();
             //invocar evento para pasar dato hacia MainLayout y cambiar el dato de 
         }
 
         if (_modalLocation == "UserHomePageLayout")
         {
+            NavigationManager.NavigateTo("/addUser");
+
              NavigationManager.NavigateTo("/addUser");
             CloseConfirmationModal();
+        }
+        if(_modalLocation == "RemovePc")
+        {
+            _modalLocation = "RemovedPc";
+            Console.WriteLine("esto es en mainmodal 2:" + _modalLocation);
+            RemovingPc.InvokeAsync(_modalLocation);
+            JSRuntime.InvokeVoidAsync("enableVerticalScroll");
         }
 
         _modalStatus = "none";
