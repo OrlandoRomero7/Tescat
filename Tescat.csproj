@@ -11,6 +11,7 @@
   <ItemGroup>
     <None Remove="Pages\Users\AddUserPage.razor.css" />
     <None Remove="Pages\Users\UserSearch.razor.css" />
+    <None Remove="Shared\LoginDisplay.razor.css" />
     <None Remove="Shared\MainModal.razor.css" />
   </ItemGroup>
 
@@ -20,6 +21,7 @@
   <ItemGroup>
     <Content Include="Pages\Users\AddUserPage.razor.css" />
     <Content Include="Pages\Users\UserSearch.razor.css" />
+    <Content Include="Shared\LoginDisplay.razor.css" />
     <Content Include="Shared\MainModal.razor.css" />
   </ItemGroup>
 
