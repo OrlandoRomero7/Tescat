@@ -36,10 +36,12 @@
     </nav>
     </div>
 
-    <div style="height:3rem; display:flex; justify-content:space-between; align-items:center;  padding: 0 1.15rem; ">
+@*
+    @if (ActiveSideBarStyles == ){*@
+    <div style="height:3rem; display:flex; align-items:center;  padding: 0 1.15rem; ">
         <LoginDisplay></LoginDisplay>
     </div>
-
+  @*  }*@
 
     @code {
         [Parameter] public string? ActiveSideBarStyles { get; set; }

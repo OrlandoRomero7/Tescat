@@ -1,8 +1,9 @@
 ﻿.overlay-alert {
     position: fixed;
-    bottom: 20px;
+    top: .5rem;
     right: 20px;
     z-index: 10;
+    width:25%;
 }
 
 
