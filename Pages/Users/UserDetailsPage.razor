@@ -13,6 +13,7 @@
 @inject IDbContextFactory<TescatDbContext> ContextFactory
 @inject IJSRuntime JSRuntime
 @inject IPcService PcService
+@inject NotificationService notificacion
 
 
 
@@ -26,14 +27,16 @@
 }
 else
 {
-    <button type="button" class="btn btn-primary"  @onclick="Update">
-        Actualizar</button>
-        <button type="button" class="btn btn-danger"
-    @onclick="() => OpeningModal?.ShowConfirmationModal(_modalLocation)">
-            Borrar</button>
+    <button type="button" class="btn btn-primary" @onclick="Update">
+        Actualizar
+    </button>
+    <button type="button" class="btn btn-danger"
+            @onclick="() => OpeningModal?.ShowConfirmationModal(_modalLocation)">
+        Borrar
+    </button>
 }
 
-@if (user != null && user.IdUser != 0 && FromUserAddPage)
+@* @if (user != null && user.IdUser != 0 && FromUserAddPage)
 {
     if (!isEdit) // Añade esta condición
     {
@@ -50,10 +53,10 @@ else
             </button>
         </div>
     }
-}
+} *@
 
 @*Cuando se quiere agregar un usuario que ya esta desde AddUserpage*@
-@if (user?.IdUser != 0 && isEdit && FromUserAddPage)
+@* @if (user?.IdUser != 0 && isEdit && FromUserAddPage)
 {
     <!-- Card de Informacion Basica -->
     <BasicInformation @ref="childReference" user="user" id="id" areas="areas" departaments="departaments" CreateUserCallback="CreateUser"></BasicInformation>
@@ -63,10 +66,10 @@ else
 
     <!-- Card de Cuentas de Usuario -->
     <UserAccount userCredential="userCredential"></UserAccount>
-}
+} *@
 
 @*Cuando se quiere agregar un nuevo Usuario*@
-@if (user?.IdUser == 0)
+@* @if (user?.IdUser == 0)
 {
     <!-- Card de Informacion Basica -->
     <BasicInformation @ref="childReference" user="user" id="id" areas="areas" departaments="departaments" CreateUserCallback="CreateUser"></BasicInformation>
@@ -77,7 +80,7 @@ else
     <!-- Card de Cuentas de Usuario -->
     <UserAccount userCredential="userCredential"></UserAccount>
 
-}
+} *@
 
 
 @*Cuando se queire ver un usuario desde Users(Como que hace conflicto)*@
@@ -86,26 +89,29 @@ else
 
 {
     <!-- Card de Informacion Basica -->
-    <BasicInformation @ref="childReference" user="@user" id="id" areas="areas" departaments="departaments" CreateUserCallback="CreateUser"></BasicInformation>
+    if (userContext != null)
+    {
+        <BasicInformation @ref="childReference" user="@user" userContext="userContext" id="id" areas="areas" departaments="departaments" CreateUserCallback="CreateUser"></BasicInformation>
+    }
+
 
     <!-- Card de Informacion de Contacto -->
-    <ContacInformation user="user" userEmails="userEmails"></ContacInformation>
+    if (userEmailsContext != null)
+    {
+        <ContacInformation user="user" userEmails="userEmails" userEmailsContext="userEmailsContext"></ContacInformation>
+    }
+
 
     <!-- Card de Cuentas de Usuario -->
-    <UserAccount userCredential="userCredential"></UserAccount>
+    if (userCredentialContext!=null)
+    {
+        <UserAccount userCredential="userCredential" userCredentialContext="userCredentialContext"></UserAccount>
+    }
+   
+
+
 
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 @code {
@@ -120,8 +126,8 @@ else
     public List<Pc>? dbPc = null;
 
 
-    public string[] areas;
-    public string[] departaments { get; set; }
+    public string[]? areas;
+    public string[]? departaments { get; set; }
 
     public int IdOld;
 
@@ -142,6 +148,9 @@ else
 
     private string _modalLocation = "DeleteUser";
 
+    EditContext userContext;
+    EditContext userEmailsContext;
+    EditContext userCredentialContext;
 
     protected override async Task OnInitializedAsync()
     {
@@ -161,14 +170,19 @@ else
                     OtherServices.LastNavigatedFrom = null;
                 }
 
-                areas = await OtherServices.getAreas();
-                departaments = await OtherServices.getDepartaments();
+                //areas = await OtherServices.getAreas();
+                //departaments = await OtherServices.getDepartaments();
                 userCredential = await UserCredentialService.GetUserCredentials(id);
                 userEmails = await EmailService.GetEmails(id);
                 dbPc = await PcService.GetNumberPc(id);
                 //dataLoaded = true;
 
                 OriginalUserId = user?.IdUser;
+
+                //Editcontext
+                userContext = new EditContext(user);
+                userCredentialContext = new EditContext(userCredential);
+                userEmailsContext = new EditContext(userEmails);
             }
         }
         catch (ArgumentException e)
@@ -201,41 +215,78 @@ else
     }
     private async Task Update()
     {
-        try
+        var IdUser = user.IdUser;
+        if (user.IdUser == IdOld)
         {
-            if (user != null && user.IdUser != 0)
+            bool existingUser = await UserService.ExistingUser(user.IdUser);
+            if (existingUser && user.IMAGE_NAME != null)
             {
-                using var context = ContextFactory.CreateDbContext();
-
-                var existingUser = await context.Users
-         .AsNoTracking().FirstOrDefaultAsync(usr => usr.IdUser == usr.IdUser);
-
-
-
-                if (existingUser != null && user.IMAGE_NAME != null)
-                {
-                    existingUser.IMAGE_NAME = user.IMAGE_NAME; // Update the image ID or path
-                }
-
-
-                await childReference.SomeMethodInsideComponent();
-                await UserService.UpdateUser(IdOld, user, userCredential, userEmails);
-
-                if (IdOld != user.IdUser)
-                {
-                    NavigationManager.NavigateTo("/userDetails/" + user.IdUser, true);
-                    deleteOldId(IdOld);
-                }
-                StateHasChanged();
-
-                //await UserService.DeleteUser(SaveTemoID.ID);
-                Console.WriteLine("Se actualizo correctamente");
+                user.IMAGE_NAME = user.IMAGE_NAME; // Update the image ID or path
             }
+            await childReference.AssingAndUpdateImageName();
+            if (userContext != null && userContext.IsModified())
+            {
+                await UserService.UpdateUser(user);
+                userContext.MarkAsUnmodified();
+            }
+            if (userCredential != null && userCredentialContext != null && userCredentialContext.IsModified())
+            {
+                await UserCredentialService.UpdateUserCredentials(IdUser,userCredential);
+                userCredentialContext.MarkAsUnmodified();
+            }
+            if (userEmails != null && userEmailsContext != null && userEmailsContext.IsModified())
+            {
+                
+                await EmailService.UpdateUserEmail(IdUser,userEmails);
+                userEmailsContext.MarkAsUnmodified();
+            }
+
         }
-        catch (ArgumentException e)
+        else
         {
-            Console.WriteLine($"Fallo actulizar el usuario {e.Message}");
+            bool existingUser = await UserService.ExistingUser(user.IdUser);
+            if (existingUser)
+            {
+                notificacion.Notify(NotificationSeverity.Error, "Error", "Este Id de usuario ya existe.");
+            }
+
         }
+        // try
+        // {
+        //     if (user != null && user.IdUser != 0)
+        //     {
+        //         using var context = ContextFactory.CreateDbContext();
+
+        //         var existingUser = await context.Users
+        //  .AsNoTracking().FirstOrDefaultAsync(usr => usr.IdUser == usr.IdUser);
+
+
+
+        //         if (existingUser != null && user.IMAGE_NAME != null)
+        //         {
+        //             existingUser.IMAGE_NAME = user.IMAGE_NAME; // Update the image ID or path
+        //         }
+
+
+        //         await childReference.SomeMethodInsideComponent();
+        //         await UserService.UpdateUser(IdOld, user, userCredential, userEmails);
+        //         //await UserCredentialService.UpdateUserCredentials(userCredential);
+
+        //         if (IdOld != user.IdUser)
+        //         {
+        //             NavigationManager.NavigateTo("/userDetails/" + user.IdUser, true);
+        //             deleteOldId(IdOld);
+        //         }
+        //         StateHasChanged();
+
+        //         //await UserService.DeleteUser(SaveTemoID.ID);
+        //         Console.WriteLine("Se actualizo correctamente");
+        //     }
+        // }
+        // catch (ArgumentException e)
+        // {
+        //     Console.WriteLine($"Fallo actulizar el usuario {e.Message}");
+        // }
 
 
     }
@@ -286,13 +337,13 @@ else
 
     protected async override Task OnParametersSetAsync()
     {
-     
+
         if (OpeningModal?._modalLocation == "UserDeleted")
         {
             OpeningModal._modalLocation = "UserHomePageLayout";
             await Delete();
         }
-        
+
     }
 
     protected void ReturnToAddUsersHome()
@@ -300,7 +351,7 @@ else
         NavigationManager.NavigateTo("/addUser");
     }
 
- 
+
 
     private void NavigateToPcDetails(Guid num)
     {

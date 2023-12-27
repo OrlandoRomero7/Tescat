@@ -16,25 +16,27 @@
 
 @if (pc is not null)
 {
-    <button type="button" class="btn btn-primary" @onclick="updatePc">Actulizar</button>
-    @if(user.IdUser != 0)
-    {
-        <button type="button" class="btn btn-danger" @onclick="ShowConfirmationModal">Quitar</button>
-        @* <button type="button" class="btn btn-danger" @onclick="() => OpeningModal?.ShowConfirmationModalPc(_modalLocation,user.Name!)">Quitar</button>  *@
+      <div class="button-container">
+        <button type="button" class="btn btn-primary" @onclick="updatePc">Actulizar</button>
+        @if (user.IdUser != 0)
+        {
+            <button type="button" class="btn btn-danger" @onclick="ShowConfirmationModal">Quitar</button>
+            @* <button type="button" class="btn btn-danger" @onclick="() => OpeningModal?.ShowConfirmationModalPc(_modalLocation,user.Name!)">Quitar</button>   *@
 
-    }
-    else
-    {
-        <button type="button" class="btn btn-primary" @onclick="NavigateToAssignDevice">Asignar</button>
-    }
-    @if (existsCredential)
-    {
-        <button type="button" class="btn btn-info" @onclick="NavigateToPcCredential">Ver Credenciales de Pc</button>
-    }
-    else
-    {
-        <button type="button" class="btn btn-info" @onclick="NavigateToPcCredential">Crear Credenciales</button>
-    }
+        }
+        else
+        {
+            <button type="button" class="btn btn-secondary" @onclick="NavigateToAssignDevice">Asignar</button>
+        }
+        @if (existsCredential)
+        {
+            <button type="button" class="btn btn-info" @onclick="NavigateToPcCredential">Ver Credenciales de Pc</button>
+        }
+        else
+        {
+            <button type="button" class="btn btn-info" @onclick="NavigateToPcCredential">Crear Credenciales</button>
+        }
+      </div>
 }
 
 @if (pc is not null )
@@ -78,27 +80,26 @@
     }
 
     <BasicPcInformation pcContext="pcContext" pc="pc" user="user"></BasicPcInformation>
-    @if (selectedOptions.Contains("Tarjeta Madre") || motherboard.IdMotherboard != Guid.Empty)
+    @if (selectedOptions.Contains("Tarjeta Madre") || (motherboard.IdMotherboard != Guid.Empty))
     {
         <div id="Tarjeta Madre">
             <MotherboardCard motherboardContext="motherboardContext" motherboard="motherboard" confirmationModalChild="@( () => ShowModalComponents("Tarjeta Madre") )"></MotherboardCard>
         </div>
-        
     }
-    @if (selectedOptions.Contains("CPU") || cpu.IdCpu != Guid.Empty)
+    @if (selectedOptions.Contains("CPU") || (cpu != null && cpu.IdCpu != Guid.Empty))
     {
         <div id="CPU">
             <CpuCard cpuContext="cpuContext" cpu="cpu" confirmationModalChild="@( () => ShowModalComponents("CPU") )"></CpuCard>
         </div>
     }
-    @if (selectedOptions.Contains("Memoria RAM") || memoryRam.Count != 0)
+    @if (selectedOptions.Contains("Memoria RAM") || (memoryRam != null && memoryRam.Count != 0))
     {
         <div id="Memoria RAM">
             <MemoryRamCardList memoryRamContext="memoryRamContext" memoryRam="memoryRam" confirmationModalChild="@( () => ShowModalComponents("Memoria RAM"))" OnNumListChanged="ListenNumListRam"></MemoryRamCardList>
         </div>
         
     }
-    @if (selectedOptions.Contains("Almacenamiento") || storage.Count != 0)
+    @if (selectedOptions.Contains("Almacenamiento") || (storage != null && storage.Count != 0))
     {
         <div id="Almacenamiento">
             <StorageCardList storageCotext="storageContext" storage="storage" confirmationModalChild="@( () => ShowModalComponents("Almacenamiento") )" OnNumListStoChanged="ListenNumListSto" numeroLista="numeroListaSto"></StorageCardList>
@@ -106,7 +107,7 @@
         
     }
     
-    @if (selectedOptions.Contains("Fuente de Poder") || powerSupply.IdPsu != Guid.Empty)
+    @if (selectedOptions.Contains("Fuente de Poder") || (powerSupply != null && powerSupply.IdPsu != Guid.Empty))
     {
         <div id="Fuente de Poder">
             <PowerSupplyCard powerSupplyContext="powersupplyContext" powerSupply="powerSupply" confirmationModalChild="@( () => ShowModalComponents("Fuente de Poder") )"></PowerSupplyCard>
@@ -164,10 +165,10 @@
     [Parameter]
     public Guid id { get; set; }
 
-    [CascadingParameter]
-    public MainModal? OpeningModal { get; set; }
+    // [CascadingParameter]
+    // public MainModal? OpeningModal { get; set; }
 
-    private string _modalLocation = "RemovePc";
+    // private string _modalLocation = "RemovePc";
 
     public Pc pc { get; set; }
 
@@ -217,10 +218,11 @@
     {
         base.OnInitialized();
         pc = await PcService.GetPcId(id);
-        pcContext = new(pc);
+        
 
         if (pc != null)
         {
+            pcContext = new(pc);
             if (pc.IdUser!=null)
             {
                 user = await userService.GetUserId(pc.IdUser.Value);
@@ -238,6 +240,11 @@
             motherboard = await MotherboardService.GetMotherboardWithPcId(pc.IdPc);
             powerSupply = await PowerSupplyService.GetPowerSupplyWithPcId(pc.IdPc);
             existsCredential = await PcCredentialService.ExistsCredential(pc.IdPc);
+            // storage = pc.Storages.ToList();
+            // memoryRam = pc.MemoryRams.ToList();
+            // cpu = pc.Cpu;
+            // motherboard = pc.Motherboard;
+            // powerSupply = pc.PowerSupply;
 
             motherboardContext = new EditContext(motherboard);
             cpuContext = new EditContext(cpu);
@@ -402,7 +409,7 @@
         if (cpuContext.IsModified())
         {
             cpu = await CpuService.UpdateCpu(cpu, IdPc);
-            motherboardContext.MarkAsUnmodified();
+            cpuContext.MarkAsUnmodified();
         }
         if (powersupplyContext.IsModified())
         {

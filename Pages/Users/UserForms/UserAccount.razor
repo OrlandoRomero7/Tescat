@@ -1,7 +1,7 @@
 ﻿<!-- Card Cuentas de Usuario -->
 
 <FormSection Title="Cuentas de Usuario">
-    <EditForm Model="@userCredential">
+    <EditForm EditContext="@userCredentialContext">
         @if (options.Any(o => o.Value))
         {
             <div class="row mb-3">
@@ -121,6 +121,9 @@
     /**/
     [Parameter]
     public UserCredential? userCredential { get; set; } = default!;
+
+    [Parameter]
+    public EditContext userCredentialContext { get; set; }
 
     public bool portal, casa, mozart, darwin, vpn;
 

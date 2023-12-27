@@ -45,8 +45,7 @@ else
                     FilterMode="FilterMode.Simple" PageSize="10" AllowPaging="true" AllowSorting="true" Data="@pcs" ColumnWidth="150px"
                     FilterCaseSensitivity="@filterCaseSensitivity" LogicalFilterOperator="@logicalFilterOperator">
         <Columns>
-            @*<RadzenDataGridColumn TItem="CommonPropertiesViewModel" Property="Id" Title="ID" Filterable="false"></RadzenDataGridColumn>*@
-            <RadzenDataGridColumn TItem="Pc" Property="IdUser" Title="ID usuario"></RadzenDataGridColumn> @*Cambiar por nombre de usuario*@
+            <RadzenDataGridColumn TItem="Pc" Property="IdUserNavigation.Name" Title="Nombre de Usuario"></RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="Pc" Property="PcType" Title="Tipo"></RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="Pc" Property="PcName" Title="Nombre de PC"></RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="Pc" Title="Acción" Sortable="false">

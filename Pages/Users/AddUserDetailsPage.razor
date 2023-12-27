@@ -1,0 +1,104 @@
+﻿@page "/addUser/{idUser:int}"
+@inject NavigationManager NavigationManager
+@inject IUserService UserService
+@inject IUserCredentialService UserCredentialService
+@inject IEmailService EmailService
+
+<PageTitle>Agregar Nuevo Usuario - Tescat</PageTitle>
+
+@if (userAlreadyExists)
+{
+
+    <div class="alert alert-primary ">El Usuario Con Numero De Empleado: @idUser. <br> Ya Existe.</div>
+
+    <div>
+        <h3>
+            ¿Quiere editar al usuario?
+        </h3>
+        <button class="btn btn-info" @onclick="EditUserPage">
+            Editar
+        </button>
+        <button class="btn btn-info" @onclick="ReturnToAddUsersHome">
+            Regresar
+        </button>
+    </div>
+}
+else
+{
+    <button type="button" class="btn btn-primary" @onclick="CreateUser">
+        Crear
+    </button>
+    if (userContext != null)
+    {
+        //El id parece que no es necesario pasarlo pero igual lo hago
+        <BasicInformation @ref="referenceBasicInformation" user="user" id="@user.IdUser" userContext=" userContext"></BasicInformation>
+    }
+    if (userEmailsContext != null)
+    {
+        <ContacInformation user="user" userEmails="userEmails" userEmailsContext="userEmailsContext"></ContacInformation>
+    }
+    if (userCredentialContext!=null)
+    {
+        <UserAccount userCredential="userCredential" userCredentialContext="userCredentialContext"></UserAccount>
+    }
+    
+}
+
+@code
+{
+    [Parameter]
+    public int idUser { get; set; }
+
+    private bool userAlreadyExists { get; set; }
+
+    public User user;
+    public UserCredential userCredential;
+    public Email userEmails;
+    EditContext userContext;
+    EditContext userEmailsContext;
+    EditContext userCredentialContext;
+
+    private BasicInformation referenceBasicInformation;
+
+    protected override async Task OnInitializedAsync()
+    {
+        userAlreadyExists = await UserService.ExistingUser(idUser);
+        user = new User();
+        userCredential = new UserCredential();
+        userEmails = new Email();
+
+        userContext = new EditContext(user);
+        userCredentialContext = new EditContext(userCredential);
+        userEmailsContext = new EditContext(userEmails);
+        user.IdUser = idUser;
+
+    }
+    protected void EditUserPage()
+    {
+        NavigationManager.NavigateTo("/userDetails/" + idUser);
+    }
+    protected void ReturnToAddUsersHome()
+    {
+        NavigationManager.NavigateTo("/addUser");
+    }
+    private async Task CreateUser()
+    {
+        await referenceBasicInformation.AssingAndUpdateImageName();
+        await UserService.InsertUser(user);
+        if (userCredentialContext != null)
+        {
+            userCredential.IdUser = idUser;
+            await UserCredentialService.InsertUserCredentials(userCredential);
+        }
+        if(userEmailsContext != null)
+        {
+            userEmails.IdUser = idUser;
+            await EmailService.InsertUserEmail(userEmails);
+        }
+        NavigationManager.NavigateTo("/userDetails/" + idUser);
+    }
+    // private void SubmitChildForm()
+    // {
+    //     childReference.SubmitFromParent();
+    // }
+}

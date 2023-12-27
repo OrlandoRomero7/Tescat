@@ -25,14 +25,29 @@ using System.Net.NetworkInformation;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddDbContextFactory<TescatDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-//builder.Services.AddDbContext<TescatDbContext>(options =>
+//builder.Services.AddDbContextFactory<TescatDbContext>(options =>
 //    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+//builder.Services.AddDbContextFactory<TescatDbContext>(options =>
+//{
+//    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+//    options.UseSqlServer(connectionString);
+//});
+
+builder.Services.AddDbContextFactory<TescatDbContext>(options =>
+{
+    var connectionString = Environment.GetEnvironmentVariable("TescatConnection");
+    options.UseSqlServer(connectionString);
+});
+
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<TescatDbContext>();
 builder.Services.AddRazorPages(options =>{
-    //options.Conventions.AuthorizeAreaPage("Identity", "/Account/Register");
+    options.Conventions.AuthorizeAreaPage("Identity", "/Account/Register");
+});
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.ExpireTimeSpan = TimeSpan.FromDays(14);
 });
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
@@ -66,6 +81,45 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+else
+{
+    app.UseExceptionHandler(errorApp =>
+    {
+        errorApp.Run(async context =>
+        {
+            context.Response.StatusCode = 500; // Internal Server Error
+            context.Response.ContentType = "text/plain";
+
+            var errorFeature = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>();
+            if (errorFeature != null)
+            {
+                var errorMessage = $"Error: {errorFeature.Error.Message}\n{errorFeature.Error.StackTrace}";
+                await context.Response.WriteAsync(errorMessage).ConfigureAwait(false);
+            }
+        });
+        app.UseHsts();
+    });
+}
+
+//if (!app.Environment.IsDevelopment())
+//{
+//    app.UseExceptionHandler(errorApp =>
+//    {
+//        errorApp.Run(async context =>
+//        {
+//            context.Response.StatusCode = 500; // Internal Server Error
+//            context.Response.ContentType = "text/plain";
+
+//            var errorFeature = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>();
+//            if (errorFeature != null)
+//            {
+//                var errorMessage = $"Error: {errorFeature.Error.Message}\n{errorFeature.Error.StackTrace}";
+//                await context.Response.WriteAsync(errorMessage).ConfigureAwait(false);
+//            }
+//        });
+//        app.UseHsts();
+//    });
+//}
 
 app.UseHttpsRedirection();
 

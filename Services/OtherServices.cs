@@ -5,9 +5,10 @@ namespace Tescat.Services
 {
     public class OtherServices
     {
-        
 
-        private readonly TescatDbContext _context;
+
+        //private readonly TescatDbContext _context;
+        private readonly IDbContextFactory<TescatDbContext> _contextFactory;
 
         public string Message;
         //public bool HasMessage => !string.IsNullOrEmpty(Message);
@@ -16,19 +17,21 @@ namespace Tescat.Services
 
         public int NewUser { get; set; }
 
-        public OtherServices(TescatDbContext context)
+        public OtherServices(IDbContextFactory<TescatDbContext> contextFactory)
         {
-            _context = context;
+            _contextFactory = contextFactory;
         }
         public string[]? Areas { get; set; }
         public async Task<string[]> getAreas()
         {
-            return await _context.Users.Where(u => u.Area != null).Select(u => u.Area).Distinct().ToArrayAsync();
+            using var context = _contextFactory.CreateDbContext();
+            return await context.Users.Where(u => u.Area != null).Select(u => u.Area).Distinct().ToArrayAsync();
             //return null;  // O return Array.Empty<string>(); para devolver un array vacío.
         }
         public async Task<string[]> getDepartaments()
         {
-            return await _context.Users.Where(u => u.Dept != null).Select(u => u.Dept).Distinct().ToArrayAsync();
+            using var context = _contextFactory.CreateDbContext();
+            return await context.Users.Where(u => u.Dept != null).Select(u => u.Dept).Distinct().ToArrayAsync();
         }
 
         //Estado para compartir mensaje utilzado cuando se emlimina un usuario en UserDetails

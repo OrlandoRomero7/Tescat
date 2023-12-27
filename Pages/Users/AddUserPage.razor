@@ -90,9 +90,9 @@
 
         if (newUser > 0)
         {
-            NavigationManager.NavigateTo("/userDetails/" + newUser);
-            OtherServices.NewUser = newUser;
-            OtherServices.LastNavigatedFrom = "AddUserPage";
+            NavigationManager.NavigateTo("/addUser/" + newUser);
+            //OtherServices.NewUser = newUser;
+            //OtherServices.LastNavigatedFrom = "AddUserPage";
         }
         else
         {

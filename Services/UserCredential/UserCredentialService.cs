@@ -1,14 +1,20 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Humanizer.Localisation.TimeToClockNotation;
+using Microsoft.EntityFrameworkCore;
+using Radzen;
 using Tescat.Models;
+using Tescat.Services.Notification;
 
 namespace Tescat.Services.UserCredentials
 {
     public class UserCredentialService : IUserCredentialService
     {
         private readonly IDbContextFactory<TescatDbContext> _contextFactory;
-        public UserCredentialService(IDbContextFactory<TescatDbContext> contextFactory)
+        private readonly NotificationService _notificationService;
+
+        public UserCredentialService(IDbContextFactory<TescatDbContext> contextFactory, NotificationService notificationService)
         {
             _contextFactory = contextFactory;
+            _notificationService = notificationService;
         }
         public async Task<UserCredential> GetUserCredentials(int userId)
         {
@@ -55,13 +61,32 @@ namespace Tescat.Services.UserCredentials
             return await context.SaveChangesAsync() > 0;
         }
         */
-        public async Task<bool> UpdateUserCredentials(UserCredential userCredential)
+        public async Task<bool> UpdateUserCredentials(int IdUser,UserCredential userCredential)
         {
-            if (userCredential == null) throw new ArgumentNullException(nameof(userCredential));
+            try
+            {
+                using var context = _contextFactory.CreateDbContext();
+                if (userCredential.IdUser != null)
+                {
+                    context.Entry(userCredential).State = EntityState.Modified;
+                }
+                else
+                {
+                    userCredential.IdUser = IdUser;
+                    context.UserCredentials.Add(userCredential);
+                }
+                await context.SaveChangesAsync();
+                _notificationService.Notify(NotificationSeverity.Success, "Completado", "Se actualizo información del credenciales.");
+                return true;
+            }
+            catch
+            {
+                _notificationService.Notify(NotificationSeverity.Error, "Error", "No se pudo actualizar información de credenciales.");
+                return false;
+            }
 
-            using var context = _contextFactory.CreateDbContext();
-            context.Entry(userCredential).State = EntityState.Modified;
-            return await context.SaveChangesAsync() > 0;
+
+            
         }
 
 

@@ -10,6 +10,6 @@ namespace Tescat.Services.UserCredentials
 
         public Task<UserCredential> DeleteUserCredentials(int userId);
 
-        public Task<bool> UpdateUserCredentials(UserCredential userCredential);
+        public Task<bool> UpdateUserCredentials(int IdUser,UserCredential userCredential);
     }
 }

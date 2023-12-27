@@ -1,4 +1,5 @@
-﻿@inject IJSRuntime JSRuntime
+﻿@using Microsoft.AspNetCore.Components.Rendering
+@inject IJSRuntime JSRuntime
 
 @inject PictureStateContainer PictureStateContainer
 
@@ -6,7 +7,7 @@
 @if (user is not null)
 {
     <FormSection Title="Informacíón Basica">
-        <EditForm Model="@user" OnValidSubmit="SomeMethodInsideComponent" id="myForm">
+        <EditForm EditContext="@userContext" OnValidSubmit="AssingAndUpdateImageName" id="myForm">
             <DataAnnotationsValidator />
 
 
@@ -15,23 +16,22 @@
             @if (user.IdUser == 0)
             {
 
-              
+
                 <UserPictureUpload @ref="userPictureUploadRef"
                                    OnFileUploaded="HandleFileUpload"
                                    OnFilePreviewReady="HandleFilePreview"
                                    UploadComponentStyle="@HandlingUploadStyles()"
-
                                    IdUser="@id" />
-               
+
             }
             else
             {
                 <div style="border: 1px solid #ccc; cursor: pointer; width:10rem;  padding: 6px 12px;">
-                <UserPictureUpload @ref="userPictureUploadRef"
-                                   OnFileUploaded="HandleFileUpload"
-                                   OnFilePreviewReady="HandleFilePreview"
-                                   UploadComponentStyle="@HandlingUploadStyles()"
-                                   IdUser="@user.IdUser" />
+                    <UserPictureUpload @ref="userPictureUploadRef"
+                                       OnFileUploaded="HandleFileUpload"
+                                       OnFilePreviewReady="HandleFilePreview"
+                                       UploadComponentStyle="@HandlingUploadStyles()"
+                                       IdUser="@user.IdUser" />
                 </div>
             }
 
@@ -70,13 +70,25 @@
             <div class="row mb-3">
                 <div class="col-md-3">
                     <label for="input1" class="form-label">Privilegios Web</label>
-                    <br>
-                    <input class="form-check-input" type="radio" name="radioGroup" id="radio1" value="true" @onchange="SetUserWeb" checked="@(user?.WebPrivileges == true)">
-                    <label class="form-check-label" for="radio1">Si</label>
-                    <input class="form-check-input" type="radio" name="radioGroup" id="radio2" value="false" @onchange="SetUserWeb" checked="@(user?.WebPrivileges == false || user?.WebPrivileges == null)">
-                    <label class="form-check-label" for="radio2">No</label>
+                    <br />
+                    <InputRadioGroup @bind-Value="user.WebPrivileges">
+                        <InputRadio id="radio1" Value="true" />
+                        <label for="radio1">Si</label>
 
+                        <InputRadio id="radio2" Value="false" />
+                        <label for="radio2">No</label>
+                    </InputRadioGroup>
                 </div>
+
+                @* <div class="col-md-3">
+            <label for="input1" class="form-label">Privilegios Web</label>
+            <br>
+            <input class="form-check-input" type="radio" name="radioGroup" id="radio1" value="true" @onchange="SetUserWeb" checked="@(user?.WebPrivileges == true)">
+            <label class="form-check-label" for="radio1">Si</label>
+            <input class="form-check-input" type="radio" name="radioGroup" id="radio2" value="false" @onchange="SetUserWeb" checked="@(user?.WebPrivileges == false || user?.WebPrivileges == null)">
+            <label class="form-check-label" for="radio2">No</label>
+
+            </div>  *@
                 <div class="col-md-3">
                     <label for="input1" class="form-label">Puesto</label>
                     <InputText class="form-control" @bind-Value="user.Position"></InputText>
@@ -155,6 +167,9 @@
     public User? user
     { get; set; }
 
+    [Parameter]
+    public EditContext userContext { get; set; }
+
     public List<String> Oficina = new List<string>
 {
         "Ensenada","Tijuana","San Diego"
@@ -183,7 +198,11 @@
 
     protected override void OnInitialized()
     {
-        Console.WriteLine("culo: " + PictureStateContainer.File);
+        //Console.WriteLine("culo: " + PictureStateContainer.File);
+        if (user.WebPrivileges == null)
+        {
+            user.WebPrivileges = false;
+        }
     }
 
 
@@ -191,11 +210,13 @@
     {
         imageFilePath = path;
         Console.WriteLine("Ruta de la imagen: " + imageFilePath);
-        
+
         if (user is not null)
         {
             user.IMAGE_NAME = imageFilePath;
+            userContext.NotifyFieldChanged(FieldIdentifier.Create(() => user.IMAGE_NAME));
         }
+        Console.WriteLine(user.IMAGE_NAME);
 
     }
 
@@ -240,7 +261,7 @@
     }
 
 
-    public async Task SomeMethodInsideComponent()
+    public async Task AssingAndUpdateImageName()
     {
         if (userPictureUploadRef != null)
         {
@@ -265,13 +286,14 @@
     }
 
 
-    private void SetUserWeb(ChangeEventArgs e)
-    {
-        if (user != null)
-        {
-            user.WebPrivileges = e.Value.ToString() == "true";
-        }
-    }
+    // private void SetUserWeb(ChangeEventArgs e)
+    // {
+    //     if (user != null)
+    //     {
+    //         user.WebPrivileges = e.Value.ToString() == "true";
+    //     }
+    // }
+
 
 
 

@@ -8,5 +8,7 @@ namespace Tescat.Services.Emails
 
         public Task<Email> InsertUserEmail(Email userEmail);
         public Task<Email> QuitEmailFromUserDetails(int IdUser);
+
+        public Task<bool> UpdateUserEmail(int IdUser,Email userEmail);
     }
 }

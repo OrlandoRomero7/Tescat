@@ -20,7 +20,7 @@ namespace Tescat.Services.Pcs
         public async Task<List<Pc>> GetAllPc()
         {
             using var context = _contextFactory.CreateDbContext();
-            return await context.Pcs.ToListAsync();
+            return await context.Pcs.Include(p => p.IdUserNavigation).ToListAsync();
         }
 
         public async Task<Pc> GetPcId(Guid IdPc)
@@ -36,6 +36,27 @@ namespace Tescat.Services.Pcs
                 return null;
             }
         }
+        //public async Task<Pc> GetPcId(Guid IdPc)
+        //{
+        //    using var context = _contextFactory.CreateDbContext();
+        //    var pcDb = await context.Pcs
+        //        .Include(p => p.IdUserNavigation)
+        //        .Include(p => p.Storages)
+        //        .Include(p => p.MemoryRams)
+        //        .Include(p => p.Cpu)
+        //        .Include(p => p.Motherboard)
+        //        .Include(p => p.PowerSupply)
+        //        .FirstOrDefaultAsync(p => p.IdPc == IdPc);
+        //    if (pcDb != null)
+        //    {
+        //        return pcDb;
+        //    }
+        //    else
+        //    {
+        //        return null;
+        //    }
+        //}
+
 
         public async Task<Guid> GetPcForAssingComponent(int IdUser)
         {

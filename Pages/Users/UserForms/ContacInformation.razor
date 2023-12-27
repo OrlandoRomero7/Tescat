@@ -19,7 +19,8 @@
     </EditForm>
     @if (userEmails != null)
     {
-        <EditForm Model="@userEmails">
+        <EditForm EditContext
+        ="@userEmailsContext">
 
 
             @if (!options["Correo 1"])
@@ -95,11 +96,12 @@
 
 
 @code {
-
     [Parameter]
     public User user { get; set; }
     [Parameter]
     public Email? userEmails { get; set; } = default!;
+    [Parameter]
+    public EditContext userEmailsContext {get;set;}
 
 
     public bool email1 = false;

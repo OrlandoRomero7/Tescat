@@ -10,7 +10,7 @@
 
 @if (errors.Count > 0)
 {
-  @*  <h3>Errores</h3>*@
+    @*  <h3>Errores</h3>*@
     <ul class="text-danger">
         @foreach (var error in errors)
         {
@@ -65,7 +65,7 @@
 
             // Invoke Preview
             await OnFilePreviewReady.InvokeAsync(base64Image);
-       
+
         }
         catch (Exception ex)
         {
