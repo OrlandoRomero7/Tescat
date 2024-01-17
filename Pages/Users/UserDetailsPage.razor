@@ -125,9 +125,38 @@ else
     private Email userEmails = new Email();
     public List<Pc>? dbPc = null;
 
+    public List<String> departaments = new List<string>
+    {
+        "Operacion","Administracion","Trafico"
+    };
+    public List<String> areas = new List<string>
+    {
+        "Impo.Temporal",
+        "Contabilidad",
+        "Recursos Humanos",
+        "Liberaciones/Impo.Temporal",
+        "Proveedores",
+        "Facturacion/Exportacion",
+        "Cobranza",
+        "Cuentas de Gastos",
+        "Facturacion",
+        "Comercializacion",
+        "Supervisor Administrativo",
+        "Gerente Operativo",
+        "Sistemas",
+        "Gerente Administrativo",
+        "Impo. Definitiva",
+        "Impo. Temporal",
+        "Exportacion",
+        "Liberaciones",
+        "Trafico",
+        "Captura",
+        "Recepcion"
 
-    public string[]? areas;
-    public string[]? departaments { get; set; }
+    };
+
+    // public string[]? areas;
+    // public string[]? departaments { get; set; }
 
     public int IdOld;
 

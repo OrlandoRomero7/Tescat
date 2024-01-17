@@ -54,7 +54,7 @@
                 <div class="col-md-6">
                     <label for="input2" class="form-label">Departamento</label>
                     <InputSelect class="form-select" @bind-Value="user.Dept">
-                        @if (departaments != null && departaments.Length > 0)
+                        @if (departaments != null && departaments.Count > 0)
                         {
                             <option selected disabled>Selecciona una opción</option>
                             @foreach (var departament in departaments)
@@ -121,7 +121,7 @@
 
                     <InputSelect class="form-select" @bind-Value="user.Area">
 
-                        @if (areas != null && areas.Length > 0)
+                        @if (areas != null && areas.Count > 0)
                         {
                             <option selected disabled>Selecciona una opción</option>
                             @foreach (var area in areas)
@@ -180,11 +180,17 @@
     [Parameter]
     public int id { get; set; }
 
-    [Parameter]
-    public string[]? areas { get; set; } = default!;
+    // [Parameter]
+    // public string[]? areas { get; set; } = default!;
+
+    // [Parameter]
+    // public string[]? departaments { get; set; } = default!;
 
     [Parameter]
-    public string[]? departaments { get; set; } = default!;
+    public List<string> areas { get; set; } = default!;
+
+    [Parameter]
+    public List<string> departaments { get; set; } = default!;
 
     [Parameter]
     public EventCallback CreateUserCallback { get; set; }

@@ -11,7 +11,14 @@
             <div class="row mb-3">
                 <div class="col-md-4">
                     <label class="form-label">Tipo</label>
-                    <InputText class="form-control" @bind-Value="m.TypeRam" />
+                    @* <InputText class="form-control" @bind-Value="m.TypeRam" /> *@
+                    <InputSelect class="form-select" @bind-Value="m.TypeRam">
+                        <option selected disabled>Selecciona una opción</option>
+                        @foreach (var type in typeRam)
+                        {
+                            <option value="@type">@type</option>
+                        }
+                    </InputSelect>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Modelo</label>
@@ -25,7 +32,14 @@
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Velocidad</label>
-                    <InputText class="form-control" @bind-Value="m.Speed " />
+                    @* <InputText class="form-control" @bind-Value="m.Speed" /> *@
+                    <InputSelect class="form-select" @bind-Value="m.Speed">
+                        <option selected disabled>Selecciona una opción</option>
+                        @foreach (var mhz in mhzRam)
+                        {
+                            <option value="@mhz">@mhz</option>
+                        }
+                    </InputSelect>
                 </div>
             </div>
             
@@ -105,6 +119,23 @@
 
     [Parameter]
     public EventCallback<int> OnNumListChanged { get; set; }
+
+    public List<String> typeRam = new List<string>
+    {
+        "DDR3","DDR4","DDR5"
+    };
+    public List<String> mhzRam = new List<string>
+    {
+        "1066mhz",
+        "1333mhz",
+        "1600mhz",
+        "1866mhz",
+        "2400mhz",
+        "2666mhz",
+        "3200mhz",
+    };
+
+    
 
     //Density Density = Density.Compact;
     //int pageSize = 1;

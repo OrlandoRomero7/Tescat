@@ -37,8 +37,15 @@
         <div class="row mb-3">
             <div class="col-md-3">
                 <label class="form-label">M.2 Slot</label>
-                <InputText class="form-control" @bind-Value="motherboard.M2Slot" />
-            </div>
+                @* <InputText class="form-control" @bind-Value="motherboard.M2Slot" /> *@
+                <InputSelect class="form-select" @bind-Value="motherboard.M2Slot">
+                    <option selected disabled>Selecciona una opción</option>
+                    @foreach (var m2 in m2Slot)
+                    {
+                        <option value="@m2">@m2</option>
+                    }
+                </InputSelect>
+            </div> 
             
         </div>
     </EditForm>
@@ -59,6 +66,11 @@
 
     [Parameter]
     public Action confirmationModalDelete { get; set; }
+
+    public List<String> m2Slot = new List<string>
+    {
+        "Si, Disponible","Si, Ocupado","No"
+    };
 
     public void FunctionCallShowModal()
     {

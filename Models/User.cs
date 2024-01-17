@@ -35,7 +35,7 @@ namespace Tescat.Models
         public string? Office { get; set; }
         public DateTime? LastWorkingDate { get; set; }
         public int? TelKey { get; set; }
-        public string? Cel { get; set; }
+        public long? Cel { get; set; }
 
         public string? IMAGE_NAME { get; set; }
     }
