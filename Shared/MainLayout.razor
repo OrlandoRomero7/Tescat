@@ -151,7 +151,7 @@
     {
         if (firstRender)
         {
-      
+
             await Task.Delay(255);
             PageTransition = "visible-transition";
             StateHasChanged();
@@ -182,6 +182,8 @@
 
     private async void HandleLocationChanged(object? sender, LocationChangedEventArgs e)
     {
+
+        Console.WriteLine("pito");
         // Apply hidden-transition first
         PageTransition = "hidden-transition";
         StateHasChanged();  // Force re-render

@@ -13,7 +13,11 @@
     <div style="display:flex;  flex-wrap: wrap; margin-top:4rem">
 
         <HomeCard Title="Almacenamiento" CardIcon="bi bi-hdd">
-            Estado del Almacenamiento
+            @* <RadzenChart SeriesClick=@OnSeriesClick>
+                <RadzenPieSeries Data="@newDataItemList" Title="Revenue" CategoryProperty="" ValueProperty="Revenue">
+                    <RadzenSeriesDataLabels Visible="@showDataLabels" />
+                </RadzenPieSeries>
+            </RadzenChart> *@
         </HomeCard>
 
         <HomeCard Title="RAM" CardIcon="bi bi-memory">
@@ -32,7 +36,20 @@
 
 </div>
 
-@*<RadzenDataGrid AllowFiltering="true" AllowColumnResize="true"
+<RadzenDataGrid AllowFiltering="true" AllowColumnResize="true"
+                FilterMode="FilterMode.Simple" PageSize="3" AllowPaging="true" AllowSorting="true" Data="@pcStorage" ColumnWidth="200px">
+    <Columns>
+        <RadzenDataGridColumn TItem="PcWithAvailableStrge" Property="AvailableStorage" Title="Almacenamiento Disponible" Filterable="false"></RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="PcWithAvailableStrge" Property="Pc.PcName" Title="Nombre de PC" Filterable="false"></RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="PcWithAvailableStrge" Title="Acción" Sortable="false">
+            <Template Context="item">
+                <button type="button" class="btn btn-info" @onclick="()=>NavigateToPc(item.Pc.IdPc)">Ver</button>
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
+@* <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true"
                 FilterMode="FilterMode.Simple" PageSize="3" AllowPaging="true" AllowSorting="true" Data="@pcRam" ColumnWidth="200px">
     <Columns>
         <RadzenDataGridColumn TItem="PcWithTotalRam" Property="TotalRamCapacity" Title="Total Ram" Filterable="false"></RadzenDataGridColumn>
@@ -43,40 +60,63 @@
         </Template>
         </RadzenDataGridColumn>
     </Columns>
-</RadzenDataGrid>
+</RadzenDataGrid> *@
 
-<RadzenDataGrid AllowFiltering="true" AllowColumnResize="true"
-                FilterMode="FilterMode.Simple" PageSize="3" AllowPaging="true" AllowSorting="true" Data="@pcStorage" ColumnWidth="200px">
-    <Columns>
-        <RadzenDataGridColumn TItem="PcWithAvailableStrge" Property="AvailableStorage" Title="Total Almacenamiento" Filterable="false"></RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="PcWithAvailableStrge" Property="Pc.PcName" Title="Nombre de PC" Filterable="false"></RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="PcWithAvailableStrge" Title="Acción" Sortable="false">
-            <Template Context="item">
-                <button type="button" class="btn btn-info" @onclick="()=>NavigateToPc(item.Pc.IdPc)">Ver</button>
-            </Template>
-        </RadzenDataGridColumn>
-    </Columns>
-</RadzenDataGrid>*@
+
 
 @code{
-    //public List<PcWithTotalRam> pcRam {get;set;}
-    //public List<PcWithAvailableStrge> pcStorage { get; set; }
+    public List<PcWithTotalRam> pcRam {get;set;}
+    public List<PcWithAvailableStrge> pcStorage { get; set; }
+    List<DataItem> newDataItemList;
+    List<DataItem> newItems = new List<DataItem>();
 
-    //LogicalFilterOperator logicalFilterOperator = LogicalFilterOperator.And;
-    //FilterCaseSensitivity filterCaseSensitivity = FilterCaseSensitivity.CaseInsensitive;
+    LogicalFilterOperator logicalFilterOperator = LogicalFilterOperator.And;
+    FilterCaseSensitivity filterCaseSensitivity = FilterCaseSensitivity.CaseInsensitive;
 
-    //protected override async Task OnInitializedAsync()
-    //{
-    //    pcRam = await MemoryRamService.GetMemoryRamsFromHomePage();
-    //    pcStorage = await StorageService.GetAvailableStrgeFromHomePage();
+    protected override async Task OnInitializedAsync()
+    {
+        pcRam = await MemoryRamService.GetMemoryRamsFromHomePage();
+        pcStorage = await StorageService.GetAvailableStrgeFromHomePage();
 
-    //    // foreach (var p in pcStorage)
-    //    // {
-    //    //     Console.WriteLine(p.Pc.PcName+"\t"+p.AvailableStorage);
-    //    // }
-        
-    //}  
+        var menor27 = pcStorage.Where(item => item.AvailableStorage <= 27).Count();
+        var mayor28 = pcStorage.Where(item => item.AvailableStorage > 28).Count();
+        Console.WriteLine(menor27);
+
+        // // Crear una nueva lista de objetos que contengan solo los datos filtrados
+        // newItems.Add(new DataItem
+        //     {
+        //         Quarter = "menos de 27", // Ajusta esto según la propiedad de tu objeto Pc que contenga el cuatrimestre
+        //         Revenue = menor27 // Usa la propiedad AvailableStorage para la cantidad de Revenue
+        //     });
+        // newItems.Add(new DataItem
+        //     {
+        //         Quarter = "mayor de 28", // Ajusta esto según la propiedad de tu objeto Pc que contenga el cuatrimestre
+        //         Revenue = menor27 // Usa la propiedad AvailableStorage para la cantidad de Revenue
+        //     });
+
+        // // Agregar todos los nuevos elementos a la lista newDataItemList
+        // newDataItemList.AddRange(newItems);
+
+
+    }  
     public void NavigateToPc(Guid Guid){
         NavigationManager.NavigateTo("/pcDetails/"+Guid);
     }
+    bool showDataLabels = false;
+
+    void OnSeriesClick(SeriesClickEventArgs args)
+    {
+        Console.WriteLine(args);
+    }
+    class DataItem
+    {
+        public string Quarter { get; set; }
+        public int Revenue { get; set; }
+    }
+
+    
+
+
+
+    
 }

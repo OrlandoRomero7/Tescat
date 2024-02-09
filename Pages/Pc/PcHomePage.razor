@@ -42,8 +42,7 @@ else
         </div>
     </div>*@
     <RadzenDataGrid AllowVirtualization="true" AllowFiltering="true" AllowColumnResize="true"
-                    FilterMode="FilterMode.Simple" PageSize="10" AllowPaging="true" AllowSorting="true" Data="@pcs" ColumnWidth="150px"
-                    FilterCaseSensitivity="@filterCaseSensitivity" LogicalFilterOperator="@logicalFilterOperator">
+                    FilterMode="FilterMode.Simple" PageSize="10" AllowPaging="true" AllowSorting="true" Data="@pcs" >
         <Columns>
             <RadzenDataGridColumn TItem="Pc" Property="IdUserNavigation.Name" Title="Nombre de Usuario"></RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="Pc" Property="PcType" Title="Tipo"></RadzenDataGridColumn>

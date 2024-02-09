@@ -28,17 +28,23 @@ var builder = WebApplication.CreateBuilder(args);
 //builder.Services.AddDbContextFactory<TescatDbContext>(options =>
 //    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-//builder.Services.AddDbContextFactory<TescatDbContext>(options =>
-//{
-//    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-//    options.UseSqlServer(connectionString);
-//});
-
 builder.Services.AddDbContextFactory<TescatDbContext>(options =>
 {
-    var connectionString = Environment.GetEnvironmentVariable("TescatConnection");
-    options.UseSqlServer(connectionString);
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    options.UseSqlServer(connectionString, sqlServerOptionsAction: sqlOptions =>
+    {
+        sqlOptions.EnableRetryOnFailure();
+    });
 });
+
+//builder.Services.AddDbContextFactory<TescatDbContext>(options =>
+//{
+//    var connectionString = Environment.GetEnvironmentVariable("TescatConnection");
+//    options.UseSqlServer(connectionString, sqlServerOptionsAction: sqlOptions =>
+//    {
+//        sqlOptions.EnableRetryOnFailure();
+//    });
+//});
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<TescatDbContext>();

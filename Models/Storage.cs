@@ -21,15 +21,15 @@ public partial class Storage
 
     public string? UseTime { get; set; }
 
-    public string? NumberRead { get; set; }
+    public long? NumberRead { get; set; }
 
-    public string? NumberWrite { get; set; }
+    public long? NumberWrite { get; set; }
 
     public int? ReadSpeed { get; set; }
 
     public int? WriteSpeed { get; set; }
 
-    public string? Gbw { get; set; }
+    public long? Gbw { get; set; }
 
     public Guid? IdPc { get; set; }
 

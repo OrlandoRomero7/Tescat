@@ -31,10 +31,24 @@
 }
 else
 {
-
-    <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true"
+    <!--
+        <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true"
                     FilterMode="FilterMode.Simple" PageSize="10" AllowPaging="true" AllowSorting="true" Data="@commonData" ColumnWidth="150px"
                     FilterCaseSensitivity="@filterCaseSensitivity" LogicalFilterOperator="@logicalFilterOperator">
+        <Columns>
+    @*<RadzenDataGridColumn TItem="CommonPropertiesViewModel" Property="Id" Title="ID" Filterable="false"></RadzenDataGridColumn>*@
+            <RadzenDataGridColumn TItem="CommonPropertiesViewModel" Property="Model" Title="Modelo"></RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="CommonPropertiesViewModel" Property="Type" Title="Tipo"></RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="CommonPropertiesViewModel" Title="Acción" Sortable="false">
+                <Template Context="item">
+                    <button type="button" class="btn btn-info" @onclick="() => NavigateToComponent(item.Id, item.Type)">Ver</button>
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+    -->
+    <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true"
+                    PageSize="5" AllowPaging="true" AllowSorting="true" Data="@commonData" ColumnWidth="150px" IsLoading="@isLoading" PagerHorizontalAlign="HorizontalAlign.Center">
         <Columns>
             @*<RadzenDataGridColumn TItem="CommonPropertiesViewModel" Property="Id" Title="ID" Filterable="false"></RadzenDataGridColumn>*@
             <RadzenDataGridColumn TItem="CommonPropertiesViewModel" Property="Model" Title="Modelo"></RadzenDataGridColumn>
@@ -46,11 +60,13 @@ else
             </RadzenDataGridColumn>
         </Columns>
     </RadzenDataGrid>
+    
 
 
 }
 
 @code {
+    bool isLoading = false;
     RadzenDataGrid<Cpu> grid;
     private List<Cpu> cpus { get; set; }
     private List<Storage> storages { get; set; }
